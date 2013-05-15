@@ -15,9 +15,16 @@ namespace ScrollsModLoader
 
 
 			//get Path of Scrolls Data Folder
-			//TO-DO Test App to be valid on Mac. Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
+			//Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
 
-			String path = "";
+			String installPath = Patcher.getGlobalScrollsInstallPath();
+			if (installPath == null) return 0;
+
+
+		}
+		
+		public static String getGlobalScrollsInstallPath() {
+			String path = null;
 
 			OperatingSystem os = Environment.OSVersion;
 			PlatformID     pid = os.Platform;
@@ -29,6 +36,11 @@ namespace ScrollsModLoader
     			case PlatformID.WinCE:
         			//Windows Users have a fixed path
 					path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"/Local/Mojang/Scrolls/game/Scrolls_Data/";
+					if (!System.IO.Directory.Exists(path+"Managed")) {
+						System.Reflection.Assembly forms = System.Reflection.Assembly.LoadFile("System.Windows.Forms");
+						forms.GetType("MessageBox").GetMethod("Show", new Type[] {typeof(string), typeof(string)}).Invoke(null, new object[] {"ScrollsModLoader was not able to find your Scrolls install", "Scrolls must be installed"});
+						return null;
+					}
 				break;
 				case PlatformID.MacOSX:
 				case PlatformID.Unix:
@@ -47,7 +59,7 @@ namespace ScrollsModLoader
 					} catch (System.IO.FileLoadException ex) {
 						Console.WriteLine("MonoMac not found. Linux is currently not supported");
 						Console.WriteLine(ex);
-						return;
+						return null;
 					}
 					
 					object alert = monoMac.CreateInstance("MonoMac.AppKit.NSAlert");
@@ -61,19 +73,25 @@ namespace ScrollsModLoader
 						alert.GetType().GetProperty("MessageText").SetValue(alert, "No Selection was made", null);
 						alert.GetType().GetProperty("InformativeText").SetValue(alert, "Scrolls ModLoader was not able to find your local install of Scrolls. Scrolls ModLoader will close now", null);
 						alert.GetType().GetMethod("RunModal").Invoke(alert, null);
-						return;
+						return null;
 					}
 					path = ((string[])(panel.GetType().GetProperty("Filenames").GetValue(panel, null)))[0]+"/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
 					
-					Console.WriteLine(path);
+					if (!System.IO.Directory.Exists(path+"Managed")) {
+						alert.GetType().GetProperty("MessageText").SetValue(alert, "Wrong Selection", null);
+						alert.GetType().GetProperty("InformativeText").SetValue(alert, "The selected file is not a valid Scrolls.app. Scrolls ModLoader will close now", null);
+						alert.GetType().GetMethod("RunModal").Invoke(alert, null);
+						return null;
+					}
+
 				break;
     			default:
         			Console.WriteLine("Unsupported Platform detected");
-					return;
+					return null;
 			}
 
-			Console.WriteLine(path);
-  		
+			Console.WriteLine("Install Path: "+path);
+			return path;
 		}
 
 		public bool patchAssembly(String path) {
