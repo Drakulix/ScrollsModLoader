@@ -16,7 +16,6 @@ namespace ScrollsModLoader
 
 			//get Path of Scrolls Data Folder
 			//TO-DO check default Applications path on Mac. Test App to be valid on Mac. Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
-			//TO-DO add Dialog to inform the user, what he shall select
 
 			String path = "";
 
@@ -43,11 +42,22 @@ namespace ScrollsModLoader
 						Console.WriteLine(ex);
 						return;
 					}
+					
+					object alert = monoMac.CreateInstance("MonoMac.AppKit.NSAlert");
+					alert.GetType().GetProperty("MessageText").SetValue(alert, "Scrolls was not found", null);
+					alert.GetType().GetProperty("InformativeText").SetValue(alert, "Please select your local install of Scrolls", null);
+					alert.GetType().GetMethod("RunModal").Invoke(alert, null);
+					
 					object panel = monoMac.CreateInstance("MonoMac.AppKit.NSOpenPanel");
 					panel.GetType().GetProperty("AllowsMultipleSelection").SetValue(panel, false, null);
-					while ((int)panel.GetType().GetMethod("RunModal", new Type[] {}).Invoke(panel, null) == 0);
+					if ((int)panel.GetType().GetMethod("RunModal", new Type[] {}).Invoke(panel, null) == 0) {
+						alert.GetType().GetProperty("MessageText").SetValue(alert, "No Selection was made", null);
+						alert.GetType().GetProperty("InformativeText").SetValue(alert, "Scrolls ModLoader was not able to find your local install of Scrolls. Scrolls ModLoader will close now", null);
+						alert.GetType().GetMethod("RunModal").Invoke(alert, null);
+						return;
+					}
 					path = ((string[])(panel.GetType().GetProperty("Filenames").GetValue(panel, null)))[0]+"/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
-
+					
 					Console.WriteLine(path);
 				break;
     			default:
