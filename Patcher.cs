@@ -18,9 +18,23 @@ namespace ScrollsModLoader
 			//Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
 
 			String installPath = Patcher.getGlobalScrollsInstallPath();
-			if (installPath == null) return 0;
+			if (installPath == null) return;
 
 
+			//create modloader folder
+			if (!System.IO.Directory.Exists(installPath+"/Managed/ModLoader/")) {
+				System.IO.Directory.CreateDirectory(installPath+"/Managed/ModLoader/");
+			}
+
+			//backup original assembly
+			System.IO.File.Copy(installPath+"/Managed/Assembly.CSharp.dll", installPath+"/Managed/ModLoader/Assembly.CSharp.dll");
+
+
+			//patch it
+			Patcher patcher = new Patcher();
+			if (!patcher.patchAssembly(installPath+"/Managed/ModLoader/Assembly.CSharp.dll")) {
+				Console.WriteLine("Patching failed");
+			}
 		}
 		
 		public static String getGlobalScrollsInstallPath() {
