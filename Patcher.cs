@@ -15,7 +15,7 @@ namespace ScrollsModLoader
 
 
 			//get Path of Scrolls Data Folder
-			//TO-DO check default Applications path on Mac. Test App to be valid on Mac. Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
+			//TO-DO Test App to be valid on Mac. Note: AllowedFileTypes is currently broken on MonoMac. it freezes the app
 
 			String path = "";
 
@@ -31,7 +31,14 @@ namespace ScrollsModLoader
 					path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"/Local/Mojang/Scrolls/game/Scrolls_Data/";
 				break;
 				case PlatformID.MacOSX:
-				case PlatformID.Unix:	
+				case PlatformID.Unix:
+
+					//Apps are bundles (== folders) on MacOS
+					if (System.IO.Directory.Exists("/Applications/Scrolls-Alpha.app")) {
+						path = "/Applications/Scrolls-Alpha.app/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
+						break;
+					}
+
 					// MacOS User need to tell us the path of their Scrolls.app
 
 					System.Reflection.Assembly monoMac = null;
