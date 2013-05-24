@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 
 namespace ScrollsModLoader
 {
@@ -24,7 +25,9 @@ namespace ScrollsModLoader
 				case PlatformID.MacOSX:
 				case PlatformID.Unix:
 					try	{
-						System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory+"/MonoMac.dll");
+						byte[] monoMacLoad = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ScrollsModLoader.MonoMac.dll").ReadToEnd();
+						System.Reflection.Assembly.Load(monoMacLoad);
+						//System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory+"/MonoMac.dll");
 					} catch (System.IO.FileLoadException) {
 						return OS.Unix;
 					}
@@ -50,8 +53,8 @@ namespace ScrollsModLoader
 				case Platform.OS.Mac:
 
 					//Apps are bundles (== folders) on MacOS
-					if (System.IO.Directory.Exists("/Applications/Scrolls-Alpha.app")) {
-						path = "/Applications/Scrolls-Alpha.app/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
+					if (System.IO.Directory.Exists("/Applications/Scrolls.app")) {
+						path = "/Applications/Scrolls.app/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
 						break;
 					}
 					
