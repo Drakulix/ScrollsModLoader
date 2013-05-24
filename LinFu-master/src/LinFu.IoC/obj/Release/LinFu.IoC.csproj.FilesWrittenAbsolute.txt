@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.IoC.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.IoC.dll
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.IoC/obj/Release/LinFu.IoC.dll
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.IoC/obj/Release/LinFu.IoC.dll.mdb

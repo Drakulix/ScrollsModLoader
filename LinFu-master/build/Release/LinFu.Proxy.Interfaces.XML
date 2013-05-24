@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LinFu.Proxy.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:LinFu.Proxy.CallAdapter">
+            <summary>
+            Adapts an <see cref="T:LinFu.AOP.Interfaces.IInvokeWrapper" /> instance to an
+            <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.CallAdapter.#ctor(LinFu.AOP.Interfaces.IInvokeWrapper)">
+            <summary>
+            Initializes the CallAdapter class with the <paramref name="wrapper" /> instance.
+            </summary>
+            <param name="wrapper">The <see cref="T:LinFu.AOP.Interfaces.IInvokeWrapper" /> instance that will be called every time the interceptor is invoked.</param>
+        </member>
+        <member name="M:LinFu.Proxy.CallAdapter.Intercept(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Intercepts a method call and passes the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> arguments
+            down to the <see cref="T:LinFu.AOP.Interfaces.IInvokeWrapper" /> instance.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the method currently being executed.</param>
+            <returns>The return value of the target method.</returns>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.FunctorAsInterceptor">
+            <summary>
+            A class that converts a functor into an <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.FunctorAsInterceptor.#ctor(System.Func{LinFu.AOP.Interfaces.IInvocationInfo,System.Object})">
+            <summary>
+            Initializes the class with the given <paramref name="intercept">functor</paramref>.
+            </summary>
+            <param name="intercept">The functor that will be invoked every time a method is called on the proxy type.</param>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.FunctorAsInterceptor.Intercept(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            A method that redirects the method calls to
+            the functor instance.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the context of the method call.</param>
+            <returns>The return value from the target method.</returns>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IExtractInterfaces">
+            <summary>
+            A class that is responsible for determining
+            which interfaces a given type should implement.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IExtractInterfaces.GetInterfaces(System.Type,System.Collections.Generic.HashSet{System.Type})">
+            <summary>
+            Determines which interfaces a given type should implement.
+            </summary>
+            <param name="currentType">The base type that holds the list of interfaces to implement.</param>
+            <param name="interfaces">The list of interfaces already being implemented. </param>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IMethodBodyEmitter">
+            <summary>
+            Represents a class that is responsible for
+            constructing method bodies.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IMethodBodyEmitter.Emit(System.Reflection.MethodInfo,Mono.Cecil.MethodDefinition)">
+            <summary>
+            Generates the method body for the <paramref name="targetMethod">target method</paramref>.
+            </summary>
+            <param name="originalMethod">The original method that the <paramref name="targetMethod" /> will be based on.</param>
+            <param name="targetMethod">The method that will contain the method body to be emitted.</param>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IMethodPicker">
+            <summary>
+            Represents a class that determines which methods should be proxied
+            by a given proxy factory.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IMethodPicker.ChooseProxyMethodsFrom(System.Type,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Determines which methods should be proxied
+            by a given proxy factory.
+            </summary>
+            <param name="baseType">The base class of the proxy type currently being generated.</param>
+            <param name="baseInterfaces">The list of interfaces that the proxy must implement.</param>
+            <returns>A list of <see cref="T:System.Reflection.MethodInfo" /> objects that can be proxied.</returns>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IMethodBuilder">
+            <summary>
+            Represents a class that generates methods based on other existing
+            methods.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IMethodBuilder.CreateMethod(Mono.Cecil.TypeDefinition,System.Reflection.MethodInfo)">
+            <summary>
+            Creates a method that matches the signature defined in the
+            <paramref name="method" /> parameter.
+            </summary>
+            <param name="targetType">The type that will host the new method.</param>
+            <param name="method">The method from which the signature will be derived.</param>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IProxyCache">
+            <summary>
+            Represents an interface for classes that store results from an
+            <see cref="T:LinFu.Proxy.Interfaces.IProxyFactory" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IProxyCache.Contains(System.Type,System.Type[])">
+            <summary>
+            Determines whether or not the cache contains an existing proxy type
+            that is derived from the <paramref name="baseType" /> and implements
+            the given <paramref name="baseInterfaces" />.
+            </summary>
+            <param name="baseType">The base type of the dynamically-generated proxy type.</param>
+            <param name="baseInterfaces">The list of interfaces that the generated proxy type must implement.</param>
+            <returns>Returns <c>true</c> if the proxy type already exists; otherwise, it will return <c>false.</c></returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IProxyCache.Get(System.Type,System.Type[])">
+            <summary>
+            Retrieves an existing proxy type from the cache.
+            </summary>
+            <param name="baseType">The base type of the dynamically-generated proxy type.</param>
+            <param name="baseInterfaces">The list of interfaces that the generated proxy type must implement.</param>
+            <returns>Returns a valid <see cref="T:System.Type" /> if the type already exists; otherwise, it might return <c>null</c> or opt to throw an exception.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IProxyCache.Store(System.Type,System.Type,System.Type[])">
+            <summary>
+            Stores a proxy type in the cache.
+            </summary>
+            <param name="result">The proxy type to be stored.</param>
+            <param name="baseType">The base type of the dynamically-generated proxy type.</param>
+            <param name="baseInterfaces">The list of interfaces that the generated proxy type must implement.</param>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IProxy">
+            <summary>
+            Represents a dynamically generated proxy instance.
+            </summary>
+        </member>
+        <member name="P:LinFu.Proxy.Interfaces.IProxy.Interceptor">
+            <summary>
+            The interceptor that will handle all
+            calls made to the proxy instance.
+            </summary>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IProxyBuilder">
+            <summary>
+            Represents a class that is responsible
+            for generating proxy types.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IProxyBuilder.Construct(System.Type,System.Collections.Generic.IEnumerable{System.Type},Mono.Cecil.ModuleDefinition,Mono.Cecil.TypeDefinition)">
+            <summary>
+            Generates a proxy that must be derived
+            from the <paramref name="baseType" /> and implement
+            the list of <paramref name="interfaces" />.
+            </summary>
+            <param name="baseType">The base class of the type being constructed.</param>
+            <param name="interfaces">The list of interfaces that the new type must implement.</param>
+            <param name="module">The module that will hold the brand new type.</param>
+            <param name="targetType">The <see cref="T:Mono.Cecil.TypeDefinition" /> that represents the type to be created.</param>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.IProxyFactory">
+            <summary>
+            Represents the basic interface for creating
+            dynamic proxy instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.IProxyFactory.CreateProxyType(System.Type,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Generates a dynamic proxy type
+            that derives from the <paramref name="baseType" />
+            and implements the given <paramref name="baseInterfaces">interfaces</paramref>.
+            </summary>
+            <param name="baseType">The base class from which the generated dynamic proxy will be derived.</param>
+            <param name="baseInterfaces">The list of interfaces that the generated dynamic proxy will implement.</param>
+            <returns>A dynamic proxy type.</returns>
+        </member>
+        <member name="T:LinFu.Proxy.Interfaces.ProxyFactoryExtensions">
+            <summary>
+            Extends the <see cref="T:LinFu.Proxy.Interfaces.IProxyFactory" /> class to support
+            instantiating proxy types.
+            </summary>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy(LinFu.Proxy.Interfaces.IProxyFactory,System.Type,LinFu.AOP.Interfaces.IInvokeWrapper,System.Type[])">
+            <summary>
+            Uses the <paramref name="factory" /> to create a proxy instance
+            that directly derives from the <paramref name="instanceType" />
+            and implements the given <paramref name="baseInterfaces" />.
+            The <paramref name="wrapper" /> instance, in turn, will be used
+            to intercept the method calls made to the proxy itself.
+            </summary>
+            <param name="factory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="instanceType">The type that will be intercepted by the proxy.</param>
+            <param name="wrapper">The <see cref="T:LinFu.AOP.Interfaces.IInvokeWrapper" /> instance that will be used to intercept method calls made to the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy(LinFu.Proxy.Interfaces.IProxyFactory,System.Type,LinFu.AOP.Interfaces.IInterceptor,System.Type[])">
+            <summary>
+            Uses the <paramref name="factory" /> to create a proxy instance
+            that directly derives from the <paramref name="instanceType" />
+            and implements the given <paramref name="baseInterfaces" />.
+            The <paramref name="interceptor" /> instance, in turn, will be used
+            to intercept the method calls made to the proxy itself.
+            </summary>
+            <param name="factory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="instanceType">The type that will be intercepted by the proxy.</param>
+            <param name="interceptor">The <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance that will be used to intercept method calls made to the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy``1(LinFu.Proxy.Interfaces.IProxyFactory,LinFu.AOP.Interfaces.IInvokeWrapper,System.Type[])">
+            <summary>
+            Uses the <paramref name="factory" /> to create a proxy instance
+            that directly derives from the <typeparamref name="T" /> type
+            and implements the given <paramref name="baseInterfaces" />.
+            The <paramref name="wrapper" /> instance, in turn, will be used
+            to intercept the method calls made to the proxy itself.
+            </summary>
+            <typeparam name="T">The type that will be intercepted by the proxy.</typeparam>
+            <param name="factory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="wrapper">The <see cref="T:LinFu.AOP.Interfaces.IInvokeWrapper" /> instance that will be used to intercept method calls made to the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy``1(LinFu.Proxy.Interfaces.IProxyFactory,LinFu.AOP.Interfaces.IInterceptor,System.Type[])">
+            <summary>
+            Uses the <paramref name="factory" /> to create a proxy instance
+            that directly derives from the <typeparamref name="T" /> type
+            and implements the given <paramref name="baseInterfaces" />.
+            The <paramref name="interceptor" /> instance, in turn, will be used
+            to intercept the method calls made to the proxy itself.
+            </summary>
+            <typeparam name="T">The type that will be intercepted by the proxy.</typeparam>
+            <param name="factory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="interceptor">The <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance that will be used to intercept method calls made to the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy``1(LinFu.Proxy.Interfaces.IProxyFactory,System.Func{System.String,System.Type[],System.Object[],System.Object},System.Type[])">
+            <summary>
+            Uses the <paramref name="proxyFactory" /> to create a proxy instance
+            that directly derives from the <typeparamref name="T" /> type
+            and implements the given <paramref name="baseInterfaces" />.
+            </summary>
+            <remarks>
+            The <paramref name="proxyImplementation" /> will be used to intercept method calls
+            performed against the target instance.
+            </remarks>
+            <typeparam name="T">The type that will be intercepted by the proxy.</typeparam>
+            <param name="proxyFactory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="proxyImplementation">The functor that will invoked every time a method is called on the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+        <member name="M:LinFu.Proxy.Interfaces.ProxyFactoryExtensions.CreateProxy(LinFu.Proxy.Interfaces.IProxyFactory,System.Type,System.Func{System.String,System.Type[],System.Object[],System.Object},System.Type[])">
+            <summary>
+            Uses the <paramref name="proxyFactory" /> to create a proxy instance
+            that directly derives from the <typeparamref name="T" /> type
+            and implements the given <paramref name="baseInterfaces" />.
+            </summary>
+            <remarks>
+            The <paramref name="proxyImplementation" /> will be used to intercept method calls
+            performed against the target instance.
+            </remarks>
+            <param name="targetType">The type that will be intercepted by the proxy.</param>
+            <param name="proxyFactory">The IProxyFactory instance that will be used to generate the proxy type.</param>
+            <param name="proxyImplementation">The functor that will invoked every time a method is called on the proxy.</param>
+            <param name="baseInterfaces">The additional list of interfaces that the proxy will implement.</param>
+            <returns>A valid proxy instance.</returns>
+        </member>
+    </members>
+</doc>

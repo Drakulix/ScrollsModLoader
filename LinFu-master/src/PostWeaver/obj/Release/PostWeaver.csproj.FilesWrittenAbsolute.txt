@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/PostWeaver/bin/Release/PostWeaver.exe.mdb
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/PostWeaver/bin/Release/PostWeaver.exe
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/PostWeaver/obj/Release/PostWeaver.exe
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/PostWeaver/obj/Release/PostWeaver.exe.mdb

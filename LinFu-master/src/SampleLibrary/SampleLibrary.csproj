@@ -1,0 +1,163 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DEFBEF97-B03C-448F-9518-394735439E2E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SampleLibrary</RootNamespace>
+    <AssemblyName>SampleLibrary</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AOP\SampleAroundInvoke.cs" />
+    <Compile Include="AOP\SampleAroundInvokeProvider.cs" />
+    <Compile Include="AOP\SampleBootstrapComponent.cs" />
+    <Compile Include="AOP\SampleClassWithByRefMethod.cs" />
+    <Compile Include="AOP\SampleClassWithMethodHavingOutParameters.cs" />
+    <Compile Include="AOP\SampleClassWithNewInstanceCall.cs" />
+    <Compile Include="AOP\SampleClassWithNonVirtualMethod.cs" />
+    <Compile Include="AOP\SampleClassWithReadOnlyField.cs" />
+    <Compile Include="AOP\SampleClassWithThirdPartyMethodCall.cs" />
+    <Compile Include="AOP\SampleInterceptor.cs" />
+    <Compile Include="AOP\SampleMethodReplacement.cs" />
+    <Compile Include="AOP\SampleMethodReplacementProvider.cs" />
+    <Compile Include="AOP\SampleServiceImplementation.cs" />
+    <Compile Include="AOP\SampleStaticClassWithStaticMethod.cs" />
+    <Compile Include="AOP\SampleTypeActivator.cs" />
+    <Compile Include="IOC\BugFixes\IMyService.cs" />
+    <Compile Include="IOC\BugFixes\MyClass.cs" />
+    <Compile Include="IOC\BugFixes\MyFactory.cs" />
+    <Compile Include="IOC\BugFixes\MyService.cs" />
+    <Compile Include="IOC\ISampleInterceptedInterface.cs" />
+    <Compile Include="IOC\ISampleServiceOfT.cs" />
+    <Compile Include="IOC\ISampleServiceWithGenericMethods.cs" />
+    <Compile Include="IOC\ISampleWrappedInterface.cs" />
+    <Compile Include="IOC\ITargetHolder.cs" />
+    <Compile Include="IOC\SampleAroundInvokeInterceptorClass.cs" />
+    <Compile Include="IOC\SampleClassWithAdditionalArgument.cs" />
+    <Compile Include="IOC\SampleClassWithArrayPropertyDependency.cs" />
+    <Compile Include="IOC\SampleClassWithFactoryDependency.cs" />
+    <Compile Include="IOC\SampleClassWithGenericMethod.cs" />
+    <Compile Include="IOC\SampleClassWithInjectionField.cs" />
+    <Compile Include="IOC\SampleClassWithInjectionMethod.cs" />
+    <Compile Include="IOC\SampleClassWithInjectionProperties.cs" />
+    <Compile Include="IOC\SampleClassWithMultipleNonServiceArgumentConstructors.cs" />
+    <Compile Include="IOC\SampleClassWithNamedParameters.cs" />
+    <Compile Include="IOC\SampleClassWithNonServiceArgument.cs" />
+    <Compile Include="IOC\SampleClassWithServiceArrayAsConstructorArgument.cs" />
+    <Compile Include="IOC\SampleClassWithUnmarkedInjectionProperties.cs" />
+    <Compile Include="IOC\SampleDuckTypeImplementation.cs" />
+    <Compile Include="IOC\SampleEnum.cs" />
+    <Compile Include="IOC\SampleFactoryWithConstructorArguments.cs" />
+    <Compile Include="IOC\SampleGenericClassWithOpenGenericImplementation.cs" />
+    <Compile Include="IOC\SampleGenericClassWithSpecificGenericTypeImplementation.cs" />
+    <Compile Include="IOC\SampleInterceptorClass.cs" />
+    <Compile Include="IOC\SampleInternalService.cs" />
+    <Compile Include="IOC\SampleLazyService.cs" />
+    <Compile Include="IOC\SamplePreprocessor.cs" />
+    <Compile Include="IOC\SampleRecursiveTestComponent1.cs" />
+    <Compile Include="IOC\SampleRecursiveTestComponent2.cs" />
+    <Compile Include="IOC\SampleServiceOfT.cs" />
+    <Compile Include="IOC\SampleStronglyTypedFactoryWithNamedService.cs" />
+    <Compile Include="Proxy\ClassWithNestedOpenGenericParameters.cs" />
+    <Compile Include="Proxy\SampleClassWithPropertyInitializedInCtor.cs" />
+    <Compile Include="Proxy\ClassWithGenericMethod.cs" />
+    <Compile Include="Proxy\ClassWithMethodReturnTypeFromGenericTypeArguments.cs" />
+    <Compile Include="Proxy\ClassWithMethodReturnValueFromTypeArgument.cs" />
+    <Compile Include="Proxy\ClassWithOpenGenericParameters.cs" />
+    <Compile Include="Proxy\ClassWithParametersFromGenericMethodTypeArguments.cs" />
+    <Compile Include="Proxy\ClassWithParametersFromHostGenericTypeArguments.cs" />
+    <Compile Include="Proxy\ClassWithVirtualMethodWithOutParameter.cs" />
+    <Compile Include="Proxy\DerivedClassWithVirtualByRefMethod.cs" />
+    <Compile Include="Proxy\ClassWithVirtualByRefMethod.cs" />
+    <Compile Include="IOC\FirstOncePerRequestService.cs" />
+    <Compile Include="IOC\FirstSingletonService.cs" />
+    <Compile Include="IOC\IInjectionTarget.cs" />
+    <Compile Include="IOC\ISampleGenericService.cs" />
+    <Compile Include="IOC\ISampleService.cs" />
+    <Compile Include="IOC\SampleClass.cs" />
+    <Compile Include="IOC\SampleClassWithMultipleConstructors.cs" />
+    <Compile Include="IOC\SampleClassWithServiceEnumerableAsConstructorArgument.cs" />
+    <Compile Include="IOC\SampleClassWithSingleArgumentConstructor.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IOC\SampleFactory.cs" />
+    <Compile Include="IOC\SampleGenericImplementation.cs" />
+    <Compile Include="IOC\SampleOpenGenericFactory.cs" />
+    <Compile Include="IOC\SamplePostProcessor.cs" />
+    <Compile Include="IOC\SampleStronglyTypedFactory.cs" />
+    <Compile Include="IOC\SecondOncePerRequestService.cs" />
+    <Compile Include="IOC\SecondSingletonService.cs" />
+    <Compile Include="Proxy\ClassWithGenericTypeDefinitionReturnType.cs" />
+    <Compile Include="Proxy\SerializableInterceptor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinFu.AOP.Interfaces\LinFu.AOP.Interfaces.csproj">
+      <Project>{0F8C48B0-4AE9-4429-AB90-C5141D710C2C}</Project>
+      <Name>LinFu.AOP.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC.Common\LinFu.IoC.Common.csproj">
+      <Project>{D027A765-4D2E-48AE-9D83-C5F5AFA7D8C1}</Project>
+      <Name>LinFu.IoC.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.IoC\LinFu.IoC.csproj">
+      <Project>{FA3D5517-EFF4-4363-AFF2-EF67B981334E}</Project>
+      <Name>LinFu.IoC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Proxy.Extensions\LinFu.Proxy.Extensions.csproj">
+      <Project>{DC20B330-B410-481D-A192-D82A07D2C7EF}</Project>
+      <Name>LinFu.Proxy.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LinFu.Reflection\LinFu.Reflection.csproj">
+      <Project>{22EEB00F-F471-486C-A6AD-60F088821C78}</Project>
+      <Name>LinFu.Reflection</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

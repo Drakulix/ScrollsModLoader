@@ -1,0 +1,754 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LinFu.AOP.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:LinFu.AOP.Interfaces.ActivationContext">
+            <summary>
+            Represents a class that describes a request to instantiate a particular object type.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ActivationContext.#ctor(System.Type,System.Object[])">
+            <summary>
+            Initializes the context with the given parameters.
+            </summary>
+            <param name="concreteType">The type to be instantiated.</param>
+            <param name="additionalArguments">The additional arguments that must be passed to the constructor.</param>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.ActivationContext.TargetType">
+            <summary>
+            Gets the value indicating the type to be instantiated.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.ActivationContext.AdditionalArguments">
+            <summary>
+            Gets the value indicating the arguments that will be passed to the constructor during instantiation.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.ActivatorExtensions">
+            <summary>
+            An extension class that adds helper methods to the <see cref="T:LinFu.AOP.Interfaces.IActivator`1" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ActivatorExtensions.CreateInstance(LinFu.AOP.Interfaces.IActivator{LinFu.AOP.Interfaces.IActivationContext},System.Type,System.Object[])">
+            <summary>
+            Instantiates the <paramref name="targetType" /> with the given <paramref name="activator" /> and <paramref name="constructorArguments" />.
+            </summary>
+            <param name="activator">The <see cref="T:LinFu.AOP.Interfaces.IActivator`1" /> instance that will be responsible for creating the <paramref name="targetType" />.</param>
+            <param name="targetType">The type to be created.</param>
+            <param name="constructorArguments">The arguments that will be passed to the constructor.</param>
+            <returns>An object reference that matches the given <paramref name="targetType" />.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ActivatorExtensions.CreateInstance``1(LinFu.AOP.Interfaces.IActivator{LinFu.AOP.Interfaces.IActivationContext},System.Object[])">
+            <summary>
+            Instantiates the <paramref name="targetType" /> with the given <paramref name="activator" /> and <paramref name="constructorArguments" />.
+            </summary>
+            <param name="activator">The <see cref="T:LinFu.AOP.Interfaces.IActivator`1" /> instance that will be responsible for creating the target type.</param>
+            <param name="constructorArguments">The arguments that will be passed to the constructor.</param>
+            <typeparam name="T">The target type that will be instantiated by the activator.</typeparam>
+            <returns>An object reference that matches the given <paramref name="targetType" />.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.AroundInvokeMethodCallRegistry">
+            <summary>
+            Represents a registry class that handles all class-level method call interception operations for all modified types.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundInvokeMethodCallRegistry.GetSurroundingImplementation(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Obtains the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance for the given <paramref name="context" />.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the current method call.</param>
+            <returns>An <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance that will be used to wrap a method call or method body.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundInvokeMethodCallRegistry.AddProvider(LinFu.AOP.Interfaces.IAroundInvokeProvider)">
+            <summary>
+            Adds an <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> to the list of provider instances.
+            </summary>
+            <param name="provider">The <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundInvokeMethodCallRegistry.Clear">
+            <summary>
+            Clears the list of <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instances.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.AroundMethodBodyRegistry">
+            <summary>
+            Represents a registry class that handles all class-level interception operations for all modified types.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundMethodBodyRegistry.GetSurroundingImplementation(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Obtains the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance for the given <paramref name="context" />.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the current method call.</param>
+            <returns>An <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance that will be used to wrap a method call or method body.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundMethodBodyRegistry.AddProvider(LinFu.AOP.Interfaces.IAroundInvokeProvider)">
+            <summary>
+            Adds an <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> to the list of provider instances.
+            </summary>
+            <param name="provider">The <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.AroundMethodBodyRegistry.Clear">
+            <summary>
+            Clears the list of <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instances.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.BaseMethodReplacementProvider">
+            <summary>
+            Represents the boilerplate implementation for a <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BaseMethodReplacementProvider.CanReplace(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Determines whether or not the current method implementation can be replaced.
+            </summary>
+            <param name="host">The target instance of the method call.</param>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call.</param>
+            <returns>
+                <c>true</c> if the method can be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BaseMethodReplacementProvider.GetMethodReplacement(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Obtains the <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance that will be used to replace the current method call.
+            </summary>
+            <param name="host">The target instance of the method call.</param>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call.</param>
+            <returns>The interceptor that will intercept the method call itself.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BaseMethodReplacementProvider.GetReplacement(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Obtains the <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance that will be used to replace the current method call.
+            </summary>
+            <param name="host">The target instance of the method call.</param>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call.</param>
+            <returns>The interceptor that will intercept the method call itself.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.BootstrapException">
+            <summary>
+            Represents an exception thrown when LinFu.AOP is unable to bootstrap itself.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BootstrapException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Interfaces.BootstrapException" /> class.
+            </summary>
+            <param name="message">The exception message.</param>
+            <param name="ex">The exception itself.</param>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.BootStrapRegistry">
+            <summary>
+            Represents a registry class that bootstraps components into memory when the application starts.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.BootStrapRegistry.Instance">
+            <summary>
+            Gets the value indicating the BootStrapRegistry instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BootStrapRegistry.Initialize">
+            <summary>
+            Initializes the BootStrapRegistry.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.BootStrapRegistry.GetComponents">
+            <summary>
+            Returns the list of components that have been initialized by the bootstrapper.
+            </summary>
+            <returns>
+            </returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.ExceptionHandlerRegistry">
+            <summary>
+            Represents a class that stores <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> instances in a central location.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ExceptionHandlerRegistry.GetHandler(LinFu.AOP.Interfaces.IExceptionHandlerInfo)">
+            <summary>
+            Gets the <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> instance that can handle the current exception.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IExceptionHandlerInfo" /> instance that describes the context of the thrown exception.</param>
+            <returns>An exception handler.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ExceptionHandlerRegistry.SetHandler(LinFu.AOP.Interfaces.IExceptionHandler)">
+            <summary>
+            Sets the <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> instance that can handle all thrown exceptions.
+            </summary>
+            <param name="handler">The exception handler.</param>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.FieldInterceptionContext">
+            <summary>
+            Represents a class that describes the state of a field just as it is being intercepted by a <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptor" />.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.FieldInterceptionContext.#ctor(System.Object,System.Reflection.MethodBase,System.Reflection.FieldInfo,System.Type)">
+            <summary>
+            Initializes a new instance of the FieldInterceptionContext class.
+            </summary>
+            <param name="target">The target that hosts the given field.</param>
+            <param name="targetMethod">The method that accessed the target field.</param>
+            <param name="targetField">The field currently being accessed by the target method.</param>
+            <param name="hostType">The type that hosts the target field.</param>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.FieldInterceptionContext.Target">
+            <summary>
+            Gets a value indicating the target instance that is attached to the target field.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.FieldInterceptionContext.TargetMethod">
+            <summary>
+            Gets a value indicating the host method that is currently accessing the target field.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.FieldInterceptionContext.TargetField">
+            <summary>
+            Gets a value indicating the field that is currently being accessed by the target method.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.FieldInterceptionContext.HostType">
+            <summary>
+            Gets a value indicating the <see cref="T:System.Type" /> that holds the target field.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.FieldInterceptorRegistry">
+            <summary>
+            Represents a registry class that allows users to intercept fields from a single location.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.FieldInterceptorRegistry.GetInterceptor(LinFu.AOP.Interfaces.IFieldInterceptionContext)">
+            <summary>
+            Gets current the <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptionContext" /> associated with the <see cref="T:LinFu.AOP.Interfaces.FieldInterceptorRegistry" />.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptionContext" /> instance that describes the state of the method call when the field getter or setter is called.</param>
+            <returns>The field interceptor that will be used to preempt field getter and setter calls.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.FieldInterceptorRegistry.SetInterceptor(LinFu.AOP.Interfaces.IFieldInterceptor)">
+            <summary>
+            Sets current the <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptionContext" /> that will be associated with the <see cref="T:LinFu.AOP.Interfaces.FieldInterceptorRegistry" />.
+            </summary>
+            <param name="interceptor">The field interceptor that will be used to preempt field getter and setter calls.</param>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IActivationContext">
+            <summary>
+            Represents a class that describes a request to instantiate a particular object type.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IActivationContext.TargetType">
+            <summary>
+            Gets the value indicating the type to be instantiated.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IActivationContext.AdditionalArguments">
+            <summary>
+            Gets the value indicating the arguments that will be passed to the constructor during instantiation.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IActivator`1">
+            <summary>
+            Represents a class that can instantiate object instances.
+            </summary>
+            <typeparam name="TContext">
+            The type that describes the context of the object instantiation.
+            </typeparam>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IActivator`1.CreateInstance(`0)">
+            <summary>
+            Creates an object instance.
+            </summary>
+            <param name="context">The context that describes the request to instantiate the target type.</param>
+            <returns>A valid object instance.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IActivatorHost">
+            <summary>
+            Represents a type that can intercept activation requests.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IActivatorHost.Activator">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.AOP.Interfaces.ITypeActivator" /> that
+            will be used to instantiate object types.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IAfterInvoke">
+            <summary>
+            Represents a class that is invoked after a method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IAfterInvoke.AfterInvoke(LinFu.AOP.Interfaces.IInvocationInfo,System.Object)">
+            <summary>
+            This method will be called immediately after the actual
+            method call is executed.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> associated with the method call.</param>
+            <param name="returnValue">The value returned from the actual method call.</param>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IAroundInvoke">
+            <summary>
+            Represents a class that can wrap itself around any given method call.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IAroundInvokeHost">
+            <summary>
+            Represents a type that supports injecting code around a method body or method call.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IAroundInvokeHost.AroundMethodBodyProvider">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" />
+            that will be used to inject code "around" a particular method body
+            implementation.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IAroundInvokeHost.AroundMethodCallProvider">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" />
+            that will be used to inject code "around" a particular method call
+            implementation.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IAroundInvokeProvider">
+            <summary>
+            Represents a class that injects code around a method implementation.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IAroundInvokeProvider.GetSurroundingImplementation(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Gets the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance that will be executed
+            before and after the target method (specified in the <paramref name="context" /> parameter)
+            is called.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call at the call site.</param>        /// <returns>An <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance if the surrounding behavior can be found; otherwise, it should return <c>null</c>.</returns></member>
+        <member name="T:LinFu.AOP.Interfaces.IBeforeInvoke">
+            <summary>
+            Represents a class that is invoked before a method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IBeforeInvoke.BeforeInvoke(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            This method will be called just before the actual
+            method call is executed.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> associated with the method call.</param>
+            <seealso cref="T:LinFu.AOP.Interfaces.IInvocationInfo" />
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IBootStrappedComponent">
+            <summary>
+            Represents a type that will be automatically initialized once the LinFu.AOP assembly is loaded into memory.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IBootStrappedComponent.Initialize">
+            <summary>
+            Initializes the bootstrapped component.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IExceptionHandler">
+            <summary>
+            Represents a type that can catch thrown exceptions.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IExceptionHandler.CanCatch(LinFu.AOP.Interfaces.IExceptionHandlerInfo)">
+            <summary>
+            Determines whether or not an exception can be handled.
+            </summary>
+            <param name="exceptionHandlerInfo">The object that describes the exception being thrown.</param>
+            <returns>
+                <c>True</c> if the exception can be handled by the current handler.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IExceptionHandler.Catch(LinFu.AOP.Interfaces.IExceptionHandlerInfo)">
+            <summary>
+            Handles the exception specified in the <paramref name="exceptionHandlerInfo" /> instance.
+            </summary>
+            <param name="exceptionHandlerInfo">The object that describes the exception being thrown.</param>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IExceptionHandlerInfo">
+            <summary>
+            Represents a type that describes the context of a thrown exception.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IExceptionHandlerInfo.Exception">
+            <summary>
+            Gets the value indicating the thrown exception.
+            </summary>
+            <value>The thrown exception.</value>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IExceptionHandlerInfo.InvocationInfo">
+            <summary>
+            Gets the value indicating the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the context of the method
+            that threw the exception.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IExceptionHandlerInfo.ReturnValue">
+            <summary>
+            Gets or sets the value indicating the return value that will be used in place of the original return value if
+            the exception is intercepted by an <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> instance.
+            </summary>
+            <value>The method return value.</value>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IExceptionHandlerInfo.ShouldSkipRethrow">
+            <summary>
+            Gets or sets the value indicating whether or not the exception should be rethrown after
+            the <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> handles the given exception.
+            </summary>
+            <value>This should be <c>true</c> if the exception should be rethrown, otherwise, it must be <c>false</c>.</value>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IFieldInterceptionContext">
+            <summary>
+            Represents a class that describes the state of a field just as it is being intercepted.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IFieldInterceptionContext.Target">
+            <summary>
+            Gets a value indicating the target instance that is attached to the target field.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IFieldInterceptionContext.TargetMethod">
+            <summary>
+            Gets a value indicating the host method that is currently accessing the target field.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IFieldInterceptionContext.TargetField">
+            <summary>
+            Gets a value indicating the field that is currently being accessed by the target method.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IFieldInterceptionContext.HostType">
+            <summary>
+            Gets a value indicating the <see cref="T:System.Type" /> that holds the target field.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IFieldInterceptionHost">
+            <summary>
+            Represents a type that has been modified to intercept field getters and setters.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IFieldInterceptionHost.FieldInterceptor">
+            <summary>
+            Gets or sets the value indicating the interceptor that will handle field getters and setters.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IFieldInterceptor">
+            <summary>
+            Represents a type that can intercept field getter and setter calls.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IFieldInterceptor.CanIntercept(LinFu.AOP.Interfaces.IFieldInterceptionContext)">
+            <summary>
+            Determines whether or not a field can be intercepted.
+            </summary>
+            <param name="context">The context that describes the field to be intercepted.</param>
+            <returns>
+                <c>true</c> if it can be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IFieldInterceptor.GetValue(LinFu.AOP.Interfaces.IFieldInterceptionContext)">
+            <summary>
+            Gets the value of a field.
+            </summary>
+            <param name="context">The context that describes the field to be intercepted.</param>
+            <returns>The value of the target field.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IFieldInterceptor.SetValue(LinFu.AOP.Interfaces.IFieldInterceptionContext,System.Object)">
+            <summary>
+            Sets the value of a field.
+            </summary>
+            <param name="context">The context that describes the field to be intercepted.</param>
+            <param name="value">The original value that will be assigned to the target field.</param>
+            <returns>The value that will be assigned to the target field.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IInterceptor">
+            <summary>
+            Represents a class that can dynamically intercept method calls.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IInterceptor.Intercept(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Intercepts a method call using the given
+            <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that will
+            contain all the necessary information associated with a
+            particular method call.</param>
+            <returns>The return value of the target method. If the return type of the target
+            method is <see cref="!:void" />, then the return value will be ignored.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IInvocationInfo">
+            <summary>
+            Represents the information associated with
+            a single method call.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.Target">
+            <summary>
+            The target instance currently being called.
+            </summary>
+            <remarks>This typically is a reference to a proxy object.</remarks>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod">
+            <summary>
+            The method currently being called.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.ReturnType">
+            <summary>
+            The return type of the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" />.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.StackTrace">
+            <summary>
+            The <see cref="T:System.Diagnostics.StackTrace" /> associated
+            with the method call when the call was made.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.ParameterTypes">
+            <summary>
+            The parameter types for the current target method.
+            </summary>
+            <remarks>
+                <para>
+            This could be very useful in cases where the actual target method
+            is based on a generic type definition. In such cases,
+            the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance needs to be able
+            to describe the actual parameter types being used by the
+            current generic type instantiation. This property helps
+            users determine which parameter types are actually being used
+            at the time of the method call.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.TypeArguments">
+            <summary>
+            If the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" /> method is a generic method,
+            this will hold the generic type arguments used to construct the
+            method.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IInvocationInfo.Arguments">
+            <summary>
+            The arguments used in the method call.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IInvokeWrapper">
+            <summary>
+            Represents a special type of interceptor that can
+            wrap itself around a method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IInvokeWrapper.DoInvoke(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            This method will provide the actual implementation
+            for the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod">target method</see>
+            instance.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> associated with the method call.</param>
+            <returns>The actual return value from the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" />.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.ITypeActivationContext">
+            <summary>
+            Represents a special type of <see cref="T:LinFu.AOP.Interfaces.IActivationContext" /> that can be used to instantiate a given type
+            and can be used to describe the method that invoked the instantiation operation as well as specify the object
+            instance that invoked the instantiation itself.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.ITypeActivationContext.Target">
+            <summary>
+            Gets the value indicating the object instance that initiated the object instantiation operation.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.ITypeActivationContext.TargetMethod">
+            <summary>
+            Gets the value indiating the <see cref="T:System.Reflection.MethodBase" /> instance that initiated the object instantiation operation.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.ITypeActivator">
+            <summary>
+            Represents an <see cref="T:LinFu.AOP.Interfaces.IActivator`1" /> that can instantiate objects from within a particular method.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.ITypeActivator.CanActivate(LinFu.AOP.Interfaces.ITypeActivationContext)">
+            <summary>
+            Determines whether or not a type can be instantiated using the
+            <paramref name="context" />.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.ITypeActivationContext" /> instance that describes the type to be created.</param>
+            <returns>
+                <c>true</c> if the type can be created; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IMethodReplacementHost">
+            <summary>
+            Represents a type that can have its method body  implementations replaced at runtime.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IMethodReplacementHost.MethodBodyReplacementProvider">
+            <summary>
+            Gets or sets a value indicating the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will be used to swap method body implementations at runtime.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IMethodReplacementHost.MethodCallReplacementProvider">
+            <summary>
+            Gets or sets a value indicating the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will be used to swap method body implementations at runtime.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IMethodReplacementProvider">
+            <summary>
+            Represents a type that can swap method body implementations at runtime.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IMethodReplacementProvider.CanReplace(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Determines whether or not the current method implementation can be replaced.
+            </summary>
+            <param name="host">The target instance of the method call.</param>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call.</param>
+            <returns>
+                <c>true</c> if the method can be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.IMethodReplacementProvider.GetMethodReplacement(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Obtains the <see cref="T:LinFu.AOP.Interfaces.IInterceptor" /> instance that will be used to replace the current method call.
+            </summary>
+            <param name="host">The target instance of the method call.</param>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> that describes the context of the method call.</param>
+            <returns>The interceptor that will intercept the method call itself.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.IModifiableType">
+            <summary>
+            Represents a type that has been modified to support
+            pervasive method interception.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.IModifiableType.IsInterceptionDisabled">
+            <summary>
+            Gets or sets the value indicating whether or not
+            method interception should be disabled.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.MethodBodyReplacementProviderRegistry">
+            <summary>
+            Represents a static type that allows users to register a method replacement provider from a single location.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.MethodBodyReplacementProviderRegistry.GetProvider(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Returns the provider that is currently attached to the registry.
+            </summary>
+            <param name="host">The type that is currently being intercepted.</param>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> object that describes the invocation context.</param>
+            <returns>A <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will determine the code that will be executed once a target method is called.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.MethodBodyReplacementProviderRegistry.SetProvider(LinFu.AOP.Interfaces.IMethodReplacementProvider)">
+            <summary>
+            Assigns the <paramref name="provider" /> to the MethodReplacementProvider registry.
+            </summary>
+            <returns>A <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will determine the code that will be executed once a target method is called.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.MethodCallReplacementProviderRegistry">
+            <summary>
+            Represents a static type that allows users to register a method replacement provider from a single location.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.MethodCallReplacementProviderRegistry.GetProvider(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Returns the provider that is currently attached to the registry.
+            </summary>
+            <param name="host">The type that is currently being intercepted.</param>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> object that describes the invocation context.</param>
+            <returns>A <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will determine the code that will be executed once a target method is called.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.MethodCallReplacementProviderRegistry.SetProvider(LinFu.AOP.Interfaces.IMethodReplacementProvider)">
+            <summary>
+            Assigns the <paramref name="provider" /> to the MethodReplacementProvider registry.
+            </summary>
+            <returns>A <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> that will determine the code that will be executed once a target method is called.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider">
+            <summary>
+            Represents the simplest possible <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> implementation
+            that will allow the user to use the original method body implementation as part
+            of the interceptor call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider.#ctor(LinFu.AOP.Interfaces.IInterceptor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider" /> class.
+            </summary>
+            <param name="replacement">The method body replacement interceptor.</param>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider.MethodReplacementPredicate">
+            <summary>
+            Gets or sets the value indicating the Predicate that will determine whether or not
+            the method should be intercepted.
+            </summary>
+            <value>The interceptor predicate.</value>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider.MethodReplacement">
+            <summary>
+            Gets or sets the value indicating the actual <see cref="T:LinFu.AOP.Interfaces.IInterceptor" />
+            instance that will provide the method body implementations.
+            </summary>
+            <value>The interceptor that will swap the method bodies at runtime.</value>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider.ShouldReplace(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Determines whether or not a particular method body should be replaced at runtime.
+            </summary>
+            <param name="host">The host instance that contains the target method.</param>
+            <param name="context">The context surrounding the method call.</param>
+            <returns>Returns <c>true</c> if the method body should be swapped; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.SimpleMethodReplacementProvider.GetReplacement(System.Object,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Gets the method replacement for a given <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo">invocation context</see>.
+            </summary>
+            <param name="host">The host instance that contains the target method.</param>
+            <param name="context">The context surrounding the method call.</param>
+            <returns>The interceptor that will swap the method bodies at runtime.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.TypeActivationContext">
+            <summary>
+            Represents an <see cref="T:LinFu.AOP.Interfaces.ActivationContext" /> that can be used to instantiate a given type
+            and be used to describe the method that invoked the instantiation operation as well as specify the object
+            instance that invoked the instantiation itself.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.TypeActivationContext.#ctor(System.Object,System.Reflection.MethodBase,System.Type,System.Object[])">
+            <summary>
+            Initializes a new instance of the MethodActivationContext class.
+            </summary>
+            <param name="target">The object instance that initiated the activation request.</param>
+            <param name="targetMethod">The method where the activation was invoked.</param>
+            <param name="concreteType">The type to be constructed.</param>
+            <param name="additionalArguments">The additional arguments that will be passed to the constructor.</param>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.TypeActivationContext.Target">
+            <summary>
+            Gets the value indicating the object instance that initiated the object instantiation operation.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Interfaces.TypeActivationContext.TargetMethod">
+            <summary>
+            Gets the value indiating the <see cref="T:System.Reflection.MethodBase" /> instance that initiated the object instantiation operation.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Interfaces.TypeActivatorRegistry">
+            <summary>
+            Represents a registry that allows users to statically register <see cref="T:LinFu.AOP.Interfaces.ITypeActivator" />
+            instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.TypeActivatorRegistry.GetActivator(LinFu.AOP.Interfaces.ITypeActivationContext)">
+            <summary>
+            Obtains an activator for the given <paramref name="context" />.
+            </summary>
+            <param name="context">The <see cref="T:LinFu.AOP.Interfaces.ITypeActivationContext" /> instance that describes the object to be created.</param>
+            <returns>A method activator.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Interfaces.TypeActivatorRegistry.SetActivator(LinFu.AOP.Interfaces.ITypeActivator)">
+            <summary>
+            Sets the <see cref="T:LinFu.AOP.Interfaces.ITypeActivator" /> that will be used to
+            instantiate object instances.
+            </summary>
+            <param name="activator">The <see cref="T:LinFu.AOP.Interfaces.ITypeActivator" /> that will instantiate types.</param>
+        </member>
+    </members>
+</doc>

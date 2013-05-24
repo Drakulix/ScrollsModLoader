@@ -1,0 +1,499 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LinFu.Reflection.Emit</name>
+    </assembly>
+    <members>
+        <member name="T:LinFu.Reflection.Emit.AssemblyDefinitionExtensions">
+            <summary>
+            A class that adds extension methods to the <see cref="T:Mono.Cecil.AssemblyDefinition" />
+            class.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.AssemblyDefinitionExtensions.ToAssembly(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Converts an <see cref="T:Mono.Cecil.AssemblyDefinition" />
+            into a running <see cref="T:System.Reflection.Assembly" />.
+            </summary>
+            <param name="definition">The <see cref="T:Mono.Cecil.AssemblyDefinition" /> to convert.</param>
+            <returns>An <see cref="T:System.Reflection.Assembly" /> that represents the <see cref="T:Mono.Cecil.AssemblyDefinition" /> instance.
+            </returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.AssemblyDefinitionExtensions.Save(Mono.Cecil.AssemblyDefinition,System.String)">
+            <summary>
+            Saves the assembly to disk.
+            </summary>
+            <param name="definition">The target assembly definition.</param>
+            <param name="filename">The output file name.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.AssemblyDefinitionExtensions.Save(Mono.Cecil.AssemblyDefinition,System.IO.Stream)">
+            <summary>
+            Saves the assembly to disk.
+            </summary>
+            <param name="definition">The target assembly definition.</param>
+            <param name="outputStream">The destination file stream.</param>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.CilWorkerExtensions">
+            <summary>
+            A class that extends the <see cref="T:Mono.Cecil.Cil.CilWorker" /> class
+            with helper methods that make it easier to save
+            information about the method currently being implemented.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.EmitWriteLineIfNull(Mono.Cecil.Cil.CilWorker,System.String,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Emits a Console.WriteLine call to using the current CilWorker that will only be called if the contents
+            of the target variable are null at runtime.
+            </summary>
+            <param name="IL">The target CilWorker.</param>
+            <param name="text">The text that will be written to the console.</param>
+            <param name="targetVariable">The target variable that will be checked for null at runtime.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.EmitWriteLine(Mono.Cecil.Cil.CilWorker,System.String)">
+            <summary>
+            Emits a Console.WriteLine call using the current CilWorker.
+            </summary>
+            <param name="IL">The target CilWorker.</param>
+            <param name="text">The text that will be written to the console.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushMethod(Mono.Cecil.Cil.CilWorker,Mono.Cecil.MethodReference,Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Pushes the current <paramref name="method" /> onto the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="method">The method that represents the <see cref="T:System.Reflection.MethodInfo" /> that will be pushed onto the stack.</param>
+            <param name="module">The module that contains the host method.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.GetDeclaringType(Mono.Cecil.MethodReference)">
+            <summary>
+            Gets the declaring type for the target method.
+            </summary>
+            <param name="method">The target method.</param>
+            <returns>The declaring type.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushType(Mono.Cecil.Cil.CilWorker,Mono.Cecil.TypeReference,Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Pushes a <paramref name="Type" /> instance onto the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="type">The type that represents the <see cref="T:System.Type" /> that will be pushed onto the stack.</param>
+            <param name="module">The module that contains the host method.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushField(Mono.Cecil.Cil.CilWorker,Mono.Cecil.FieldReference,Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Pushes the current <paramref name="field" /> onto the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="field">The field that represents the <see cref="T:System.Reflection.FieldInfo" /> that will be pushed onto the stack.</param>
+            <param name="module">The module that contains the target field.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushArguments(Mono.Cecil.Cil.CilWorker,Mono.Cecil.IMethodSignature,Mono.Cecil.ModuleDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Pushes the arguments of a method onto the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="module">The module that contains the host method.</param>
+            <param name="method">The target method.</param>
+            <param name="arguments">The <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see> that will hold the array of arguments.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushStackTrace(Mono.Cecil.Cil.CilWorker,Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Pushes the stack trace of the currently executing method onto the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="module">The module that contains the host method.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushGenericArguments(Mono.Cecil.Cil.CilWorker,Mono.Cecil.IGenericParameterProvider,Mono.Cecil.ModuleDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Saves the generic type arguments that were used to construct the method.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="method">The target method whose generic type arguments (if any) will be saved into the <paramref name="typeArguments">local variable</paramref>.</param>
+            <param name="module">The module that contains the host method.</param>
+            <param name="typeArguments">The local variable that will store the resulting array of <see cref="T:System.Type" /> objects.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.SaveParameterTypes(Mono.Cecil.Cil.CilWorker,Mono.Cecil.MethodReference,Mono.Cecil.ModuleDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Saves the current method signature of a method into an array
+            of <see cref="T:System.Type" /> objects. This can be used to determine the
+            signature of methods with generic type parameters or methods that have
+            parameters that are generic parameters specified by the type itself.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="method">The target method whose generic type arguments (if any) will be saved into the local variable .</param>
+            <param name="module">The module that contains the host method.</param>
+            <param name="parameterTypes">The local variable that will store the current method signature.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PackageReturnValue(Mono.Cecil.Cil.CilWorker,Mono.Cecil.ModuleDefinition,Mono.Cecil.TypeReference)">
+            <summary>
+            Converts the return value of a method into the <paramref name="returnType">target type</paramref>.
+            If the target type is void, then the value will simply be popped from the stack.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="module">The module that contains the host method.</param>
+            <param name="returnType">The method return type itself.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.Stind(Mono.Cecil.Cil.CilWorker,Mono.Cecil.TypeReference)">
+            <summary>
+            Emits the proper Stind (store indirect) IL instruction for the <paramref name="currentType" />.
+            </summary>
+            <param name="IL">The target <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will emit the IL.</param>
+            <param name="currentType">The type of data being stored.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.PushParameter(Mono.Cecil.Cil.CilWorker,System.Int32,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.ParameterDefinition)">
+            <summary>
+            Stores the <paramref name="param">current parameter value</paramref>
+            into the array of method <paramref name="arguments" />.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that will be used to create the instructions.</param>
+            <param name="arguments">The local variable that will store the method arguments.</param>
+            <param name="index">The array index that indicates where the parameter value will be stored in the array of arguments.</param>
+            <param name="param">The current argument value being stored.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.GetMethod(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Obtains the method definition that contains the current <see cref="T:Mono.Cecil.Cil.CilWorker" />.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> responsible for the method body.</param>
+            <returns>A method definition.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.GetModule(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Obtains the module that contains the current <see cref="T:Mono.Cecil.Cil.CilWorker" />.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> responsible for the method body.</param>
+            <returns>The host module.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.CilWorkerExtensions.GetDeclaringType(Mono.Cecil.TypeReference)">
+            <summary>
+            Obtains the declaring type for a given type reference.
+            </summary>
+            <param name="declaringType">The declaring ty pe.</param>
+            <returns>The actual declaring type.</returns>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.Interfaces.ITypeBuilder">
+            <summary>
+            Represents a type that can construct <see cref="T:Mono.Cecil.TypeDefinition" />
+            types.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.Interfaces.ITypeBuilder.Construct(Mono.Cecil.ModuleDefinition,Mono.Cecil.TypeDefinition)">
+            <summary>
+            Constructs a <paramref name="targetType" /> using
+            the given <see cref="T:Mono.Cecil.ModuleDefinition" /> instance.
+            </summary>
+            <param name="module">The module that will hold the actual type.</param>
+            <param name="targetType">The type being constructed.</param>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.MethodDefinitionExtensions">
+            <summary>
+            A class that extends the <see cref="T:Mono.Cecil.MethodDefinition" />
+            class with features similar to the features in the
+            System.Reflection.Emit namespace.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.GetILGenerator(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Returns the <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance
+            associated with the body of the <paramref name="method">target method</paramref>.
+            </summary>
+            <param name="method">The target method to be modified.</param>
+            <returns>The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that points to the instructions of the method body.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddLocal(Mono.Cecil.MethodDefinition,System.Type)">
+            <summary>
+            Adds a <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see>
+            instance to the target <paramref name="methodDef">method definition</paramref>.
+            </summary>
+            <param name="methodDef">The <paramref name="methodDef" /> instance which will contain the local variable.</param>
+            <param name="localType">The object <see cref="T:System.Type">type</see> that describes the type of objects that will be stored by the local variable.</param>
+            <returns>A <see cref="T:Mono.Cecil.Cil.VariableDefinition" /> that represents the local variable itself.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddLocal(Mono.Cecil.MethodDefinition,System.String,System.Type)">
+            <summary>
+            Adds a named <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see>
+            instance to the target <paramref name="method">method definition</paramref>.
+            </summary>
+            <param name="method">The <paramref name="method" /> instance which will contain the local variable.</param>
+            <param name="variableName">The name of the local variable.</param>
+            <param name="variableType">The object <see cref="T:System.Type">type</see> that describes the type of objects that will be stored by the local variable.</param>
+            <returns>
+            </returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddParameters(Mono.Cecil.MethodDefinition,System.Type[])">
+            <summary>
+            Adds a set of parameter types to the target <paramref name="method" />.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="parameterTypes">The list of types that describe the method signature.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.SetReturnType(Mono.Cecil.MethodDefinition,System.Type)">
+            <summary>
+            Assigns the <paramref name="returnType" /> for the target method.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="returnType">The <see cref="T:System.Type" /> instance that describes the return type.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddGenericParameter(Mono.Cecil.MethodDefinition,System.Type)">
+            <summary>
+            Adds a generic parameter type to the <paramref name="method" />.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="parameterType">The parameter type.</param>
+            <returns>A <see cref="T:Mono.Cecil.TypeReference" /> that represents the generic parameter type.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddLocal``1(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds a <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see>
+            instance to the target <paramref name="methodDef">method definition</paramref>.
+            </summary>
+            <typeparam name="T">The object <see cref="T:System.Type">type</see> that describes the type of objects that will be stored by the local variable.</typeparam>
+            <param name="methodDef">The <paramref name="methodDef" /> instance which will contain the local variable.</param>
+            <returns>A <see cref="T:Mono.Cecil.Cil.VariableDefinition" /> that represents the local variable itself.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.MethodDefinitionExtensions.AddLocal``1(Mono.Cecil.MethodDefinition,System.String)">
+            <summary>
+            Adds a named <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see>
+            instance to the target <paramref name="methodDef">method definition</paramref>.
+            </summary>
+            <typeparam name="T">The object <see cref="T:System.Type">type</see> that describes the type of objects that will be stored by the local variable.</typeparam>
+            <param name="methodDef">The <paramref name="methodDef" /> instance which will contain the local variable.</param>
+            <param name="variableName">The name of the local variable.</param>
+            <returns>A <see cref="T:Mono.Cecil.Cil.VariableDefinition" /> that represents the local variable itself.</returns>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.ModuleDefinitionExtensions">
+            <summary>
+            A class that provides helper extension methods
+            for the <see cref="T:Mono.Cecil.ModuleDefinition" /> class.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.DefineClass(Mono.Cecil.ModuleDefinition,System.String,System.String,Mono.Cecil.TypeAttributes,Mono.Cecil.TypeReference)">
+            <summary>
+            Defines a new class and adds it to the <paramref name="mainModule" /> module.
+            </summary>
+            <param name="mainModule">The module which will hold the new created type.</param>
+            <param name="typeName">The name of the class to create.</param>
+            <param name="namespaceName">The namespace that will contain the new class.</param>
+            <param name="attributes">The <see cref="T:Mono.Cecil.TypeAttributes" /> for the given type.</param>
+            <param name="baseType">The base class of the new type.</param>
+            <returns>A <see cref="T:Mono.Cecil.TypeDefinition" /> representing the new class being created.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportConstructor``1(Mono.Cecil.ModuleDefinition,System.Type[])">
+            <summary>
+            Imports a constructor with the given <paramref name="constructorParameters" />
+            into the target <paramref name="module" />.
+            </summary>
+            <typeparam name="T">The type that holds the target constructor</typeparam>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> that will import the target constructor.</param>
+            <param name="constructorParameters">The list of <see cref="T:System.Type" /> objects that describe the signature of the constructor.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the constructor itself.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportMethod(Mono.Cecil.ModuleDefinition,System.String,System.Type)">
+            <summary>
+            Imports a method with a particular <paramref name="methodName" /> from the <paramref name="declaringType" />
+            into the <paramref name="module">target module</paramref>.
+            </summary>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> instance that will import the actual method.</param>
+            <param name="methodName">The name of the method being imported.</param>
+            <param name="declaringType">The <see cref="T:System.Type" /> instance that holds the target method.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the method being imported.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportMethod(Mono.Cecil.ModuleDefinition,System.String,System.Type,System.Reflection.BindingFlags)">
+            <summary>
+            Imports a method with a particular <paramref name="methodName" /> and <see cref="T:System.Reflection.BindingFlags" /> from the <paramref name="declaringType" />
+            into the <paramref name="module">target module</paramref>.
+            </summary>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> instance that will import the actual method.</param>
+            <param name="methodName">The name of the method being imported.</param>
+            <param name="declaringType">The <see cref="T:System.Type" /> instance that holds the target method.</param>
+            <param name="flags">The <see cref="T:System.Reflection.BindingFlags" /> that describes the visibility and behavior of the target method.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the method being imported.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportMethod``1(Mono.Cecil.ModuleDefinition,System.String)">
+            <summary>
+            Imports a method with a particular <paramref name="methodName" /> and <see cref="T:System.Reflection.BindingFlags" /> from the <paramref name="declaringType" />
+            into the <paramref name="module">target module</paramref>.
+            </summary>
+            <typeparam name="T">The target type that holds the target method.</typeparam>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> instance that will import the actual method.</param>
+            <param name="methodName">The name of the method being imported.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the method being imported.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportMethod``1(Mono.Cecil.ModuleDefinition,System.String,System.Type[])">
+            <summary>
+            Imports a method with a particular <paramref name="methodName" />, <paramref name="parameterTypes" />, and <see cref="T:System.Reflection.BindingFlags" /> from the <paramref name="declaringType" />
+            into the <paramref name="module">target module</paramref>.
+            </summary>
+            <typeparam name="T">The target type that holds the target method.</typeparam>
+            <param name="parameterTypes">The list of <see cref="T:System.Type" /> objects that describe the method signature.</param>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> instance that will import the actual method.</param>
+            <param name="methodName">The name of the method being imported.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the method being imported.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportMethod``1(Mono.Cecil.ModuleDefinition,System.String,System.Reflection.BindingFlags)">
+            <summary>
+            Imports a method with a particular <paramref name="methodName" /> and <see cref="T:System.Reflection.BindingFlags" /> from the <paramref name="declaringType" />
+            into the <paramref name="module">target module</paramref>.
+            </summary>
+            <typeparam name="T">The target type that holds the target method itself.</typeparam>
+            <param name="module">The <see cref="T:Mono.Cecil.ModuleDefinition" /> instance that will import the actual method.</param>
+            <param name="methodName">The name of the method being imported.</param>
+            <param name="flags">The <see cref="T:System.Reflection.BindingFlags" /> that describes the visibility and behavior of the target method.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodReference" /> that represents the method being imported.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportType``1(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Imports a target of type <typeparamref name="T" /> into the
+            <paramref name="module" /> instance.
+            </summary>
+            <typeparam name="T">The type that will be imported into the <see cref="T:Mono.Cecil.ModuleDefinition" /> instance itself.</typeparam>
+            <param name="module">The module that will store the imported type.</param>
+            <returns>A <see cref="T:Mono.Cecil.TypeReference" /> instance that represents the imported type.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.ImportType(Mono.Cecil.ModuleDefinition,System.Type)">
+            <summary>
+            Imports a <paramref name="targetType">target type</paramref> into the
+            <paramref name="module" /> instance.
+            </summary>
+            <param name="targetType">The type that will be imported into the <see cref="T:Mono.Cecil.ModuleDefinition" /> instance itself.</param>
+            <param name="module">The module that will store the imported type.</param>
+            <returns>A <see cref="T:Mono.Cecil.TypeDefinition" /> instance that represents the imported type.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ModuleDefinitionExtensions.GetType(Mono.Cecil.ModuleDefinition,System.String)">
+            <summary>
+            Returns a <see cref="T:Mono.Cecil.TypeDefinition" /> that matches the given <paramref name="typeName" />.
+            </summary>
+            <param name="module">The target module to search.</param>
+            <param name="typeName">The name of the target type.</param>
+            <returns>A type that matches the given type name. If the type cannot be found, then this method will return <c>null</c>.</returns>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.ParameterDefinitionExtensions">
+            <summary>
+            A class that extends the <see cref="T:Mono.Cecil.ParameterDefinition" /> class
+            to emulate features found in the System.Reflection.Emit namespace.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.ParameterDefinitionExtensions.IsByRef(Mono.Cecil.ParameterDefinition)">
+            <summary>
+            Determines whether or not a parameter is passed by reference.
+            </summary>
+            <param name="parameter">
+            </param>
+            <returns>
+            </returns>
+        </member>
+        <member name="T:LinFu.Reflection.Emit.TypeDefinitionExtensions">
+            <summary>
+            A class that extends the <see cref="T:Mono.Cecil.TypeDefinition" />
+            class with features similar to the features in the
+            System.Reflection.Emit namespace.
+            </summary>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.DefineMethod(Mono.Cecil.TypeDefinition,System.String,Mono.Cecil.MethodAttributes,Mono.Cecil.MethodCallingConvention,System.Type,System.Type[])">
+            <summary>
+            Adds a new method to the <paramref name="typeDef">target type</paramref>.
+            </summary>
+            <param name="typeDef">The type that will hold the newly-created method.</param>
+            <param name="attributes">The <see cref="T:Mono.Cecil.MethodAttributes" /> parameter that describes the characteristics of the method.</param>
+            <param name="methodName">The name to be given to the new method.</param>
+            <param name="returnType">The method return type.</param>
+            <param name="callingConvention">The calling convention of the method being created.</param>
+            <param name="parameterTypes">The list of argument types that will be used to define the method signature.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodDefinition" /> instance that represents the newly-created method.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.DefineMethod(Mono.Cecil.TypeDefinition,System.String,Mono.Cecil.MethodAttributes,System.Type,System.Type[],System.Type[])">
+            <summary>
+            Adds a new method to the <paramref name="typeDef">target type</paramref>.
+            </summary>
+            <param name="typeDef">The type that will hold the newly-created method.</param>
+            <param name="attributes">The <see cref="T:Mono.Cecil.MethodAttributes" /> parameter that describes the characteristics of the method.</param>
+            <param name="methodName">The name to be given to the new method.</param>
+            <param name="returnType">The method return type.</param>
+            <param name="parameterTypes">The list of argument types that will be used to define the method signature.</param>
+            <param name="genericParameterTypes">The list of generic argument types that will be used to define the method signature.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodDefinition" /> instance that represents the newly-created method.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddDefaultConstructor(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Adds a default constructor to the target type.
+            </summary>
+            <param name="targetType">The type that will contain the default constructor.</param>
+            <returns>The default constructor.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddDefaultConstructor(Mono.Cecil.TypeDefinition,System.Type)">
+            <summary>
+            Adds a default constructor to the target type.
+            </summary>
+            <param name="parentType">The base class that contains the default constructor that will be used for constructor chaining..</param>
+            <param name="targetType">The type that will contain the default constructor.</param>
+            <returns>The default constructor.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddProperty(Mono.Cecil.TypeDefinition,System.String,System.Type)">
+            <summary>
+            Adds a rewritable property to the <paramref name="typeDef">target type</paramref>.
+            </summary>
+            <param name="typeDef">The target type that will hold the newly-created property.</param>
+            <param name="propertyName">The name of the property itself.</param>
+            <param name="propertyType">The <see cref="T:System.Type" /> instance that describes the property type.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddProperty(Mono.Cecil.TypeDefinition,System.String,Mono.Cecil.TypeReference)">
+            <summary>
+            Adds a rewritable property to the <paramref name="typeDef">target type</paramref>.
+            </summary>
+            <param name="typeDef">The target type that will hold the newly-created property.</param>
+            <param name="propertyName">The name of the property itself.</param>
+            <param name="propertyType">The <see cref="T:Mono.Cecil.TypeReference" /> instance that describes the property type.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddProperty(Mono.Cecil.TypeDefinition,System.String,Mono.Cecil.TypeReference,Mono.Cecil.MethodDefinition,Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds a rewriteable property to the <paramref name="typeDef">target type</paramref>
+            using an existing <paramref name="getter" /> and <paramref name="setter" />.
+            </summary>
+            <param name="typeDef">The target type that will hold the newly-created property.</param>
+            <param name="propertyName">The name of the property itself.</param>
+            <param name="propertyType">The <see cref="T:Mono.Cecil.TypeReference" /> instance that describes the property type.</param>
+            <param name="getter">The property getter method.</param>
+            <param name="setter">The property setter method.</param>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.GetMethod(Mono.Cecil.TypeDefinition,System.String)">
+            <summary>
+            Retrieves the method that matches the given <paramref name="methodName" />.
+            </summary>
+            <param name="typeDef">The target type to search.</param>
+            <param name="methodName">The name of the target method.</param>
+            <returns>A method that matches the given <paramref name="methodName" />. If the method is not found, then it will return a <c>null</c> value. </returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.GetBackingField(System.String,Mono.Cecil.TypeDefinition,Mono.Cecil.TypeReference)">
+            <summary>
+            Resolves the backing field for a generic type declaration.
+            </summary>
+            <param name="fieldName">The name of the field to reference.</param>
+            <param name="typeDef">The type that holds the actual field.</param>
+            <param name="propertyType">The <see cref="T:Mono.Cecil.TypeReference" /> that describes the property type being referenced.</param>
+            <returns>A <see cref="T:Mono.Cecil.FieldReference" /> that points to the actual backing field.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddPropertyGetter(Mono.Cecil.TypeReference,System.String,Mono.Cecil.MethodAttributes,Mono.Cecil.FieldReference)">
+            <summary>
+            Creates a property getter method implementation with the
+            <paramref name="propertyType" /> as the return type.
+            </summary>
+            <param name="propertyType">Represents the <see cref="T:Mono.Cecil.TypeReference">return type</see> for the getter method.</param>
+            <param name="getterName">The getter method name.</param>
+            <param name="attributes">The method attributes associated with the getter method.</param>
+            <param name="backingField">The field that will store the instance that the getter method will retrieve.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodDefinition" /> representing the getter method itself.</returns>
+        </member>
+        <member name="M:LinFu.Reflection.Emit.TypeDefinitionExtensions.AddPropertySetter(Mono.Cecil.TypeReference,Mono.Cecil.MethodAttributes,Mono.Cecil.FieldReference,System.String,Mono.Cecil.TypeReference)">
+            <summary>
+            Creates a property setter method implementation with the
+            <paramref name="propertyType" /> as the setter parameter.
+            </summary>
+            <param name="propertyType">Represents the <see cref="T:Mono.Cecil.TypeReference">parameter type</see> for the setter method.</param>
+            <param name="attributes">The method attributes associated with the setter method.</param>
+            <param name="backingField">The field that will store the instance for the setter method.</param>
+            <param name="setterName">The method name of the setter method.</param>
+            <param name="voidType">The <see cref="T:Mono.Cecil.TypeReference" /> that represents <see cref="T:System.Void" />.</param>
+            <returns>A <see cref="T:Mono.Cecil.MethodDefinition" /> that represents the setter method itself.</returns>
+        </member>
+    </members>
+</doc>

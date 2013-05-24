@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Proxy.Extensions/bin/Release/LinFu.Proxy.Extensions.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Proxy.Extensions/bin/Release/LinFu.Proxy.Extensions.dll
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Proxy.Extensions/obj/Release/LinFu.Proxy.Extensions.dll
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Proxy.Extensions/obj/Release/LinFu.Proxy.Extensions.dll.mdb
