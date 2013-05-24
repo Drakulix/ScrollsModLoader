@@ -5,6 +5,7 @@ Scrolls ModLoader is a project to provide a modding API for the game "Scrolls" b
 
 ####Who is working on it?
 Drakulix - Main Developer
+
 Kbasten - Developer
 
 
@@ -36,13 +37,13 @@ Mojang should know about that from making Minecraft quite well.
 
 ####2. Concept
 
-The Scrolls ModLoader loads itself into the assembly through a little patcher utilizing Mono.Cecil and ILMerge (also based on Mono.Cecil).
-Mono.Cecil provides a way to manipulated compiled assemblies very easily and ILMerge makes injecting code even easier.
+The Scrolls ModLoader loads itself into the assembly through a little patcher utilizing Mono.Cecil, ILRepack and the execellent LinFu Framework (both also based on Mono.Cecil).
+Mono.Cecil provides a way to manipulated compiled assemblies very easily, LinFu takes that to the next level and ILRepack makes injecting code even easier.
 
 The ModLoader assembly will be used as Patcher and injected Assembly.
 When run on its own it patches some basic calls into the Scrolls Assembly and merges itself into it to be called by Scrolls at Runtime.
 This gives us the possibility to do more patches at runtime without need to call the patcher directly.
-Instead in case any changes to the Assembly are required, it will modify itself through the ModLoader code on its own.
+Instead in case any changes to the Assembly are required, it will modify itself through the injected Patcher code on its own.
 This includes game patches or blocking hooks of older incompatible mods.
 
 Mods themselves will have multiple ways to modify the Scrolls gaming experience.
@@ -58,14 +59,14 @@ However Mods are able to do anything through the Low-Level API, which means they
 Although this is very insecure, it is clear that no High-Level-API could ever provide the possibilities, that the Low-Level-API gives to modders.
 Even if we would not provide this API, developers would be able to use Mono.Cecil themselves to get access to certain functions.
 So it is better to control those mods through this little layer for compatibility reasons, instead of giving all responsibility to the mod developers.
-To ensure safety for the user we try to provide a trusted-platform for the Scrolls ModLoader provided by…
+To ensure safety for the user we try to provide a trusted-platform for the Scrolls ModLoader provided by...
 
 
 
 
 ####3. Release
 
-…ScrollsGuide.com
+...ScrollsGuide.com
 
 Any releases (none at the moment) will be provided through ScrollsGuide.com.
 It will also act as trusted Plugin-Library, all Plugins submitted will be tested and need to be open-source, so everybody can check the functionality before running any mods themselves (theoretically).
