@@ -3,8 +3,16 @@ using System.Collections;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
-namespace ScrollsInjector
+namespace ScrollsModLoader
 {
+	/*
+	 *  very basic static call hocks via Mono.Cecil
+	 *  Interpret them as Notification on calls
+	 *  Note: They block the current game code
+	 * 
+	 */ 
+
+
 	public class Hooks
 	{
 		static AssemblyDefinition baseAssembly = null;
@@ -12,12 +20,12 @@ namespace ScrollsInjector
 		static String baseAssemblySavePath = null;
 
 		public static void loadBaseAssembly(String name) {
-			baseAssembly = AssemblyDefinition.ReadAssembly(name);
-			baseAssemblySavePath = name.Replace(".bak.dll", ".patched.dll");;
+			baseAssembly = AssemblyFactory.GetAssembly(name);
+			baseAssemblySavePath = name;
 		}
 		
-		public static void loadInjectAssembly(String name) {
-			injectAssembly = AssemblyDefinition.ReadAssembly(name);
+		public static void loadInjectAssembly(string name) {
+			injectAssembly = AssemblyFactory.GetAssembly(name);
 		}
 
 		public static TypeDefinition getTypeDef(ICollection types, String name) {
@@ -44,11 +52,11 @@ namespace ScrollsInjector
 
 		private static bool hookStaticVoidMethodAtBegin_Int(MethodDefinition hookedMethod, MethodDefinition callMeth) {
 			try {
-				var initProc = hookedMethod.Body.GetILProcessor();
+				CilWorker initProc = hookedMethod.Body.CilWorker;
         		initProc.InsertBefore(hookedMethod.Body.Instructions[0], initProc.Create(OpCodes.Call,
-				    hookedMethod.Module.Assembly.MainModule.Import(callMeth.Resolve())));
+				    baseAssembly.MainModule.Import(callMeth.Resolve())));
 				return true;
-			} catch (Exception exp) {
+			} catch {
 				return false;
 			}
 		}
@@ -61,15 +69,15 @@ namespace ScrollsInjector
 						retInstructions.Add(instr);
 					}
 				}
-				var initProc = hookedMethod.Body.GetILProcessor();
+				CilWorker initProc = hookedMethod.Body.CilWorker;
 				bool overriden = false;
 				foreach (Instruction ret in retInstructions) {
    	        		initProc.InsertBefore(ret, initProc.Create(OpCodes.Call,
-						hookedMethod.Module.Assembly.MainModule.Import(callMeth.Resolve())));
+						baseAssembly.MainModule.Import(callMeth.Resolve())));
 					overriden = true;
 				}
 				return overriden;
-			} catch (Exception exp) {
+			} catch {
 				return false;
 			}
 		}
@@ -123,7 +131,8 @@ namespace ScrollsInjector
 		}
 
 		public static void savePatchedAssembly() {
-			baseAssembly.Write(baseAssemblySavePath);
+			System.IO.File.Delete(baseAssemblySavePath);
+			AssemblyFactory.SaveAssembly(baseAssembly, baseAssemblySavePath);
 		}
 	}
 }
