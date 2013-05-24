@@ -99,6 +99,7 @@ namespace LinFu.IoC
         public static void LoadFromBaseDirectory(this IServiceContainer container, string searchPattern)
         {
 			string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
+            AppPath = AppPath.Replace("file:\\", "");
             AppPath = AppPath.Replace("file:", "");
             container.LoadFrom(AppPath, searchPattern);
         }

@@ -32,7 +32,8 @@ namespace LinFu.AOP.Interfaces
             lock (_components)
             {
 				string AppPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
-            	AppPath = AppPath.Replace("file:", "");
+            	AppPath = AppPath.Replace("file:\\", "");
+                AppPath = AppPath.Replace("file:", "");
                 _components.LoadFrom(AppPath, "*.dll");
                 foreach (IBootStrappedComponent component in _components)
                 {

@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="LinFu.AOP/Extensions/MethodBodyInterceptionExtensions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LinFu.IoC/ContainerExtensions.cs">
     <Files>
       <File FileName="PostWeaver/Program.cs" Line="88" Column="32" />
       <File FileName="LinFu.AOP.Tasks/PostWeaveTask.cs" Line="6" Column="23" />
@@ -15,8 +15,8 @@
       <File FileName="LinFu.Reflection.Emit/AssemblyDefinitionExtensions.cs" Line="39" Column="9" />
       <File FileName="LinFu.AOP/MethodWeaver.cs" Line="71" Column="4" />
       <File FileName="LinFu.AOP.Interfaces/AroundMethodBodyRegistry.cs" Line="1" Column="1" />
-      <File FileName="LinFu.AOP.Interfaces/BootStrapRegistry.cs" Line="35" Column="46" />
-      <File FileName="LinFu.IoC/ContainerExtensions.cs" Line="102" Column="45" />
+      <File FileName="LinFu.AOP.Interfaces/BootStrapRegistry.cs" Line="36" Column="49" />
+      <File FileName="LinFu.IoC/ContainerExtensions.cs" Line="103" Column="45" />
       <File FileName="UnitTests/IOC/FileWatcherTests.cs" Line="17" Column="40" />
       <File FileName="UnitTests/IOC/InversionOfControlTests.cs" Line="700" Column="32" />
       <File FileName="UnitTests/IOC/MethodInjectionTests.cs" Line="16" Column="32" />
@@ -29,7 +29,16 @@
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True" />
+        <State expanded="True">
+          <Node name="AOP" expanded="True">
+            <Node name="LinFu.AOP.Interfaces" expanded="True" />
+          </Node>
+          <Node name="IoC" expanded="True">
+            <Node name="LinFu.IoC" expanded="True">
+              <Node name="ContainerExtensions.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

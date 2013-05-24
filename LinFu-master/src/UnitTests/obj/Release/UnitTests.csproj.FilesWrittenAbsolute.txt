@@ -2,3 +2,4 @@
 /Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/UnitTests/bin/Release/LinFu.UnitTests.dll
 /Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/UnitTests/obj/Release/LinFu.UnitTests.dll
 /Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/UnitTests/obj/Release/LinFu.UnitTests.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/UnitTests/bin/Release/LinFu.UnitTests.dll.config
