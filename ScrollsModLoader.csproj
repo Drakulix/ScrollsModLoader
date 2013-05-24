@@ -9,8 +9,8 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ScrollsModLoader</RootNamespace>
     <AssemblyName>ScrollsModLoader</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <StartupObject>ScrollsModLoader.Patcher</StartupObject>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,6 +22,12 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${TargetDir}/LinFu.AOP.Cecil.dll ${TargetDir}/LinFu.AOP.Interfaces.dll ${TargetDir}/LinFu.AOP.Tasks.dll ${TargetDir}/LinFu.Finders.dll ${TargetDir}/LinFu.IoC.Common.dll ${TargetDir}/LinFu.IoC.dll ${TargetDir}/LinFu.Proxy.dll ${TargetDir}/LinFu.Proxy.Interfaces.dll ${TargetDir}/LinFu.Reflection.dll ${TargetDir}/LinFu.Reflection.Emit.dll  ${TargetDir}/Mono.Cecil.dll" workingdir="${TargetDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -31,13 +37,68 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${TargetDir}/LinFu.AOP.Cecil.dll ${TargetDir}/LinFu.AOP.Interfaces.dll ${TargetDir}/LinFu.AOP.Tasks.dll ${TargetDir}/LinFu.Finder.dll ${TargetDir}/LinFu.IoC.Common.dll ${TargetDir}/LinFu.IoC.dll ${TargetDir}/LinFu.Proxy.dll ${TargetDir}/LinFu.Proxy.Interfaces.dll ${TargetDir}/LinFu.Reflection.dll ${TargetDir}/LinFu.Reflection.Emit.dll  ${TargetDir}/Mono.Cecil.dll" workingdir="${TargetDir}" />
+      </CustomCommands>
+    </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.AOP.Cecil">
+      <HintPath>LinFu-master\build\Release\LinFu.AOP.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.AOP.Interfaces">
+      <HintPath>LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.AOP.Tasks">
+      <HintPath>LinFu-master\build\Release\LinFu.AOP.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Finders">
+      <HintPath>LinFu-master\build\Release\LinFu.Finders.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.IoC.Common">
+      <HintPath>LinFu-master\build\Release\LinFu.IoC.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.IoC">
+      <HintPath>LinFu-master\build\Release\LinFu.IoC.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Proxy.Interfaces">
+      <HintPath>LinFu-master\build\Release\LinFu.Proxy.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Proxy">
+      <HintPath>LinFu-master\build\Release\LinFu.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Reflection.Emit">
+      <HintPath>LinFu-master\build\Release\LinFu.Reflection.Emit.dll</HintPath>
+    </Reference>
+    <Reference Include="LinFu.Reflection">
+      <HintPath>LinFu-master\build\Release\LinFu.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Patcher.cs" />
+    <Compile Include="Dialogs.cs" />
+    <Compile Include="Platform.cs" />
+    <Compile Include="ModLoader.cs" />
+    <Compile Include="Hooks.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="ScrollsFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="MonoMac.dll" />
+    <EmbeddedResource Include="ILRepack.exe" />
+  </ItemGroup>
 </Project>
