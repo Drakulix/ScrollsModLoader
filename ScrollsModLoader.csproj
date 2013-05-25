@@ -52,6 +52,9 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
+    </Reference>
     <Reference Include="LinFu.AOP.Cecil">
       <HintPath>LinFu-master\build\Release\LinFu.AOP.Cecil.dll</HintPath>
     </Reference>
@@ -81,9 +84,6 @@
     </Reference>
     <Reference Include="LinFu.Reflection">
       <HintPath>LinFu-master\build\Release\LinFu.Reflection.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

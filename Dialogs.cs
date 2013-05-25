@@ -8,8 +8,8 @@ namespace ScrollsModLoader
 		public static void showNotification(String title, String text) {
 			switch (Platform.getOS()) {
 				case Platform.OS.Win:
-					System.Reflection.Assembly forms = System.Reflection.Assembly.LoadFile("System.Windows.Forms");
-					forms.GetType("MessageBox").GetMethod("Show", new Type[] {typeof(string), typeof(string)}).Invoke(null, new object[] {text, title});
+					System.Reflection.Assembly forms = System.Reflection.Assembly.Load("System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+					forms.GetType("System.Windows.Forms.MessageBox").GetMethod("Show", new Type[] {typeof(string), typeof(string)}).Invoke(null, new object[] {text, title});
 					break;
 				case Platform.OS.Mac:
 					byte[] monoMacLoad = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ScrollsModLoader.MonoMac.dll").ReadToEnd();

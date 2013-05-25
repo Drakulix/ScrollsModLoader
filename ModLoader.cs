@@ -52,14 +52,12 @@ using LinFu.AOP.Interfaces;
 			ModLoader.Log("Server: "+msg);
 		}
 		#endregion
-		
+
 		//initial game callback
 		public static void Init() {
 			instance = new ModLoader();
+			
 			App.Communicator.addListener(instance);
 			MethodBodyReplacementProviderRegistry.SetProvider(new SimpleMethodReplacementProvider());
-			
-			//not needed I hope
-			//((IModifiableType)App.Communicator).IsInterceptionDisabled = false;
 		}
 	}

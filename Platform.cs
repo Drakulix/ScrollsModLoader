@@ -3,6 +3,11 @@ using System.IO;
 
 namespace ScrollsModLoader
 {
+
+	/*
+	 * OS Specific Code
+	 */
+
 	public class Platform
 	{
 		public enum OS {
@@ -44,7 +49,7 @@ namespace ScrollsModLoader
     		{
     			case Platform.OS.Win:
         			//Windows Users have a fixed path
-					path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"/Local/Mojang/Scrolls/game/Scrolls_Data/";
+					path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Mojang\\Scrolls\\game\\Scrolls_Data\\";
 					if (!System.IO.Directory.Exists(path+"Managed")) {
 						Dialogs.showNotification("Scrolls must be installed", "ScrollsModLoader was not able to find your Scrolls install");
 						return null;
