@@ -87,13 +87,13 @@ namespace ScrollsModLoader
 				
 				//inject self (make a copy at first to fix empty assembly creation)
 				String installPath = Platform.getGlobalScrollsInstallPath();
-				if (installPath == null) return;
+				if (installPath == null) return false;
 
 				if (System.IO.File.Exists(installPath+"Managed/Assembly-CSharp.cpy.dll"))
-					System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.cpy.dll"));
+					System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.cpy.dll");
 				System.IO.File.Copy (installPath+"Managed/Assembly-CSharp.dll", installPath+"Managed/Assembly-CSharp.cpy.dll");
 				System.Reflection.Assembly.Load (System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ScrollsModLoader.ILRepack.exe").ReadToEnd()).EntryPoint.Invoke(null, new object[] { new string[] {"/out:"+path, installPath+"Managed/Assembly-CSharp.cpy.dll", System.Reflection.Assembly.GetExecutingAssembly().Location} });
-				System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.cpy.dll"));
+				System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.cpy.dll");
 
 			} catch (Exception exp) {
 				//also very unlikely, but for safety
