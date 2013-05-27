@@ -55,6 +55,14 @@ namespace ScrollsModLoader
 				}
 			}
 		}
+
+		public static bool InheritsFrom(this Type type, Type baseType) {
+			if (type.Equals (baseType))
+				return true;
+			if (type == null)
+				return false;
+			return type.BaseType.InheritsFrom(baseType);
+		}
 	}
 }
 

@@ -108,7 +108,7 @@ namespace ScrollsModLoader
 			// let LinFu inject some call hooks into all required classes and methods to replace/extend method calls
 			try {
 				AssemblyDefinition assembly = AssemblyFactory.GetAssembly(path);
-				assembly.InterceptMethodBody (new ScrollsFilter.ScrollsMethodFilter(), new ScrollsFilter.ScrollsTypeFilter());
+				assembly.InterceptMethodBody (new ScrollsFilter.ScrollsFilter(), new ScrollsFilter.ScrollsFilter());
 				assembly.Save(path);
 				return true;
 			} catch (Exception exp) {

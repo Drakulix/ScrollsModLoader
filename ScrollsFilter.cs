@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
 
@@ -16,38 +18,46 @@ namespace ScrollsFilter
 	 */
 
 
-	public class ScrollsMethodFilter : IMethodFilter
+
+	public class ScrollsFilter : IMethodFilter, ITypeFilter
 	{
-		public ScrollsMethodFilter ()
+		public static List<Mono.Cecil.MethodReference> hooks = new List<Mono.Cecil.MethodReference>();
+
+		public static void AddHook(Mono.Cecil.MethodDefinition method) {
+			hooks.Add (new Mono.Cecil.MethodReference(method.Name, method.DeclaringType, method.ReturnType.ReturnType, method.HasThis, method.ExplicitThis, method.CallingConvention));
+		}
+
+		public ScrollsFilter ()
 		{
 		}
 
 		#region IMethodFilter implementation
 		public bool ShouldWeave (Mono.Cecil.MethodReference targetMethod)
 		{
-			if (targetMethod.DeclaringType.Name.Equals ("Communicator") && targetMethod.Name.Equals ("sendRequest") && targetMethod.Parameters[0].ParameterType.Name.Equals("String")) {
+			if (hooks.Contains(targetMethod))
+				return true;
+			return false;
+			/*if (targetMethod.DeclaringType.Name.Equals ("Communicator") && (targetMethod.Name.Equals ("sendRequest") || targetMethod.Name.Equals("sendSilentRequest"))  && targetMethod.Parameters[0].ParameterType.Name.Equals("String")) {
 				Console.WriteLine ("MethodFilter: "+targetMethod.Name);
 				return true;
 			} else
-			    return false;
+			    return false;*/
 		}
 		#endregion
-	}
-
-	public class ScrollsTypeFilter : ITypeFilter
-	{
-		public ScrollsTypeFilter ()
-		{
-		}
 
 		#region ITypeFilter implementation
 		public bool ShouldWeave (Mono.Cecil.TypeReference targetType)
 		{
-			if (targetType.Name.Equals ("Communicator")) {
+			foreach (Mono.Cecil.MethodReference targetMethod in hooks) {
+				if (targetMethod.DeclaringType.Equals (targetType))
+					return true;
+			}
+			return false;
+			/*if (targetType.Name.Equals ("Communicator")) {
 				Console.WriteLine ("TypeFilter: "+targetType.FullName);
 				return true;
 			} else
-				return false;
+				return false;*/
 		}
 		#endregion
 	}

@@ -1,5 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ScrollsModLoader
 {
@@ -55,7 +58,14 @@ namespace ScrollsModLoader
 						return null;
 					}
 				break;
-				case Platform.OS.Mac:
+			case Platform.OS.Mac:
+
+					//if we are already loaded from the game folder, get that instead
+					//TO-DO is that too unsecure? should be check if Assembly-CSharp is loaded instead?
+					if ((from file in Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).GetFiles()
+				    	 where file.Name.Contains ("Assembly-CSharp.dll")
+				    	 select file).Count() > 0)
+						return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString();
 
 					//Apps are bundles (== folders) on MacOS
 					if (System.IO.Directory.Exists("/Applications/Scrolls.app")) {
