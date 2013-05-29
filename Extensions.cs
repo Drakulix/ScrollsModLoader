@@ -1,7 +1,6 @@
 using System;
 
-namespace ScrollsModLoader
-{
+
 	public static class Extensions
 	{
 		public static byte[] ReadToEnd(this System.IO.Stream stream)
@@ -57,12 +56,28 @@ namespace ScrollsModLoader
 		}
 
 		public static bool InheritsFrom(this Type type, Type baseType) {
-			if (type.Equals (baseType))
-				return true;
 			if (type == null)
 				return false;
+			if (type.Equals (baseType))
+				return true;
 			return type.BaseType.InheritsFrom(baseType);
 		}
+
+		public static bool EqualsReference(this Mono.Cecil.MethodDefinition definition, Mono.Cecil.MethodReference reference) {
+			bool parameterMatch = (reference.Parameters.Count == definition.Parameters.Count);
+			if (parameterMatch)
+				for ( int i=0; i<reference.Parameters.Count; i++) {
+				Mono.Cecil.ParameterDefinition refParam = reference.Parameters  [i];
+				Mono.Cecil.ParameterDefinition defParam = definition.Parameters [i];
+				if (!refParam.ParameterType.FullName.Equals(defParam.ParameterType.FullName))
+					parameterMatch = false;
+			}
+
+			return ((reference.CallingConvention.Equals(definition.CallingConvention)
+			         && (reference.DeclaringType.FullName.Equals(definition.DeclaringType.FullName))
+			         && (reference.Name.Equals(definition.Name))
+			         && (reference.ReturnType.ReturnType.FullName.Equals(definition.ReturnType.ReturnType.FullName))
+			         && (reference.GenericParameters.Count == definition.GenericParameters.Count) && parameterMatch));
+		}
 	}
-}
 

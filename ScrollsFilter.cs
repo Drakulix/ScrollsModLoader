@@ -14,17 +14,17 @@ namespace ScrollsFilter
 	 * Methods returning primitive types like "bool" are unsafe and may lead to invalid IL code (e.g. Communicator:sendSilentRequest)
 	 * TO-DO: Sort out, when this does happen
 	 * 			=> block it or better fix LinFu
-	 * 
 	 */
 
 
 
 	public class ScrollsFilter : IMethodFilter, ITypeFilter
 	{
-		public static List<Mono.Cecil.MethodReference> hooks = new List<Mono.Cecil.MethodReference>();
+		public static List<Mono.Cecil.MethodDefinition> hooks = new List<Mono.Cecil.MethodDefinition>();
 
 		public static void AddHook(Mono.Cecil.MethodDefinition method) {
-			hooks.Add (new Mono.Cecil.MethodReference(method.Name, method.DeclaringType, method.ReturnType.ReturnType, method.HasThis, method.ExplicitThis, method.CallingConvention));
+			Console.WriteLine (method.Name);
+			hooks.Add (method);
 		}
 
 		public ScrollsFilter ()
@@ -34,8 +34,9 @@ namespace ScrollsFilter
 		#region IMethodFilter implementation
 		public bool ShouldWeave (Mono.Cecil.MethodReference targetMethod)
 		{
-			if (hooks.Contains(targetMethod))
-				return true;
+			foreach (Mono.Cecil.MethodDefinition foundMethod in hooks)
+			    if (foundMethod.EqualsReference(targetMethod))
+					return true;
 			return false;
 			/*if (targetMethod.DeclaringType.Name.Equals ("Communicator") && (targetMethod.Name.Equals ("sendRequest") || targetMethod.Name.Equals("sendSilentRequest"))  && targetMethod.Parameters[0].ParameterType.Name.Equals("String")) {
 				Console.WriteLine ("MethodFilter: "+targetMethod.Name);
@@ -48,10 +49,9 @@ namespace ScrollsFilter
 		#region ITypeFilter implementation
 		public bool ShouldWeave (Mono.Cecil.TypeReference targetType)
 		{
-			foreach (Mono.Cecil.MethodReference targetMethod in hooks) {
-				if (targetMethod.DeclaringType.Equals (targetType))
+			foreach(Mono.Cecil.MethodDefinition foundMethod in hooks)
+				if (foundMethod.DeclaringType.FullName.Equals(targetType.FullName))
 					return true;
-			}
 			return false;
 			/*if (targetType.Name.Equals ("Communicator")) {
 				Console.WriteLine ("TypeFilter: "+targetType.FullName);
@@ -60,6 +60,7 @@ namespace ScrollsFilter
 				return false;*/
 		}
 		#endregion
+
 	}
 
 	//not needed

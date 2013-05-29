@@ -24,7 +24,8 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
-        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Tasks.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${ProjectConfigName}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${ProjectConfigName}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
+        <Command type="AfterBuild" command="rm Assembly-CSharp.dll" workingdir="${TargetDir}" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -45,9 +46,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -56,9 +54,6 @@
     </Reference>
     <Reference Include="LinFu.AOP.Interfaces">
       <HintPath>LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.AOP.Tasks">
-      <HintPath>LinFu-master\build\Release\LinFu.AOP.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="LinFu.Finders">
       <HintPath>LinFu-master\build\Release\LinFu.Finders.dll</HintPath>
@@ -85,6 +80,9 @@
       <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\etc\Assembly-CSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -99,12 +97,14 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="MonoMac.dll" />
-    <EmbeddedResource Include="ILRepack.exe" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
       <Project>{E839D070-EA04-47D2-9F1A-A0379BDDC898}</Project>
       <Name>ScrollsModLoader.Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ILRepack.exe" />
   </ItemGroup>
 </Project>

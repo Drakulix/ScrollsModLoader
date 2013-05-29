@@ -52,8 +52,8 @@ namespace ScrollsModLoader
     		{
     			case Platform.OS.Win:
         			//Windows Users have a fixed path
-					path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Mojang\\Scrolls\\game\\Scrolls_Data\\";
-					if (!System.IO.Directory.Exists(path+"Managed")) {
+					path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Mojang\\Scrolls\\game\\Scrolls_Data\\Managed\\";
+					if (!System.IO.File.Exists(path+"Assembly-CSharp.dll")) {
 						Dialogs.showNotification("Scrolls must be installed", "ScrollsModLoader was not able to find your Scrolls install");
 						return null;
 					}
@@ -65,11 +65,11 @@ namespace ScrollsModLoader
 					if ((from file in Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).GetFiles()
 				    	 where file.Name.Contains ("Assembly-CSharp.dll")
 				    	 select file).Count() > 0)
-						return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString();
+						return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString()+"/";
 
 					//Apps are bundles (== folders) on MacOS
 					if (System.IO.Directory.Exists("/Applications/Scrolls.app")) {
-						path = "/Applications/Scrolls.app/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
+						path = "/Applications/Scrolls.app/Contents/MacOS/game/MacScrolls.app/Contents/Data/Managed/";
 						break;
 					}
 					
@@ -81,9 +81,9 @@ namespace ScrollsModLoader
 						Dialogs.showNotification("No Selection was made", "Scrolls ModLoader was not able to find your local install of Scrolls. Scrolls ModLoader will close now");
 						return null;
 					}
-					path += "/Contents/MacOS/game/MacScrolls.app/Contents/Data/";
+					path += "/Contents/MacOS/game/MacScrolls.app/Contents/Data/Managed/";
 					
-					if (!System.IO.Directory.Exists(path+"Managed")) {
+					if (!System.IO.File.Exists(path+"Assembly-CSharp.dll")) {
 						Dialogs.showNotification("Wrong Selection", "The selected file is not a valid Scrolls.app. Scrolls ModLoader will close now");
 						return null;
 					}

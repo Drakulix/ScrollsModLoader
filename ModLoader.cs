@@ -34,16 +34,15 @@ namespace ScrollsModLoader {
 			//old test
 			//ModLoader.Log("Client: "+info.Arguments[0]);
 
-			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"Managed/ModLoader/Assembly-CSharp.dll").MainModule.Types;
-			TypeDefinition[] typeArray = new TypeDefinition[types.Count];
-			types.CopyTo (typeArray, 0);
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
+			Console.WriteLine (info.TargetMethod.Name);
 
 			//we are loaded, get the hooks
 			foreach (BaseMod mod in loader.GetModInstances()) {
-				MethodDefinition[] requestedHooks = mod.GetHooks(typeArray, SharedConstants.getGameVersion());
-				if (requestedHooks.Where(item => item.Body.Equals(info.TargetMethod.GetMethodBody())).Count() > 0) {
+				MethodDefinition[] requestedHooks = mod.GetHooks(types, SharedConstants.getGameVersion());
+				if (requestedHooks.Where(item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count() > 0) {
 					object returnVal;
-					if (mod.BeforeInvoke(info, out returnVal)) {
+					if (mod.BeforeInvoke(new InvocationInfo(info), out returnVal)) {
 						return returnVal;
 					}
 				}
@@ -52,9 +51,9 @@ namespace ScrollsModLoader {
 			object ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
 
 			foreach (BaseMod mod in loader.GetModInstances()) {
-				MethodDefinition[] requestedHooks = mod.GetHooks (typeArray, SharedConstants.getGameVersion ());
-				if (requestedHooks.Where(item => item.Body.Equals(info.TargetMethod.GetMethodBody())).Count() > 0) {
-					mod.AfterInvoke (info, ref ret);
+				MethodDefinition[] requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion ());
+				if (requestedHooks.Where(item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count() > 0) {
+					mod.AfterInvoke (new InvocationInfo(info), ref ret);
 				}
 			}
 
@@ -76,17 +75,22 @@ namespace ScrollsModLoader {
 			return new ModInterceptor (loader);
 		}
 	}
+	
 
 	public class ModLoader
 	{
+		static bool init = false;
 		static ModLoader instance = null;
-		//private System.IO.StreamWriter log = null;
-		private List<String> modList;
-		private List<BaseMod> modInstances;
+		private List<String> modList = new List<String>();
+		private List<BaseMod> modInstances = new List<BaseMod>();
 
 		public ModLoader ()
 		{
-			String modLoaderPath = Platform.getGlobalScrollsInstallPath () + "/Managed/ModLoader/";
+			System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+			Console.WriteLine (t);
+
+			String installPath = Platform.getGlobalScrollsInstallPath();
+			String modLoaderPath = installPath + "/ModLoader/";
 			bool repatchNeeded = false;
 
 			//load mod list
@@ -101,23 +105,31 @@ namespace ScrollsModLoader {
 									where Directory.GetFiles(subdirectory, "*.mod.dll").Length != 0
 									select subdirectory).ToArray();
 
+			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
+			AppDomain.CurrentDomain.AssemblyResolve += resolver;
+
 			//load mods
 			foreach (String folder in folderList) {
-				String[] modFiles = Directory.GetFiles (folder, "*.mod.dll");
-				foreach (String modFile in modFiles) {
-					Assembly mod = Assembly.LoadFile (modFile);
-					Type[] modClasses = (from modClass in mod.GetTypes ()
-					                     where modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
-					                     select modClass).ToArray();
-					foreach (Type modClass in modClasses) {
-						modInstances.Add((BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+				try {
+					String[] modFiles = Directory.GetFiles (folder, "*.mod.dll");
+					foreach (String modFile in modFiles) {
+						Assembly mod = Assembly.LoadFile(modFile);
+						//Assembly mod = AppDomain.CurrentDomain.Load(File.OpenRead(modFile).ReadToEnd());
+						Type[] modClasses = (from modClass in mod.GetTypes ()
+						                     where modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
+						                     select modClass).ToArray();
+						foreach (Type modClass in modClasses) {
+							modInstances.Add((BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+						} 
 					}
+				} catch (ReflectionTypeLoadException exp) {
+					Log (exp.ToString());
 				}
 			}
 
 			//check mod list
-			BaseMod[] modArray = modInstances.ToArray();
-			foreach (BaseMod mod in modArray) {
+			List<BaseMod> modInstancesCpy = new List<BaseMod>(modInstances);
+			foreach (BaseMod mod in modInstancesCpy) {
 				if (!modList.Contains (mod.GetName()+"."+mod.GetVersion())) {
 					modList.Add (mod.GetName()+"."+mod.GetVersion());
 					repatchNeeded = true;
@@ -128,14 +140,14 @@ namespace ScrollsModLoader {
 					modInstances.Insert(modList.IndexOf(mod.GetName()+"."+mod.GetVersion()), mod);
 				}
 			}
-
-			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"Managed/ModLoader/Assembly-CSharp.dll").MainModule.Types;
+			
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"/Assembly-CSharp.dll").MainModule.Types;
 			TypeDefinition[] typeArray = new TypeDefinition[types.Count];
-			types.CopyTo (typeArray, 0);
+			types.CopyTo(typeArray, 0);
 
 			//we are loaded, get the hooks
-			foreach (BaseMod mod in modArray) {
-				MethodDefinition[] requestedHooks = mod.GetHooks(typeArray, SharedConstants.getGameVersion());
+			foreach (BaseMod mod in modInstancesCpy) {
+				MethodDefinition[] requestedHooks = mod.GetHooks(types, SharedConstants.getGameVersion());
 
 				//check hooks
 				bool hooksAreValid = true;
@@ -161,36 +173,33 @@ namespace ScrollsModLoader {
 
 			//repatch if necessary
 			if (repatchNeeded) {
-				//if a backup already exists, it is much more likely that the current assembly is messed up and the user wants to repatch
-				String installPath = Platform.getGlobalScrollsInstallPath();
-				System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.dll");
-				System.IO.File.Copy(installPath+"Managed/ModLoader/Assembly-CSharp.dll", installPath+"Managed/Assembly-CSharp.dll");
-
+				
 				Patcher patcher = new Patcher ();
-				if (!patcher.patchAssembly (installPath+"Managed/Assembly-CSharp.dll")) {
+				if (!patcher.patchAssembly ()) {
 					//normal patching should never fail at this point
 					//because this is no update and we are already patched
 					//TO-DO get hook that crashed the patching and deactive mod instead
 					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. ModLoader failed to load and will de-install itself");
-					System.IO.File.Delete(installPath+"Managed/Assembly-CSharp.dll");
-					System.IO.File.Copy(installPath+"Managed/ModLoader/Assembly-CSharp.dll", installPath+"Managed/Assembly-CSharp.dll");
+					System.IO.File.Delete(installPath+"Assembly-CSharp.dll");
+					System.IO.File.Copy(installPath+"ModLoader/Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
 					Application.Quit();
 				}
 
 				//restart the game
 				if (Platform.getOS() == Platform.OS.Win)
 				{
-					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../Scrolls.exe", Arguments = "" } }.Start();
+					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../Scrolls.exe", Arguments = "" } }.Start();
 					Application.Quit();
 				}
 				else if (Platform.getOS() == Platform.OS.Mac)
 				{
-					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../MacOS/Scrolls", Arguments = "" } }.Start();
+					Process restart = new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } };
+					restart.Start();
+
 					Application.Quit();
 				} else {
 					Application.Quit();
 				}
-
 			}
 
 			//remove old mods from list
@@ -212,31 +221,51 @@ namespace ScrollsModLoader {
 			}
 			modListWriter.Flush ();
 			modListWriter.Close ();
-			//old test
-			//log = System.IO.File.CreateText("log.txt");
+
+			AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+		}
+
+		private static System.Reflection.Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
+		{
+			try {
+				var asm = (from a in AppDomain.CurrentDomain.GetAssemblies()
+				           where a.GetName().FullName == args.Name
+				           select a).FirstOrDefault();
+				Console.WriteLine(args.Name);
+				if (asm == null) {
+					asm = System.Reflection.Assembly.GetExecutingAssembly();
+				}
+				return asm;
+			} catch (NullReferenceException exp) {
+				Console.WriteLine(exp);
+				//instance.Log (exp.ToString());
+				return null;
+			}
 		}
 
 		public BaseMod[] GetModInstances() {
 			return modInstances.ToArray();
 		}
 
-		//old test
-		/*
-		#region ICommListener implementation
-		public void handleMessage (Message msg)
-		{
-			ModLoader.Log("Server: "+msg);
+		public void Log(String str) {
+			UnityEngine.Debug.Log("MOD:"+str);
 		}
-		#endregion
-		*/
 
 		//initial game callback
 		public static void Init() {
-			instance = new ModLoader();
 
+			//wiredly App.Awake() gets called multiple time, but we do not want multiple instances
+			if (init)
+				return;
+			init = true;
+
+			instance = new ModLoader();
 			//old Test
 			//App.Communicator.addListener(instance);
 			MethodBodyReplacementProviderRegistry.SetProvider(new SimpleMethodReplacementProvider(instance));
+			foreach (BaseMod mod in instance.modInstances) {
+				mod.Init ();
+			}
 		}
 	}
 }
