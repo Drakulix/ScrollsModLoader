@@ -63,6 +63,12 @@ namespace ScrollsModLoader
 				//save-patching is for installs, that get broken by updates, etc, to keep the install until ScrollsModLoader is updated
 				Dialogs.showNotification ("Patching failed", "ScrollsModLoader was unable to prepare your client, you are likely using an incompatible version. More at ScrollsGuide.com");
 			}
+
+			byte[] linfucecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.LinFu.AOP.Cecil.dll").ReadToEnd ();
+			System.IO.File.Create (installPath+"LinFu.AOP.Cecil.dll").Write (linfucecil, 0, linfucecil.Length);
+			byte[] linfuinterfaces = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.LinFu.AOP.Interfaces.dll").ReadToEnd ();
+			System.IO.File.Create (installPath+"LinFu.AOP.Interfaces.dll").Write (linfuinterfaces, 0, linfuinterfaces.Length);
+
 			Console.WriteLine ("Done");
 
 			return;
@@ -93,10 +99,9 @@ namespace ScrollsModLoader
 				return false;
 			}
 
-			//add hook
+			//add hooks
 			if (!Hooks.hookStaticVoidMethodAtEnd ("App.Awake", "ModLoader.Init"))
 				return false;
-
 			try {
 
 				//save assembly
@@ -143,7 +148,7 @@ namespace ScrollsModLoader
 			// let LinFu inject some call hooks into all required classes and methods to replace/extend method calls
 			try {
 				AssemblyDefinition assembly = AssemblyFactory.GetAssembly(path);
-				assembly.InterceptMethodBody (new ScrollsFilter.ScrollsFilter(), new ScrollsFilter.ScrollsFilter());
+				assembly.InterceptMethodBody (new ScrollsFilter(), new ScrollsFilter());
 				assembly.Save(path);
 				return true;
 			} catch (Exception exp) {
@@ -152,7 +157,8 @@ namespace ScrollsModLoader
 			}
 		}
 
-		public bool saveModePatchAssembly(String path) {
+		public bool saveModePatchAssembly() {
+			//TO-DO implement
 			return true;
 		}
 	}

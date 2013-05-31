@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using LinFu.AOP.Cecil;
 using LinFu.AOP.Cecil.Interfaces;
 
-namespace ScrollsFilter
+namespace ScrollsModLoader
 {
 	/*
 	 * This namespace filters classes and methods, that need to be patched
@@ -35,8 +35,10 @@ namespace ScrollsFilter
 		public bool ShouldWeave (Mono.Cecil.MethodReference targetMethod)
 		{
 			foreach (Mono.Cecil.MethodDefinition foundMethod in hooks)
-			    if (foundMethod.EqualsReference(targetMethod))
+				if (foundMethod.EqualsReference (targetMethod)) {
+					Console.WriteLine ("MethodFilter: "+targetMethod.Name);
 					return true;
+				}
 			return false;
 			/*if (targetMethod.DeclaringType.Name.Equals ("Communicator") && (targetMethod.Name.Equals ("sendRequest") || targetMethod.Name.Equals("sendSilentRequest"))  && targetMethod.Parameters[0].ParameterType.Name.Equals("String")) {
 				Console.WriteLine ("MethodFilter: "+targetMethod.Name);
@@ -49,9 +51,11 @@ namespace ScrollsFilter
 		#region ITypeFilter implementation
 		public bool ShouldWeave (Mono.Cecil.TypeReference targetType)
 		{
-			foreach(Mono.Cecil.MethodDefinition foundMethod in hooks)
-				if (foundMethod.DeclaringType.FullName.Equals(targetType.FullName))
+			foreach (Mono.Cecil.MethodDefinition foundMethod in hooks)
+				if (foundMethod.DeclaringType.FullName.Equals (targetType.FullName)) {
+					Console.WriteLine ("TypeFilter: "+foundMethod.Name);
 					return true;
+				}
 			return false;
 			/*if (targetType.Name.Equals ("Communicator")) {
 				Console.WriteLine ("TypeFilter: "+targetType.FullName);

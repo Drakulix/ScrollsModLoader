@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -133,14 +134,16 @@ namespace ScrollsModLoader
 		}
 
 		public static void savePatchedAssembly() {
-			//dont reference injectassembly
-			/*AssemblyNameReference theName = null;
+			//removing assemblies, that are part of the merged modloader assembly does crash, we need to add them manually
+			/*List<AssemblyNameReference> names = new List<AssemblyNameReference>();
 			foreach (AssemblyNameReference name in baseAssembly.MainModule.AssemblyReferences) {
-				if (name.FullName.Equals(injectAssembly.Name.FullName))
-					theName = name;
+				if (name.FullName.Contains ("LinFu"))
+					names.Add (name);
 			}
-			baseAssembly.MainModule.AssemblyReferences.Remove (theName);*/
-
+			foreach (AssemblyNameReference name in names) {
+				baseAssembly.MainModule.AssemblyReferences.Remove (name);
+			}*/
+			
 			System.IO.File.Delete(baseAssemblySavePath);
 			AssemblyFactory.SaveAssembly(baseAssembly, baseAssemblySavePath);
 		}

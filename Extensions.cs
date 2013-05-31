@@ -1,5 +1,5 @@
 using System;
-
+using System.IO;
 
 	public static class Extensions
 	{
@@ -79,5 +79,27 @@ using System;
 			         && (reference.ReturnType.ReturnType.FullName.Equals(definition.ReturnType.ReturnType.FullName))
 			         && (reference.GenericParameters.Count == definition.GenericParameters.Count) && parameterMatch));
 		}
-	}
 
+		public static void DeleteDirectory(string target_dir)
+		{
+			target_dir = Path.GetFullPath(target_dir);
+
+			string[] files = Directory.GetFiles(target_dir);
+			string[] dirs = Directory.GetDirectories(target_dir);
+			
+			foreach (string file in files)
+			{
+				File.SetAttributes(file, FileAttributes.Normal);
+				File.Delete(file);
+			}
+			
+			foreach (string dir in dirs)
+			{
+				DeleteDirectory(dir);
+			}
+			
+			Directory.Delete(target_dir, false);
+		}
+	}
+	
+	
