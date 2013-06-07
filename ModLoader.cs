@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Linq;
 using System.Diagnostics;
 using LinFu.AOP.Interfaces;
+using LinFu.Reflection;
 using Mono.Cecil;
 using OX.Copyable;
 using ScrollsModLoader.Interfaces;
@@ -29,14 +30,13 @@ namespace ScrollsModLoader {
 
 		public object Intercept (IInvocationInfo info)
 		{
-
+			//Console.WriteLine (info.TargetMethod.Name);
 			foreach (Patch patch in loader.GetPatches()) {
 				if (patch.patchedMethods ().Where (item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count () > 0)
 					return patch.Intercept (info);
 			}
 
 			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
-			Console.WriteLine (info.TargetMethod.Name);
 
 			//we are loaded, get the hooks
 			foreach (BaseMod mod in loader.GetModInstances()) {
@@ -85,15 +85,25 @@ namespace ScrollsModLoader {
 		
 	}
 
-	public class SimpleMethodReplacementProvider : BaseMethodReplacementProvider 
+	public class SimpleMethodReplacementProvider : IMethodReplacementProvider 
 	{
 		private ModLoader loader;
-
 		public SimpleMethodReplacementProvider(ModLoader loader) {
 			this.loader = loader;
 		}
 
-		protected override IInterceptor GetReplacement (object host, IInvocationInfo context)
+		public bool CanReplace (object host, IInvocationInfo info)
+		{
+			StackTrace trace = info.StackTrace;
+			//Console.WriteLine (trace);
+			foreach (StackFrame frame in trace.GetFrames()) {
+				if (frame.GetMethod ().Name.Equals(info.TargetMethod.Name))
+					return false;
+			}
+			return true;
+		}
+
+		public IInterceptor GetMethodReplacement (object host, IInvocationInfo info)
 		{
 			return new ModInterceptor (loader);
 		}
@@ -107,26 +117,31 @@ namespace ScrollsModLoader {
 		private List<String> modList = new List<String>();
 		private List<BaseMod> modInstances = new List<BaseMod>();
 		private List<Patch> patches = new List<Patch>();
+		private APIHandler publicAPI = null;
 
 		public ModLoader ()
 		{
-			System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
-			Console.WriteLine (t);
+			//System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+			//Console.WriteLine (t);
 
 			String installPath = Platform.getGlobalScrollsInstallPath();
 			String modLoaderPath = installPath + "/ModLoader/";
 			bool repatchNeeded = false;
 
 			//load mod list
-			if (!File.Exists (modLoaderPath+"mods.ini"))
+			if (!File.Exists (modLoaderPath+"mods.ini")) {
 				File.CreateText (modLoaderPath+"mods.ini").Close();
+				//first launch, set hooks for patches
+				repatchNeeded = true;
+			}
 			modList = File.ReadAllLines (modLoaderPath+"mods.ini").ToList();
 
 			//match it with mods avaiable
 			if (!Directory.Exists (modLoaderPath+"mods"))
 				Directory.CreateDirectory (modLoaderPath+"mods");
 			String[] folderList = (from subdirectory in Directory.GetDirectories(modLoaderPath+"mods")
-									where Directory.GetFiles(subdirectory, "*.mod.dll").Length != 0
+									where Directory.GetFiles(subdirectory, "*.mod.dll").Length != 0 ||
+			                       		  Directory.GetFiles(subdirectory, "*.Mod.dll").Length != 0
 									select subdirectory).ToArray();
 
 			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
@@ -143,6 +158,7 @@ namespace ScrollsModLoader {
 						                     select modClass).ToArray();
 						foreach (Type modClass in modClasses) {
 							modInstances.Add((BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+							Console.WriteLine("added mod");
 						} 
 					}
 				} catch (ReflectionTypeLoadException exp) {
@@ -168,9 +184,26 @@ namespace ScrollsModLoader {
 			TypeDefinition[] typeArray = new TypeDefinition[types.Count];
 			types.CopyTo(typeArray, 0);
 
+			//get ModAPI
+			APIHandler api = new APIHandler ();
+
 			//add Patches
 			patches.Add(new PatchUpdater(types));
-			patches.Add (new PatchHeaderMenu(types));
+			//patches.Add(new PatchOffline(types));
+
+			PatchSettingsMenu settingsMenuHook = new PatchSettingsMenu (types);
+			api.setSceneCallback (settingsMenuHook);
+			patches.Add (settingsMenuHook);
+
+			PatchModsMenu modMenuHook = new PatchModsMenu (types);
+			modMenuHook.Initialize (api);
+			patches.Add (modMenuHook);
+
+			publicAPI = api;
+
+			foreach (BaseMod mod in modInstances) {
+				mod.Initialize (publicAPI);
+			}
 
 			//we are loaded, get the hooks
 			foreach (BaseMod mod in modInstancesCpy) {
@@ -276,12 +309,14 @@ namespace ScrollsModLoader {
 
 		public void UnloadMod(BaseMod mod) {
 			modInstances.Remove (mod);
+			mod.Initialize (publicAPI);
 		}
 
 		//initial game callback
 		public static void Init() {
 
-			//wiredly App.Awake() gets called multiple time, but we do not want multiple instances
+			//wiredly App.Awake() calls Init multiple times, but we do not want multiple instances
+			//TO-DO, find out why InjectBeforeEnd does this (Hooks.cs)
 			if (init)
 				return;
 			init = true;

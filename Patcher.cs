@@ -102,6 +102,7 @@ namespace ScrollsModLoader
 			//add hooks
 			if (!Hooks.hookStaticVoidMethodAtEnd ("App.Awake", "ModLoader.Init"))
 				return false;
+
 			try {
 
 				//save assembly
@@ -149,6 +150,7 @@ namespace ScrollsModLoader
 			try {
 				AssemblyDefinition assembly = AssemblyFactory.GetAssembly(path);
 				assembly.InterceptMethodBody (new ScrollsFilter(), new ScrollsFilter());
+				//assembly.InterceptMethodBody(new ScrollsFilter().ShouldWeave);
 				assembly.Save(path);
 				return true;
 			} catch (Exception exp) {

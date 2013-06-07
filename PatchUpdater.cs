@@ -24,10 +24,21 @@ namespace ScrollsModLoader
 
 		public override MethodDefinition[] patchedMethods() {
 			MethodDefinition PopupOk = Hooks.getMethDef (Hooks.getTypeDef (assembly, "Login"), "PopupOk");
-			return new MethodDefinition[] {PopupOk};
+
+			//test patch
+			//MethodDefinition Name = Hooks.getMethDef (Hooks.getTypeDef (assembly, "Communicator"), "getUserScreenName");
+
+
+			return new MethodDefinition[] { PopupOk };//, Name};
 		}
 
 		public override object Intercept (IInvocationInfo info) {
+
+			//test patch for returning functions
+			/*if (info.TargetMethod.Name.Equals ("getUserScreenName")) {
+				return ((String)info.TargetMethod.Invoke(info.Target, info.Arguments))+"!";
+			}*/
+
 			/*Dictionary<string, int> map = null;
 			FieldInfo field = null;
 			try {

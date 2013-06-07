@@ -4,8 +4,14 @@ using LinFu.AOP.Interfaces;
 
 namespace ScrollsModLoader.Interfaces
 {
-	public abstract class BaseMod
+	public abstract class ModAPIContainer {
+		public virtual void Initialize (ModAPI api) {}
+	}
+
+	public abstract class BaseMod : ModAPIContainer
 	{
+		public ModAPI modAPI;
+
 		public abstract String GetName ();
 		public abstract int GetVersion ();
 		public abstract MethodDefinition[] GetHooks (TypeDefinitionCollection scrollsTypes, int version);
@@ -13,6 +19,10 @@ namespace ScrollsModLoader.Interfaces
 		public abstract void Init ();
 		public abstract bool BeforeInvoke (InvocationInfo info, out object returnValue);
 		public abstract void AfterInvoke (InvocationInfo info, ref object returnValue);
+
+		public sealed override void Initialize(ModAPI api) {
+			this.modAPI = api;
+		}
 	}
 
 	public class InvocationInfo {

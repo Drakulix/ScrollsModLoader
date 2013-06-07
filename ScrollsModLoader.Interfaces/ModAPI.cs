@@ -2,11 +2,10 @@ using System;
 
 namespace ScrollsModLoader.Interfaces
 {
-	public class ModAPI
+	public interface ModAPI
 	{
-		public ModAPI ()
-		{
-		}
+		//GUI Stuff
+		bool AddScene (String desc, SceneProvider provider);
+		void LoadScene (String providerDesc);
 	}
 }
-
