@@ -44,8 +44,10 @@ namespace GameReplay.Mod
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Start")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Init")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Raycast")[0],
-											scrollsTypes["BattleModeUI"].Methods.GetMethod("ShowEndTurn")[0],
-											scrollsTypes["Popups"].Methods.GetMethod("ShowReconnectPopup")[0] };
+											scrollsTypes["BattleModeUI"].Methods.GetMethod("ShowEndTurn")[0]//,
+											//scrollsTypes["Popups"].Methods.GetMethod("ShowReconnectPopup")[0],
+											//scrollsTypes["Communicator"].Methods.GetMethod("ShowReconnectPopup")[0]
+										   };
 		}
 
 		public bool BeforeInvoke (InvocationInfo info, out object returnValue)
@@ -82,8 +84,8 @@ namespace GameReplay.Mod
 					if (playing) { //quit on Esc/Back Arrow
 						playing = false;
 						App.Communicator.setData ("");
-						App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
-						App.Communicator.isActive = true;
+						//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
+						//App.Communicator.isActive = true;
 						SceneLoader.loadScene("_Lobby");
 						returnValue = null;
 						return true;
@@ -91,7 +93,7 @@ namespace GameReplay.Mod
 				}
 				break;
 			case "ShowEndTurn":
-			case "ShowReconnectPopup":
+			//case "ShowReconnectPopup":
 				{
 					if (playing) {
 						returnValue = null;
@@ -110,8 +112,8 @@ namespace GameReplay.Mod
 			if (playing && msg is NewEffectsMessage && msg.getRawText ().Contains ("EndGame")) {
 				playing = false;
 				App.Communicator.setData ("");
-				App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
-				App.Communicator.isActive = true;
+				//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
+				//App.Communicator.isActive = true;
 				//SceneLoader.loadScene("_HomeScreen");
 			}
 		}
@@ -132,7 +134,7 @@ namespace GameReplay.Mod
 
 			String log = File.ReadAllText (fileName);
 
-			App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
+			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
 			App.Communicator.isActive = false;
 			SceneLoader.loadScene ("_BattleModeView");
 			App.Communicator.setData (log);
@@ -182,8 +184,10 @@ namespace GameReplay.Mod
 				{
 					if (playing)
 						typeof(BattleModeUI).GetField("callback", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(info.Target(), this);
+					//works somewhat
 					//App.ChatUI.SetEnabled (true);
 					//App.ChatUI.SetLocked (false);
+					//App.ChatUI.Show (false);
 				}
 				break;
 			case "Raycast":
