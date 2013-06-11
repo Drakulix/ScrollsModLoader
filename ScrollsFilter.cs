@@ -13,6 +13,7 @@ namespace ScrollsModLoader
 	 * Future version will obtain names from mods dynamically
 	 * 
 	 * TO-DO: https://github.com/philiplaureano/LinFu/issues/23
+	 * DONE!
 	 */
 
 

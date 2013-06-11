@@ -23,18 +23,15 @@ namespace ScrollsModLoader
 				Hooks.getMethDef (settingsMenu, "Init"),
 				Hooks.getMethDef (settingsMenu, "OnGUI"),
 				Hooks.getMethDef (settingsMenu, "OnDestroy"),
-				Hooks.getMethDef (Hooks.getTypeDef(assembly, "SceneLoader"), "loadScene")
-					//BOOL Function ARGGH! we NEED to find that LinFu bug
-					//, Hooks.getMethDef(Hooks.getTypeDef(assembly, "LobbyMenu"), "isSceneJumpValid")
+				Hooks.getMethDef (Hooks.getTypeDef(assembly, "SceneLoader"), "loadScene"),
+				Hooks.getMethDef(Hooks.getTypeDef(assembly, "LobbyMenu"), "isSceneJumpValid")
 			};
 		}
 
 		public override object Intercept (IInvocationInfo info)
 		{
 			if (info.TargetMethod.Name.Equals ("isSceneJumpValid")) {
-				//invoking does not work, as this function return a bool (bug of LinFu)
-				//return ((bool)info.TargetMethod.Invoke (info.Target, info.Arguments)) || (sceneDescriptors.ContainsKey((String)info.Arguments[0]) && (scene == null || !scene.SceneName().Equals(info.Arguments[0])));
-				return ((Application.loadedLevelName == "_Profile" && App.SceneValues.profilePage != null && !App.SceneValues.profilePage.wasMe) || Application.loadedLevelName != (String)info.Arguments[0]) || (sceneDescriptors.ContainsKey((String)info.Arguments[0]) && (scene == null || !scene.SceneName().Equals(info.Arguments[0])));
+				return ((bool)info.TargetMethod.Invoke (info.Target, info.Arguments)) || (((String)info.Arguments[0]).Equals("_Settings") && scene != null);
 			}
 
 			if (info.TargetMethod.Name.Equals("loadScene")) {
@@ -114,6 +111,7 @@ namespace ScrollsModLoader
 				try {
 					GUI.depth = 21;
 					GUI.skin = (GUISkin)typeof(SettingsMenu).GetField ("settingsSkin" ,BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance).GetValue(info.Target);
+					GUI.skin.label.alignment = TextAnchor.MiddleCenter;
 					scene.OnGUI ();
 				} catch (Exception exp) {
 					Console.WriteLine (exp);

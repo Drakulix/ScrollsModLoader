@@ -131,7 +131,7 @@ namespace ScrollsModLoader
 
 			GUI.skin.label.fontSize = defaultTextSize;
 			Color textColor = GUI.skin.label.normal.textColor;
-			GUI.skin.label.normal.textColor = Color.Lerp(Color.white, Color.yellow, 0.3f);
+			GUI.skin.label.normal.textColor = Color.white;
 
 			GUI.skin.label.fontSize = defaultTextSize;
 			GUI.Label (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/4.5f/2.0f - (float)Screen.width/8.0f/2.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f, (float)Screen.width/8.0f, 35.0f), "Repositories");

@@ -23,9 +23,12 @@ namespace ScrollsModLoader {
 	public class ModInterceptor : IInterceptor
 	{
 		private ModLoader loader;
+		private TypeDefinitionCollection types;
 
 		public ModInterceptor(ModLoader loader) {
 			this.loader = loader;
+			types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
+
 		}
 
 		public object Intercept (IInvocationInfo info)
@@ -36,7 +39,7 @@ namespace ScrollsModLoader {
 					return patch.Intercept (info);
 			}
 
-			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
+			List<BaseMod> modsToUnload = new List<BaseMod> ();
 
 			//we are loaded, get the hooks
 			foreach (BaseMod mod in loader.GetModInstances()) {
@@ -49,10 +52,15 @@ namespace ScrollsModLoader {
 						}
 					} catch (Exception exp) {
 						Console.WriteLine(exp);
-						loader.UnloadMod (mod);
+						modsToUnload.Add (mod);
 					}
 				}
 			}
+
+			foreach (BaseMod mod in modsToUnload) {
+				loader.UnloadMod (mod);
+			}
+			modsToUnload.Clear ();
 
 			object ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
 			object retBack = null;
@@ -80,6 +88,10 @@ namespace ScrollsModLoader {
 				}
 			}
 
+			foreach (BaseMod mod in modsToUnload) {
+				loader.UnloadMod (mod);
+			}
+
 			return ret;
 		}
 		
@@ -87,9 +99,9 @@ namespace ScrollsModLoader {
 
 	public class SimpleMethodReplacementProvider : IMethodReplacementProvider 
 	{
-		private ModLoader loader;
+		private ModInterceptor interceptor;
 		public SimpleMethodReplacementProvider(ModLoader loader) {
-			this.loader = loader;
+			interceptor = new ModInterceptor (loader);
 		}
 
 		public bool CanReplace (object host, IInvocationInfo info)
@@ -105,7 +117,7 @@ namespace ScrollsModLoader {
 
 		public IInterceptor GetMethodReplacement (object host, IInvocationInfo info)
 		{
-			return new ModInterceptor (loader);
+			return interceptor;
 		}
 	}
 	
@@ -125,7 +137,7 @@ namespace ScrollsModLoader {
 			//Console.WriteLine (t);
 
 			String installPath = Platform.getGlobalScrollsInstallPath();
-			String modLoaderPath = installPath + "/ModLoader/";
+			String modLoaderPath = installPath + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
 			bool repatchNeeded = false;
 
 			//load mod list
@@ -151,6 +163,7 @@ namespace ScrollsModLoader {
 			foreach (String folder in folderList) {
 				try {
 					String[] modFiles = Directory.GetFiles (folder, "*.mod.dll");
+					if (Platform.getOS() != Platform.OS.Win) modFiles.Concat(Directory.GetFiles (folder, "*.Mod.dll")).ToArray();
 					foreach (String modFile in modFiles) {
 						Assembly mod = Assembly.LoadFile(modFile);
 						Type[] modClasses = (from modClass in mod.GetTypes ()
@@ -158,7 +171,7 @@ namespace ScrollsModLoader {
 						                     select modClass).ToArray();
 						foreach (Type modClass in modClasses) {
 							modInstances.Add((BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
-							Console.WriteLine("added mod");
+							//Console.WriteLine("added mod");
 						} 
 					}
 				} catch (ReflectionTypeLoadException exp) {
@@ -180,7 +193,7 @@ namespace ScrollsModLoader {
 				}
 			}
 			
-			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"/Assembly-CSharp.dll").MainModule.Types;
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
 			TypeDefinition[] typeArray = new TypeDefinition[types.Count];
 			types.CopyTo(typeArray, 0);
 
@@ -207,10 +220,18 @@ namespace ScrollsModLoader {
 
 			//we are loaded, get the hooks
 			foreach (BaseMod mod in modInstancesCpy) {
-				MethodDefinition[] requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion());
+
+				MethodDefinition[] requestedHooks = new MethodDefinition[] { };
+
+				bool hooksAreValid = true;
+				try {
+					requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion());
+				} catch {
+					modInstances.Remove (mod);
+					hooksAreValid = false;
+				}
 
 				//check hooks
-				bool hooksAreValid = true;
 				foreach (MethodDefinition hook in requestedHooks) {
 					//type does not exists
 					if ((from type in typeArray
@@ -228,36 +249,6 @@ namespace ScrollsModLoader {
 				//add hooks
 				foreach (MethodDefinition hook in requestedHooks) {
 					ScrollsFilter.AddHook(hook);
-				}
-			}
-
-			//repatch if necessary
-			if (repatchNeeded) {
-				
-				Patcher patcher = new Patcher ();
-				if (!patcher.patchAssembly ()) {
-					//normal patching should never fail at this point
-					//because this is no update and we are already patched
-					//TO-DO get hook that crashed the patching and deactive mod instead
-					//No idea how to do that correctly however
-					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. ModLoader failed to load and will de-install itself");
-					File.Delete(installPath+"Assembly-CSharp.dll");
-					File.Copy(installPath+"ModLoader/Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
-					Application.Quit();
-				}
-
-				//restart the game
-				if (Platform.getOS() == Platform.OS.Win)
-				{
-					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../Scrolls.exe", Arguments = "" } }.Start();
-					Application.Quit();
-				}
-				else if (Platform.getOS() == Platform.OS.Mac)
-				{
-					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start();
-					Application.Quit();
-				} else {
-					Application.Quit();
 				}
 			}
 
@@ -280,6 +271,39 @@ namespace ScrollsModLoader {
 			}
 			modListWriter.Flush ();
 			modListWriter.Close ();
+
+			//repatch if necessary
+			if (repatchNeeded) {
+				
+				Patcher patcher = new Patcher ();
+				if (!patcher.patchAssembly ()) {
+					//normal patching should never fail at this point
+					//because this is no update and we are already patched
+					//TO-DO get hook that crashed the patching and deactive mod instead
+					//No idea how to do that correctly however
+					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. ModLoader failed to load and will de-install itself");
+					File.Delete(installPath+"Assembly-CSharp.dll");
+					File.Copy(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
+					Application.Quit();
+				}
+
+				//restart the game
+				if (Platform.getOS() == Platform.OS.Win)
+				{
+					Console.WriteLine(Platform.getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe");
+					//try {
+						new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start();
+					//} catch {}
+					Application.Quit();
+				}
+				else if (Platform.getOS() == Platform.OS.Mac)
+				{
+					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start();
+					Application.Quit();
+				} else {
+					Application.Quit();
+				}
+			}
 		}
 
 		private static System.Reflection.Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
@@ -309,7 +333,7 @@ namespace ScrollsModLoader {
 
 		public void UnloadMod(BaseMod mod) {
 			modInstances.Remove (mod);
-			mod.Initialize (publicAPI);
+			mod.Initialize (null);
 		}
 
 		//initial game callback

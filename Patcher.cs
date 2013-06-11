@@ -32,17 +32,17 @@ namespace ScrollsModLoader
 
 
 			//create modloader folder
-			if (!System.IO.Directory.Exists(installPath+"ModLoader/")) {
-				System.IO.Directory.CreateDirectory(installPath+"ModLoader/");
+			if (!System.IO.Directory.Exists(installPath+"ModLoader")) {
+				System.IO.Directory.CreateDirectory(installPath+"ModLoader");
 			}
 
 			//backup original assembly
-			if (!System.IO.File.Exists(installPath+"ModLoader/Assembly-CSharp.dll"))
-				System.IO.File.Copy (installPath+"Assembly-CSharp.dll", installPath + "ModLoader/Assembly-CSharp.dll");
+			if (!System.IO.File.Exists(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll"))
+				System.IO.File.Copy (installPath+"Assembly-CSharp.dll", installPath + "ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll");
 			else {
 			//if a backup already exists, it is much more likely that the current assembly is messed up and the user wants to repatch
 				System.IO.File.Delete(installPath+"Assembly-CSharp.dll");
-				System.IO.File.Copy(installPath+"ModLoader/Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
+				System.IO.File.Copy(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
 			}
 
 			//copy modloader for patching
@@ -51,8 +51,8 @@ namespace ScrollsModLoader
 			System.IO.File.Copy(System.Reflection.Assembly.GetExecutingAssembly().Location, installPath+"ScrollsModLoader.dll");
 
 			//reset ini
-			if (System.IO.File.Exists(installPath+"ModLoader/mods.ini"))
-				System.IO.File.Delete(installPath+"ModLoader/mods.ini");
+			if (System.IO.File.Exists(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"mods.ini"))
+				System.IO.File.Delete(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"mods.ini");
 
 			Console.WriteLine ("Patching...");
 			//patch it

@@ -67,8 +67,6 @@ namespace LinFu.AOP.Cecil
         /// <param name="method">The target method.</param>
         public void Weave(MethodDefinition method)
         {
-			if (!method.HasBody) return;
-
             MethodBody body = method.Body;
             CilWorker IL = body.CilWorker;
 
