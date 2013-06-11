@@ -11,12 +11,13 @@ using ScrollsModLoader.Interfaces;
 
 namespace GameReplay.Mod
 {
-	public class Mod : BaseMod, ICommListener, IListCallback
+	public class Mod : BaseMod, ICommListener, IListCallback, IOkStringCancelCallback
 	{
 		private Recorder recorder;
 		private Player player;
 		private UIListPopup recordListPopup;
 		List<Item> recordList = new List<Item>();
+		private Record selectedRecord;
 
 		public Mod ()
 		{
@@ -45,6 +46,7 @@ namespace GameReplay.Mod
 		{
 			if (msg is BattleRedirectMessage) {
 				recorder = new Recorder (this.OwnFolder()+Path.DirectorySeparatorChar+"Records");
+				Console.WriteLine ("Recorder started: "+recorder);
 			}
 		}
 
@@ -93,6 +95,7 @@ namespace GameReplay.Mod
 						String line = jsonms.getNextMessage ();
 						bool searching = true;
 						String enemyName = null;
+						//String enemyId = null;
 						String deckName = null;
 						ResourceType type = ResourceType.NONE;
 
@@ -100,23 +103,26 @@ namespace GameReplay.Mod
 							try {
 								Message msg = Message.createMessage (Message.getMessageName(line), line);
 								if (msg is GameInfoMessage) {
-									if ((msg as GameInfoMessage).white.Equals(App.Communicator.getUserScreenName()))
+									if ((msg as GameInfoMessage).white.Equals(App.Communicator.getUserScreenName())) {
 										enemyName = (msg as GameInfoMessage).black;
-									else
+										//enemyId = (msg as GameInfoMessage).getPlayerProfileId(TileColor.black);
+									} else {
 										enemyName = (msg as GameInfoMessage).white;
+										//enemyId = (msg as GameInfoMessage).getPlayerProfileId(TileColor.white);
+									}
 									deckName = (msg as GameInfoMessage).deck;
 								}
 								if (msg is ActiveResourcesMessage) {
 									type = (msg as ActiveResourcesMessage).types[0];
 								}
-								if (enemyName != null && deckName != null && type != ResourceType.NONE)
+								if (enemyName != null && type != ResourceType.NONE)
 									searching = false;
 							} catch {}
 							jsonms.runParsing();
 							line = jsonms.getNextMessage ();
 						}
 
-						recordList.Add (new Record(File.GetCreationTime(file).ToLongDateString()+" - "+File.GetCreationTime(file).ToLongTimeString(), "VS "+enemyName+" - "+deckName, file, type));
+						recordList.Add (new Record(File.GetCreationTime(file).ToLongDateString()+" - "+File.GetCreationTime(file).ToLongTimeString(), "VS "+enemyName+" - "+deckName, /*enemyId,*/ file, type));
 					}
 				}
 
@@ -166,26 +172,52 @@ namespace GameReplay.Mod
 		}
 		public void ItemClicked (UIListPopup popup, Item card)
 		{
-			player.LaunchReplay (((Record)card).fileName());
+			//player.LaunchReplay (((Record)card).fileName());
+			selectedRecord = (Record)card;
+			App.Popups.ShowMultibutton (this, "Replayer", card.getDesc (), new string[] { "Play", "Share", "Back" });
 		}
 		public void ItemHovered (UIListPopup popup, Item card)
 		{
 			return;
+			//Not able to find out, when it is de-hovered
+			/*if (card == null)
+				App.Communicator.sendRequest ((Message) new ProfilePageInfoMessage());
+			else
+				App.Communicator.sendRequest ((Message) new ProfilePageInfoMessage(((Record)card).enemyID()));*/
 		}
 		
+		#region IOkStringCallback implementation
+		public void PopupOk (string popupType, string choice)
+		{
+			if (choice.Equals("Play")) {
+				player.LaunchReplay (selectedRecord.fileName());
+			}
+			if (choice.Equals("Share")) {
+
+			}
+		}
+		#endregion
+		#region ICancelCallback implementation
+		public void PopupCancel (string popupType)
+		{
+			throw new NotImplementedException ();
+		}
+		#endregion
 	}
 	
 	internal class Record : Item {
 		private String Title;
 		private String Description;
 		private String filename;
+		//private String enemyId;
 		private ResourceType resource; 
 
-		public Record(String title, String desc, String filename, ResourceType resource) {
+		public Record(String title, String desc, /*String enemyId,*/ String filename, ResourceType resource) {
 			this.Title = title;
 			this.Description = desc;
 			this.filename = filename;
 			this.resource = resource;
+			//this.enemyId = enemyId;
 		}
 
 		public bool selectable() {
@@ -218,6 +250,10 @@ namespace GameReplay.Mod
 		public String fileName() {
 			return filename;
 		}
+
+		/*public String enemyID() {
+			return enemyId;
+		}*/
 	}
 }
 
