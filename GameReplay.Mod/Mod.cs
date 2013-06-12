@@ -83,7 +83,7 @@ namespace GameReplay.Mod
 				returnValue = null;
 				return false;
 			}
-			if (info.Target () is ProfileMenu && info.TargetMethod().Equals("Start")) {
+			if (info.Target () is ProfileMenu && info.TargetMethod().Equals("Start") && App.SceneValues.profilePage.isMe()) {
 
 				//list them
 				recordList.Clear ();
