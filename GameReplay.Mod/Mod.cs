@@ -73,8 +73,10 @@ namespace GameReplay.Mod
 		{
 			if (info.TargetMethod ().Equals ("getButtonRect")) {
 				foreach (StackFrame frame in info.StackTrace().GetFrames()) {
+					if (frame.GetMethod ().Name.Contains ("BeforeInvoke"))
+						break;
 					if (frame.GetMethod ().Name.Contains ("drawEditButton")) {
-						returnValue = typeof(ProfileMenu).GetMethod ("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (info.Target(), new object[] { 0 });
+						returnValue = typeof(ProfileMenu).GetMethod ("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (info.Target(), new object[] { 2 });
 						return true;
 					}
 				}
@@ -129,7 +131,7 @@ namespace GameReplay.Mod
 				recordListPopup = new GameObject ("Record List").AddComponent<UIListPopup> ();
 				recordListPopup.transform.parent = ((ProfileMenu)info.Target()).transform;
 				Rect frame = (Rect)typeof(ProfileMenu).GetField ("frameRect", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target());
-				recordListPopup.Init (new Rect(frame.center.x-frame.width/2.0f, frame.center.y-frame.height/2.0f+32.0f, frame.width, frame.height-(float)Screen.height*0.055f*3.0f-42.0f), false, true, recordList, this, null, null, false, true, false, true, null, true, false);
+				recordListPopup.Init (new Rect(frame.center.x-frame.width/2.0f, frame.center.y-frame.height/2.0f+32.0f, frame.width, frame.height-(float)Screen.height*0.055f*3.0f), false, true, recordList, this, null, null, false, true, false, true, null, true, false);
 				recordListPopup.enabled = true;
 				recordListPopup.SetOpacity(1f);
 			}
@@ -141,12 +143,15 @@ namespace GameReplay.Mod
 					recordListPopup.enabled = false;
 					recordListPopup.SetOpacity(0f);
 				} else {
-					new ScrollsFrame (new Rect(rect.center.x-rect.width/2.0f-20.0f, rect.center.y-rect.height/2.0f, rect.width+40.0f, rect.height-(float)Screen.height*0.055f*3.0f-20.0f)).AddNinePatch (ScrollsFrame.Border.LIGHT_CURVED, NinePatch.Patches.CENTER).Draw ();
+					new ScrollsFrame (new Rect(rect.center.x-rect.width/2.0f-20.0f, rect.center.y-rect.height/2.0f, rect.width+40.0f, rect.height-(float)Screen.height*0.055f-20.0f)).AddNinePatch (ScrollsFrame.Border.DARK_CURVED, NinePatch.Patches.CENTER).Draw ();
 					recordListPopup.enabled = true;
 					recordListPopup.SetOpacity(1f);
 					GUIStyle labelSkin = (GUIStyle)typeof(ProfileMenu).GetField ("usernameStyle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target());
 					labelSkin.fontSize = 32;
 					GUI.Label (new Rect(rect.center.x-(float)Screen.width/6.0f/2.0f, rect.center.y-rect.height/2.0f-40.0f, (float)Screen.width/6.0f, 35.0f), "Match History", labelSkin);
+					if (LobbyMenu.drawButton((Rect)typeof(ProfileMenu).GetMethod ("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (info.Target(), new object[] { 0 }), "Load Replay", (GUISkin)typeof(ProfileMenu).GetField ("guiSkin", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target()))) {
+						LoadReplay ();
+					}
 				}
 			}
 			return player.BeforeInvoke (info, out returnValue);
@@ -185,8 +190,11 @@ namespace GameReplay.Mod
 			else
 				App.Communicator.sendRequest ((Message) new ProfilePageInfoMessage(((Record)card).enemyID()));*/
 		}
+
+		public void LoadReplay() {
+			App.Popups.ShowMultibutton (this, "Load", "Load", new string[] { "From File", "From Link", "Back" });
+		}
 		
-		#region IOkStringCallback implementation
 		public void PopupOk (string popupType, string choice)
 		{
 			if (choice.Equals("Play")) {
@@ -195,14 +203,17 @@ namespace GameReplay.Mod
 			if (choice.Equals("Share")) {
 
 			}
+			if (choice.Equals ("From File")) {
+				//TO-DO implement File Open Dialog on High-Level API
+			}
+			if (choice.Equals ("From Link")) {
+
+			}
 		}
-		#endregion
-		#region ICancelCallback implementation
 		public void PopupCancel (string popupType)
 		{
-			throw new NotImplementedException ();
+			return;
 		}
-		#endregion
 	}
 	
 	internal class Record : Item {

@@ -44,9 +44,7 @@ namespace GameReplay.Mod
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Start")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Init")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Raycast")[0],
-											scrollsTypes["BattleModeUI"].Methods.GetMethod("ShowEndTurn")[0]//,
-											//scrollsTypes["Popups"].Methods.GetMethod("ShowReconnectPopup")[0],
-											//scrollsTypes["Communicator"].Methods.GetMethod("ShowReconnectPopup")[0]
+											scrollsTypes["BattleModeUI"].Methods.GetMethod("ShowEndTurn")[0]
 										   };
 		}
 
@@ -182,12 +180,14 @@ namespace GameReplay.Mod
 				break;
 			case "Init":
 				{
-					if (playing)
+					if (playing) {
 						typeof(BattleModeUI).GetField("callback", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(info.Target(), this);
-					//works somewhat
-					//App.ChatUI.SetEnabled (true);
-					//App.ChatUI.SetLocked (false);
-					//App.ChatUI.Show (false);
+						App.ChatUI.SetEnabled (true);
+						App.ChatUI.SetLocked (false);
+						App.ChatUI.Show (false);
+						App.ChatUI.SetCanOpenContextMenu (false);
+						//activate chat on replays but disable profile or trading menus (wired bugs)
+					}
 				}
 				break;
 			case "Raycast":
