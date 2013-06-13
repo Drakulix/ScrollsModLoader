@@ -201,7 +201,7 @@ namespace GameReplay.Mod
 				player.LaunchReplay (selectedRecord.fileName());
 			}
 			if (choice.Equals("Share")) {
-
+				new ReplayUploader(selectedRecord);
 			}
 			if (choice.Equals ("From File")) {
 				//TO-DO implement File Open Dialog on High-Level API
@@ -262,9 +262,44 @@ namespace GameReplay.Mod
 			return filename;
 		}
 
+		public int getId(){
+			return Path.GetFileNameWithoutExtension(filename);
+		}
+		
 		/*public String enemyID() {
 			return enemyId;
 		}*/
+	}
+	
+	internal class ReplayUploader {
+	
+		private Record toUpload;
+	
+		public ReplayUploader(Record r)
+		{
+			this.toUpload = r;
+			
+			Thread uploadThread = new Thread (new ThreadStart(Upload));
+			uploadThread.Start();
+		}
+		
+		private void Upload()
+		{
+			NameValueCollection postParams = getPostParams();
+			
+			Extensions.HttpUploadFile("http://a.scrollsguide.com/replay/upload",
+				toUpload.fileName(), "replay", "scr/replay", nvc);
+		}
+		
+		private NameValueCollection getPostParams()
+		{
+			NameValueCollection nvc = new NameValueCollection();
+			nvc.Add("from", App.Communicator.getUserScreenName()); // player's username
+			nvc.Add("gid", Convert.ToString(toUpload.getId())); // game id
+			nvc.Add("mtime", Convert.ToString(Program.ToUnixTimestamp(File.GetCreationTimeUtc(toUpload.fileName())))); // creation time
+			
+			return nvc;
+		}
 	}
 }
 

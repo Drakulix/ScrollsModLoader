@@ -132,12 +132,11 @@ namespace GameReplay.Mod
 
 		public void LaunchReplay(String name) {
 			fileName = name;
-			replay = new Thread (new ThreadStart(LaunchReplay));
-			replay.Start ();
+			replay = new Thread(new ThreadStart(LaunchReplay));
+			replay.Start();
 		}
 
 		private void LaunchReplay() {
-
 			playing = true;
 
 			String log = File.ReadAllText (fileName);
@@ -150,7 +149,7 @@ namespace GameReplay.Mod
 			while (playing) {
 				if (readNextMsg == false) {
 					//delay messages otherwise the game rushes through in about a minute.
-					Thread.Sleep (500);
+					Thread.Sleep (1500);
 					while (paused) Thread.Sleep (1000);
 					readNextMsg = true;
 				}
