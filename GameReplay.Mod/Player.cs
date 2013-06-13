@@ -41,6 +41,7 @@ namespace GameReplay.Mod
 			return new MethodDefinition[] { scrollsTypes["Communicator"].Methods.GetMethod("readNextMessage")[0],
 											scrollsTypes["GUIBattleModeMenu"].Methods.GetMethod("toggleMenu")[0],
 											scrollsTypes["BattleMode"].Methods.GetMethod("OnGUI")[0],
+											scrollsTypes["BattleMode"].Methods.GetMethod("runEffect")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Start")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Init")[0],
 											scrollsTypes["BattleModeUI"].Methods.GetMethod("Raycast")[0],
@@ -52,6 +53,15 @@ namespace GameReplay.Mod
 		{
 
 			switch ((String)info.TargetMethod ()) {
+			case "runEffect":
+				{
+					returnValue = null;
+					if (paused) {
+						return true;
+					} else {
+						return false;
+					}
+				}
 			case "OnGUI":
 				{
 					if (playing) {
