@@ -27,6 +27,7 @@
         <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/OX.Copyable/bin/${ProjectConfigName}/OX.Copyable.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${ProjectConfigName}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
         <Command type="AfterBuild" command="rm Assembly-CSharp.dll" workingdir="${TargetDir}" />
         <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
+        <Command type="AfterExecute" command="/Applications/Scrolls.app/Contents/MacOS/installer" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -89,34 +90,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Patcher.cs" />
-    <Compile Include="Dialogs.cs" />
-    <Compile Include="Platform.cs" />
-    <Compile Include="ModLoader.cs" />
-    <Compile Include="Hooks.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="ScrollsFilter.cs" />
-    <Compile Include="PatchUpdater.cs" />
-    <Compile Include="Patch.cs" />
-    <Compile Include="PatchHeaderMenu.cs" />
-    <Compile Include="PatchSettingsMenu.cs" />
-    <Compile Include="APIHandler.cs" />
-    <Compile Include="ICardListCallback.cs" />
-    <Compile Include="ListItem.cs" />
-    <Compile Include="PatchModsMenu.cs" />
-    <Compile Include="UIListPopup.cs" />
+    <Compile Include="Patches\Patch.cs" />
+    <Compile Include="Patches\PatchSettingsMenu.cs" />
+    <Compile Include="Patches\PatchUpdater.cs" />
+    <Compile Include="API\APIHandler.cs" />
+    <Compile Include="NativeAPIs\Dialogs.cs" />
+    <Compile Include="NativeAPIs\Platform.cs" />
+    <Compile Include="Patches\Mods Menu\PatchHeaderMenu.cs" />
+    <Compile Include="Patches\Mods Menu\PatchModsMenu.cs" />
+    <Compile Include="Patches\Mods Menu\ICardListCallback.cs" />
+    <Compile Include="Patches\Mods Menu\ListItem.cs" />
+    <Compile Include="Patches\Mods Menu\UIListPopup.cs" />
+    <Compile Include="Core\Patcher.cs" />
+    <Compile Include="Core\ScrollsFilter.cs" />
+    <Compile Include="Core\ModLoader.cs" />
+    <Compile Include="Core\Hooks.cs" />
+    <Compile Include="Resources\AssemblyInfo.cs" />
+    <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="API\ScrollsExtension.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <EmbeddedResource Include="MonoMac.dll" />
     <EmbeddedResource Include="LinFu-master\build\Release\LinFu.AOP.Cecil.dll">
-      <Link>LinFu.AOP.Cecil.dll</Link>
+      <Link>Resources\LinFu.AOP.Cecil.dll</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="LinFu-master\build\Release\LinFu.AOP.Interfaces.dll">
-      <Link>LinFu.AOP.Interfaces.dll</Link>
+      <Link>Resources\LinFu.AOP.Interfaces.dll</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="Mods.png" />
+    <EmbeddedResource Include="NativeAPIs\MonoMac.dll" />
+    <EmbeddedResource Include="Resources\Mods.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
@@ -129,6 +131,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ILRepack.exe" />
+    <Folder Include="Patches\" />
+    <Folder Include="API\" />
+    <Folder Include="NativeAPIs\" />
+    <Folder Include="Patches\Mods Menu\" />
+    <Folder Include="Core\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>
