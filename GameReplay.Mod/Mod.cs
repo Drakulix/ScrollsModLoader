@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -296,7 +297,7 @@ namespace GameReplay.Mod
 			NameValueCollection nvc = new NameValueCollection();
 			nvc.Add("from", App.Communicator.getUserScreenName()); // player's username
 			nvc.Add("gid", Convert.ToString(toUpload.getId())); // game id
-			nvc.Add("mtime", Convert.ToString(Program.ToUnixTimestamp(File.GetCreationTimeUtc(toUpload.fileName())))); // creation time
+			nvc.Add("mtime", Convert.ToString(Extensions.ToUnixTimestamp(File.GetCreationTimeUtc(toUpload.fileName())))); // creation time
 			
 			return nvc;
 		}

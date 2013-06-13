@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Collections.Specialized;
+using System.Net;
 
 	public static class Extensions
 	{

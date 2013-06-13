@@ -1,0 +1,2015 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LinFu.AOP.Cecil</name>
+    </assembly>
+    <members>
+        <member name="T:LinFu.AOP.Cecil.CatchAllThrownExceptions">
+            <summary>
+            Represents a method rewriter that modifies a method body to support dynamic exception handling.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.CatchAllThrownExceptions.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Adds additional references to the target module.
+            </summary>
+            <param name="module">The host module.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.CatchAllThrownExceptions.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds local variables to the <paramref name="hostMethod" />.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.CatchAllThrownExceptions.RewriteMethodBody(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites the instructions in the target method body to support dynamic exception handling.
+            </summary>
+            <param name="targetMethod">The target method.</param>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that represents the method body.</param>
+            <param name="oldInstructions">The IL instructions of the original method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.CatchAllThrownExceptions.SaveExceptionInfo(Mono.Cecil.MethodDefinition,LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo)">
+            <summary>
+            Saves the current <see cref="T:LinFu.AOP.Interfaces.IExceptionHandlerInfo" /> instance.
+            </summary>
+            <param name="targetMethod">The target method.</param>
+            <param name="emitter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo" /> instance that will emit the current method context.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.AddMethodReplacementImplementation">
+            <summary>
+            Represents an instruction emitter that adds method body replacement support to a given method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.AddMethodReplacementImplementation.#ctor(LinFu.AOP.Cecil.IMethodBodyRewriterParameters)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.AddMethodReplacementImplementation" /> class.
+            </summary>
+            <param name="parameters">The set of parameters that describe the target method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.AddMethodReplacementImplementation.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds method body interception to the target method.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> pointing to the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.AddOriginalInstructions">
+            <summary>
+            Represents an instruction emitter that adds the original method instructions to a given method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.AddOriginalInstructions.#ctor(System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction},Mono.Cecil.Cil.Instruction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.AddOriginalInstructions" /> class.
+            </summary>
+            <param name="oldInstructions">The original method instructions.</param>
+            <param name="endLabel">The instruction label that marks the end of the method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.AddOriginalInstructions.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds the original instructions to a given method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> responsible for the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.AssemblyDefinitionExtensions">
+            <summary>
+            A class that extends <see cref="T:Mono.Cecil.AssemblyDefinition" /> instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.AssemblyDefinitionExtensions.RemoveStrongName(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Removes the strong-name signature from the <paramref name="sourceAssembly" />.
+            </summary>
+            <param name="sourceAssembly">
+            </param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.BaseMethodRewriter">
+            <summary>
+            Represents the basic implementation of a method rewriter class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.Rewrite(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites a target method using the given CilWorker.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+            <param name="oldInstructions">The original instructions from the target method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.AddAdditionalMembers(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Adds additional members to the host type.
+            </summary>
+            <param name="host">The host type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Adds additional references to the target module.
+            </summary>
+            <param name="module">The host module.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds local variables to the <paramref name="hostMethod" />.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.ShouldRewrite(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the given method should be modified.
+            </summary>
+            <param name="targetMethod">The target method.</param>
+            <returns>A <see cref="T:System.Boolean" /> indicating whether or not a method should be rewritten.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.BaseMethodRewriter.RewriteMethodBody(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites the instructions in the target method body.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that represents the method body.</param>
+            <param name="oldInstructions">The IL instructions of the original method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.CecilVisitorExtensions">
+            <summary>
+            A helper class that extends Cecil to support LinFu's weaver model.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.CecilVisitorExtensions.Accept(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.ITypeWeaver)">
+            <summary>
+            Allows a <see cref="T:LinFu.AOP.Cecil.Interfaces.ITypeWeaver" /> instance to traverse any <see cref="T:Mono.Cecil.IReflectionVisitable" />
+            instance.
+            </summary>
+            <param name="visitable">The visitable object.</param>
+            <param name="typeWeaver">The type weaver.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.CecilVisitorExtensions.Accept(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.ITypeWeaver)">
+            <summary>
+            Allows a <see cref="T:LinFu.AOP.Cecil.Interfaces.ITypeWeaver" /> instance to traverse any <see cref="T:Mono.Cecil.IReflectionStructureVisitable" />
+            instance.
+            </summary>
+            <param name="visitable">The visitable object.</param>
+            <param name="typeWeaver">The type weaver.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.CecilVisitorExtensions.Accept(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.IMethodWeaver)">
+            <summary>
+            Allows a <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver" /> instance to traverse any <see cref="T:Mono.Cecil.IReflectionVisitable" />
+            instance.
+            </summary>
+            <param name="visitable">The visitable object.</param>
+            <param name="methodWeaver">The method weaver.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.CecilVisitorExtensions.Accept(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.IMethodWeaver)">
+            <summary>
+            Allows a <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver" /> instance to traverse any <see cref="T:Mono.Cecil.IReflectionVisitable" />
+            instance.
+            </summary>
+            <param name="visitable">The visitable object.</param>
+            <param name="methodWeaver">The method weaver.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.EmitAfterInvoke">
+            <summary>
+            Represents a type that emits the call to the <see cref="T:LinFu.AOP.Interfaces.IAfterInvoke" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.EmitAfterInvoke.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.EmitAfterInvoke" /> class.
+            </summary>
+            <param name="surroundingImplementation">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+            <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="returnValue">The local vaiable that contains the return value of the target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.EmitAfterInvoke.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the call to the <see cref="T:LinFu.AOP.Interfaces.IAfterInvoke" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the current method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.EmitBeforeInvoke">
+            <summary>
+            Represents a type that emits the call to the <see cref="T:LinFu.AOP.Interfaces.IBeforeInvoke" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.EmitBeforeInvoke.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.EmitBeforeInvoke" /> class.
+            </summary>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="surroundingClassImplementation">The variable that contains the class-level <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+            <param name="surroundingImplementation">The variable that contains the instance-level <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+            <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.EmitBeforeInvoke.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the call to the <see cref="T:LinFu.AOP.Interfaces.IAfterInvoke" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the current method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.ExceptionHandlerInfo">
+            <summary>
+            Represents a class that describes the context of a thrown exception.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ExceptionHandlerInfo.#ctor(System.Exception,LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.ExceptionHandlerInfo" /> class.
+            </summary>
+            <param name="ex">The thrown exception.</param>
+            <param name="invocationInfo">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the context of the method call.</param>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.ExceptionHandlerInfo.Exception">
+            <summary>
+            Gets the value indicating the thrown exception.
+            </summary>
+            <value>The thrown exception.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.ExceptionHandlerInfo.InvocationInfo">
+            <summary>
+            Gets the value indicating the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that describes the context of the method
+            that threw the exception.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.ExceptionHandlerInfo.ReturnValue">
+            <summary>
+            Gets or sets the value indicating the return value that will be used in place of the original return value if
+            the exception is intercepted by an <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> instance.
+            </summary>
+            <value>The method return value.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.ExceptionHandlerInfo.ShouldSkipRethrow">
+            <summary>
+            Gets or sets the value indicating whether or not the exception should be rethrown after
+            the <see cref="T:LinFu.AOP.Interfaces.IExceptionHandler" /> handles the given exception.
+            </summary>
+            <value>This should be <c>true</c> if the exception should be rethrown, otherwise, it must be <c>false</c>.</value>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions">
+            <summary>
+            Represents an extension class that adds support for intercepting exceptions thrown at runtime.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptAllExceptions(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptAllExceptions(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptExceptions(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+            <param name="methodFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodFilter" /> instance that will determine which methods should support exception interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptExceptions(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+            <param name="methodFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodFilter" /> instance that will determine which methods should support exception interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptExceptions(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+            <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.ExceptionHandlerInterceptionExtensions.InterceptExceptions(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Enables exception interception on the given type.
+            </summary>
+            <param name="visitable">The target type.</param>
+            <param name="methodFilter">The method filter functor that will determine which methods should support exception interception.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Factories.AddInvocationInfoActionFactory">
+            <summary>
+            A factory instance that creates <see cref="T:System.Action`1" /> delegates
+            that emit the necessary <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> information
+            and store it in a local variable named '__invocationInfo___'.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Factories.AddInvocationInfoActionFactory.CreateInstance(LinFu.IoC.Interfaces.IFactoryRequest)">
+            <summary>
+            Generates the <see cref="T:System.Action`1" /> delegate that will emit
+            the necessary <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> information.
+            </summary>
+            <param name="request">The <see cref="T:LinFu.IoC.Interfaces.IFactoryRequest" /> instance that describes the requested service type.</param>
+            <returns>A delegate that can emit the necessary <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> context that will allow other developers to infer information about the method currently being executed.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Factories.AssemblyWeaverActionFactory">
+            <summary>
+            Represents a class that generates <see cref="T:System.Action`2" /> instances
+            that apply a specific method weaver (with the name given in the first delegate parameter)
+            to every type in every module of an <see cref="T:Mono.Cecil.AssemblyDefinition" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Factories.AssemblyWeaverActionFactory.CreateInstance(LinFu.IoC.Interfaces.IFactoryRequest)">
+            <summary>
+            Generates <see cref="T:System.Action`2" /> instances
+            that apply a specific method weaver (with the name given in the first delegate parameter)
+            to every type in every module of an <see cref="T:Mono.Cecil.AssemblyDefinition" /> instance.
+            </summary>
+            <param name="request">The <see cref="T:LinFu.IoC.Interfaces.IFactoryRequest" /> that describes the service request.</param>
+            <returns>An action delegate that will apply a specific method weaver to all the types in the given assembly.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Factories.TypeWeaverActionFactory">
+            <summary>
+            Represents a class that generates <see cref="T:System.Action`2" /> instances
+            that apply a specific method weaver (with the name given in the first delegate parameter)
+            to a specific <see cref="T:Mono.Cecil.TypeDefinition" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Factories.TypeWeaverActionFactory.CreateInstance(LinFu.IoC.Interfaces.IFactoryRequest)">
+            <summary>
+            Generates the <see cref="T:System.Action`2" /> instance that will
+            weave the target type.
+            </summary>
+            <param name="request">The <see cref="T:LinFu.IoC.Interfaces.IFactoryRequest" /> that describes the service request.</param>
+            <returns>The <see cref="T:System.Action`2" /> instance that will weave the target type.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetMethodReplacementProvider">
+            <summary>
+            Represents a class that emits the instructions that obtain an instance-level <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetMethodReplacementProvider.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.MethodDefinition,System.Func{Mono.Cecil.ModuleDefinition,Mono.Cecil.MethodReference})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetMethodReplacementProvider" /> class.
+            </summary>
+            <param name="methodReplacementProvider">The local variable that contains the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="hostMethod">The target method.</param>
+            <param name="resolveGetProviderMethod">The functor that will resolve the GetProvider method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetMethodReplacementProvider.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that obtain the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetSurroundingClassImplementation">
+            <summary>
+            Represents a class that emits the instructions that obtain the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetSurroundingClassImplementation.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,System.Reflection.MethodInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetSurroundingClassImplementation" /> class.
+            </summary>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="surroundingClassImplementation">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+            <param name="getSurroundingImplementationMethod">The method that will obtain the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetSurroundingClassImplementation.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that obtain the <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the current method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetSurroundingImplementationInstance">
+            <summary>
+            Represents a class that emits the instructions that obtain the current <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetSurroundingImplementationInstance.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.Instruction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetSurroundingImplementationInstance" /> class.
+            </summary>
+            <param name="aroundInvokeProvider">The variable that will hold the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</param>
+            <param name="invocationInfo">
+            </param>
+            <param name="surroundingImplementation">
+            </param>
+            <param name="skipGetSurroundingImplementation">
+            </param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetSurroundingImplementationInstance.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that obtain the current <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.
+            </summary>
+            <param name="IL">
+            </param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetAroundInvokeProvider">
+            <summary>
+            Represents a class that emits the call to obtain the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetAroundInvokeProvider.#ctor(Mono.Cecil.Cil.VariableDefinition,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetAroundInvokeProvider" /> class.
+            </summary>
+            <param name="aroundInvokeProvider">The local variable that holds the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</param>
+            <param name="providerName">The name of the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> property.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetAroundInvokeProvider.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the call to obtain the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> pointing to the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetInterceptionDisabled">
+            <summary>
+            Represents a class that emits the instructions that determine whether or not method interception is disabled.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetInterceptionDisabled.#ctor(LinFu.AOP.Cecil.IMethodBodyRewriterParameters)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetInterceptionDisabled" /> class.
+            </summary>
+            <param name="parameters">The <see cref="T:LinFu.AOP.Cecil.IMethodBodyRewriterParameters" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetInterceptionDisabled.#ctor(Mono.Cecil.MethodReference,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetInterceptionDisabled" /> class.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+            <param name="interceptionDisabled">The local variable that determines whether or not method interception is disabled.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetInterceptionDisabled.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that determine whether or not method interception is disabled.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance responsible for adding or removing instructions to the method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.GetClassMethodReplacementProvider">
+            <summary>
+            Represents a class that emits the instructions that obtain a class-level <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetClassMethodReplacementProvider.#ctor(LinFu.AOP.Cecil.IMethodBodyRewriterParameters,System.Func{Mono.Cecil.ModuleDefinition,Mono.Cecil.MethodReference})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetClassMethodReplacementProvider" /> class.
+            </summary>
+            <param name="parameters">The method body rewriter paramters that describe the </param>
+            <param name="resolveGetProviderMethod">The functor that resolves the method that obtains the method replacement provider instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetClassMethodReplacementProvider.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,System.Func{Mono.Cecil.ModuleDefinition,Mono.Cecil.MethodReference})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.GetClassMethodReplacementProvider" /> class.
+            </summary>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="classMethodReplacementProvider">The variable that contains the class method replacement provider instance.</param>
+            <param name="resolveGetProviderMethod">The functor that resolves the method that obtains the method replacement provider instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.GetClassMethodReplacementProvider.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that obtain a class-level <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that points to the instructions in the method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions">
+            <summary>
+            Represents an extension class that adds field interception support to a given type.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllFields(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Adds field interception support to the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllInstanceFields(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Adds field interception support intercepting all instance fields on the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllStaticFields(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Adds field interception support intercepting all static fields on the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllFields(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Adds field interception support to the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllInstanceFields(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Adds field interception support intercepting all instance fields on the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptAllStaticFields(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Adds field interception support intercepting all static fields on the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptFields(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean},System.Func{Mono.Cecil.FieldReference,System.Boolean})">
+            <summary>
+            Adds field interception support to the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+            <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
+            <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptFields(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.ITypeFilter,LinFu.AOP.Cecil.Interfaces.IFieldFilter)">
+            <summary>
+            Adds field interception support to the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+            <param name="hostTypeFilter">The filter that determines the host types to be modified.</param>
+            <param name="fieldFilter">The field filter that determines the fields that will be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.FieldInterceptionExtensions.InterceptFields(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean},System.Func{Mono.Cecil.FieldReference,System.Boolean})">
+            <summary>
+            Adds field interception support to the target type.
+            </summary>
+            <param name="targetType">The type that will be modified.</param>
+            <param name="methodFilter">The filter that determines which methods on the target type will be modified to support field interception.</param>
+            <param name="fieldFilter">The filter that determines which fields should be intercepted.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.FieldFilterAdapter">
+            <summary>
+            Represents an adapter class that maps a functor to an <see cref="T:LinFu.AOP.Cecil.Interfaces.IFieldFilter" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.FieldFilterAdapter.#ctor(System.Func{Mono.Cecil.FieldReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.FieldFilterAdapter" /> class.
+            </summary>
+            <param name="filter">The field filter.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.FieldFilterAdapter.ShouldWeave(Mono.Cecil.MethodReference,Mono.Cecil.FieldReference)">
+            <summary>
+            Determines whether or not a particular field get or set should be intercepted.
+            </summary>
+            <param name="hostMethod">The host method.</param>
+            <param name="targetField">The target field.</param>
+            <returns>Returns <c>true</c> if the field should be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.IgnoredInstancesRegistry">
+            <summary>
+            Represents a class that keeps track of the internal object instances that should be ignored
+            by the interception routines.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.IgnoredInstancesRegistry.Contains(System.Object)">
+            <summary>
+            Determines whether or not the registry contains the given ignored object.
+            </summary>
+            <param name="target">The target object.</param>
+            <returns>Returns <c>true</c> if the object should be ignored; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.IgnoredInstancesRegistry.AddInstance(System.Object)">
+            <summary>
+            Adds an instance to the list of ignored instances.
+            </summary>
+            <param name="target">The target instance to be ignored by the interception routines.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IFieldFilter">
+            <summary>
+            Represents a type that determines whether or not a particular field get or set should be intercepted.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IFieldFilter.ShouldWeave(Mono.Cecil.MethodReference,Mono.Cecil.FieldReference)">
+            <summary>
+            Determines whether or not a particular field get or set should be intercepted.
+            </summary>
+            <param name="hostMethod">The host method.</param>
+            <param name="targetField">The target field.</param>
+            <returns>Returns <c>true</c> if the field should be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IMethodFilter">
+            <summary>
+            Represents a type that determines which host methods should be modified for method call interception.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IMethodFilter.ShouldWeave(Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not a particular method should be modified.
+            </summary>
+            <param name="targetMethod">The target method to be modified.</param>
+            <returns>Returns <c>true</c> if the method should be modified; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IMethodCallFilter">
+            <summary>
+            Represents a type that determines the method calls that need to be intercepted.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IMethodCallFilter.ShouldWeave(Mono.Cecil.TypeReference,Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not a particular method call should be intercepted.
+            </summary>
+            <param name="targetType">The host type that contains the method call.</param>
+            <param name="hostMethod">The method that contains the current method call.</param>
+            <param name="currentMethodCall">The method call to be intercepted.</param>
+            <returns>Returns <c>true</c> if the method call should be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.IMethodBodyRewriterParameters">
+            <summary>
+            Represents the parameters used to add interception to a given method body.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.TargetMethod">
+            <summary>
+            Gets the value indicating the TargetMethod to be modified.
+            </summary>
+            <value>The method to be modified.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.AroundInvokeProvider">
+            <summary>
+            Gets the value indicating the local variable used to store the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.MethodReplacementProvider">
+            <summary>
+            Gets the value indicating the local variable used to store the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.ClassMethodReplacementProvider">
+            <summary>
+            Gets the value indicating the class-level<see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <value>The class-level<see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.InterceptionDisabled">
+            <summary>
+            Gets the value indicating the local variable that will store the value that determines whether or not
+            interception is disabled.
+            </summary>
+            <value>The value that determines whether or not interception is disabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.InvocationInfo">
+            <summary>
+            Gets the value indicating the local variable that will store the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.
+            </summary>
+            <value>The local variable that will store the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.ReturnValue">
+            <summary>
+            Gets the value indicating the local variable that will store the return value.
+            </summary>
+            <value>The value indicating the local variable that will store the return value.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.RegistryType">
+            <summary>
+            Gets the value indicating the interception registry type that will be responsible for handling class-level interception events.
+            </summary>
+            <value>The interception registry type that will be responsible for handling class-level interception events.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.GetMethodReplacementProviderMethod">
+            <summary>
+            Gets the value indicating the functor that resolves the GetMethodReplacementProvider method.
+            </summary>
+            <value>The functor that resolves the GetMethodReplacementProvider method.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.IMethodBodyRewriterParameters.OldInstructions">
+            <summary>
+            Gets the value indicating the list of old instructions in the current method body.
+            </summary>
+            <value>The value indicating the list of old instructions in the current method body.</value>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.INewInstanceFilter">
+            <summary>
+            Represents a type that determines the constructor calls that will be intercepted by the postweaver.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.INewInstanceFilter.ShouldWeave(Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not a particular constructor call should be intercepted by the postweaver.
+            </summary>
+            <param name="currentConstructor">The constructor used to instantiate the current instance.</param>
+            <param name="concreteType">The concrete type that contains the new instance call.</param>
+            <param name="hostMethod">The host method that contains the new operator call.</param>
+            <returns>Returns <c>true</c> if the new operator call should be intercepted; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.MethodCallFilterAdapter">
+            <summary>
+            Represents a type that converts functors into method call filter instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodCallFilterAdapter.#ctor(System.Func{Mono.Cecil.MethodReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.MethodCallFilterAdapter" /> class.
+            </summary>
+            <param name="hostMethodFilter">The method filter that will determine the host methods that will be modified for interception.</param>
+            <param name="methodCallFilter">The method filter that will determine which method calls will be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodCallFilterAdapter.ShouldWeave(Mono.Cecil.TypeReference,Mono.Cecil.MethodReference,Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not a particular method call should be intercepted.
+            </summary>
+            <param name="targetType">The host type that contains the method call.</param>
+            <param name="hostMethod">The method that contains the current method call.</param>
+            <param name="currentMethodCall">The method call to be intercepted.</param>
+            <returns>Returns <c>true</c> if the method call should be intercepted; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.NewInstanceInterceptionAdapter">
+            <summary>
+            Represents an adapter class that maps <see cref="T:LinFu.AOP.Cecil.Interfaces.INewInstanceFilter" /> instances to
+            functors.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.NewInstanceInterceptionAdapter.#ctor(System.Func{Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.NewInstanceInterceptionAdapter" /> class.
+            </summary>
+            <param name="filter">The filter that determines which instances will be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.NewInstanceInterceptionAdapter.ShouldWeave(Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not a particular constructor call should be intercepted by the postweaver.
+            </summary>
+            <param name="currentConstructor">The constructor used to instantiate the current instance.</param>
+            <param name="concreteType">The concrete type that contains the new instance call.</param>
+            <param name="hostMethod">The host method that contains the new operator call.</param>
+            <returns>Returns <c>true</c> if the new operator call should be intercepted; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver">
+            <summary>
+            Represents a type weaver that modifies types to implement the <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptionHost" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver.#ctor(System.Func{Mono.Cecil.TypeReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the ImplementFieldInterceptionHostWeaver class.
+            </summary>
+            <param name="filter">The filter that determines which types should be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver.ShouldWeave(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Determines whether or not a type should be modified.
+            </summary>
+            <param name="item">
+            </param>
+            <returns>
+                <c>true</c> if the type should be modified; otherwise, it will return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver.Weave(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Modifies the target type.
+            </summary>
+            <param name="type">The type to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver.AddAdditionalMembers(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Adds additional members to the target module.
+            </summary>
+            <param name="host">The host module.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ImplementFieldInterceptionHostWeaver.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Imports references into the target module.
+            </summary>
+            <param name="module">The module containing the type to be modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InstructionProvider">
+            <summary>
+            Represents the default implementation of the <see cref="T:LinFu.AOP.Cecil.Interfaces.IInstructionProvider" /> class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InstructionProvider.GetInstructions(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines the instructions for a given method.
+            </summary>
+            <param name="method">The source method that contains the instructions.</param>
+            <returns>The set of instructions for the given method.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InstructionSwapper">
+            <summary>
+            Provides the basic functionality for the <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InstructionSwapper.RewriteMethodBody(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites the instructions in the target method body.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that represents the method body.</param>
+            <param name="oldInstructions">The IL instructions of the original method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InstructionSwapper.ShouldReplace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
+            </summary>
+            <param name="oldInstruction">The instruction that is currently being evaluated.</param>
+            <param name="hostMethod">The method that hosts the current instruction.</param>
+            <returns>
+                <c>true</c> if the method should be replaced; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InstructionSwapper.Replace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Replaces the <paramref name="oldInstruction" /> with a new set of <paramref name="IL" /> instructions..
+            </summary>
+            <param name="oldInstruction">The instruction currently being evaluated.</param>
+            <param name="hostMethod">The method that contains the target instruction.</param>
+            <param name="IL">The CilWorker for the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InterceptAndSurroundMethodBody">
+            <summary>
+            Represents a method body rewriter that surrounds a method body with the necessary prolog and epilogs
+            that enable method body interception.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptAndSurroundMethodBody.#ctor(LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo,LinFu.AOP.Cecil.Interfaces.IInstructionEmitter,LinFu.AOP.Cecil.ISurroundMethodBody,LinFu.AOP.Cecil.Interfaces.IInstructionEmitter,LinFu.AOP.Cecil.Interfaces.IInstructionEmitter,LinFu.AOP.Cecil.Interfaces.IInstructionEmitter,LinFu.AOP.Cecil.IMethodBodyRewriterParameters)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.InterceptAndSurroundMethodBody" /> class.
+            </summary>
+            <param name="emitter">The emitter that will instantiate the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="getInterceptionDisabled">The emitter that will determine whether or not method interception is enabled.</param>
+            <param name="surroundMethodBody">The <see cref="T:LinFu.AOP.Cecil.ISurroundMethodBody" /> instance that will add the epilogs and prologs to the method body.</param>
+            <param name="getInstanceMethodReplacementProvider">The emitter that will obtain the method replacement provider instance.</param>
+            <param name="getClassMethodReplacementProvider">The emitter that will obtain the class-level method replacement provider instance.</param>
+            <param name="addMethodReplacement">The instruction emitter that will add the call to obtain the method body replacement instance. </param>
+            <param name="parameters">The parameters that describe the context of the method body rewrite.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptAndSurroundMethodBody.Rewrite(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites a target method using the given CilWorker.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+            <param name="oldInstructions">The original instructions from the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InterceptFieldAccess">
+            <summary>
+            Represents a <see cref="T:LinFu.AOP.Cecil.MethodRewriter" /> that intercepts calls to field getters and setters and redirects those calls to
+            a <see cref="T:LinFu.AOP.Interfaces.IFieldInterceptor" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.#ctor(System.Func{Mono.Cecil.FieldReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the InterceptFieldAccess class.
+            </summary>
+            <param name="filter">The filter that determines which fields should be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.#ctor(LinFu.AOP.Cecil.Interfaces.IFieldFilter)">
+            <summary>
+            Initializes a new instance of the InterceptFieldAccess class.
+            </summary>
+            <param name="filter">The filter that determines which fields should be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds locals to the target method.
+            </summary>
+            <param name="hostMethod">The method to be modified</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Adds references to the target module.
+            </summary>
+            <param name="module">The module that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.ShouldReplace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
+            </summary>
+            <remarks>The <see cref="T:LinFu.AOP.Cecil.InterceptFieldAccess" /> class only modifies instructions that get or set the value of static and instance fields.</remarks>
+            <param name="oldInstruction">The instruction that is currently being evaluated.</param>
+            <param name="hostMethod">The method that hosts the current instruction.</param>
+            <returns>
+                <c>true</c> if the method should be replaced; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptFieldAccess.Replace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Replaces the <paramref name="oldInstruction" /> with a set of new instructions.
+            </summary>
+            <param name="oldInstruction">The instruction currently being evaluated.</param>
+            <param name="hostMethod">The method that contains the target instruction.</param>
+            <param name="IL">The CilWorker that will be used to emit the method body instructions.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InterceptMethodBody">
+            <summary>
+            Represents a method rewriter type that adds interception capabilities to any given method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptMethodBody.#ctor(System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.InterceptMethodBody" /> class.
+            </summary>
+            <param name="methodFilter">The method filter that will determine the methods with the method bodies that will be intercepted.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptMethodBody.ShouldRewrite(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the given method should be modified.
+            </summary>
+            <param name="targetMethod">The target method.</param>
+            <returns>A <see cref="T:System.Boolean" /> indicating whether or not a method should be rewritten.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InterceptMethodBody.RewriteMethodBody(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites the instructions in the target method body.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> instance that represents the method body.</param>
+            <param name="oldInstructions">The IL instructions of the original method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IAroundMethodWeaver">
+            <summary>
+            Represents a class that adds a method
+            epilog and prolog to an existing method instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IAroundMethodWeaver.ShouldWeave(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the current item should be modified.
+            </summary>
+            <param name="method">The target item.</param>
+            <returns>Returns <c>true</c> if the current item can be modified; otherwise, it should return <c>false.</c></returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IAroundMethodWeaver.AddProlog(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.MethodBody)">
+            <summary>
+            Adds an prolog to the target method.
+            </summary>
+            <param name="firstInstruction">The instruction that marks the start of the <paramref name="methodBody" /></param>
+            <param name="methodBody">The method body of the target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IAroundMethodWeaver.AddEpilog(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.MethodBody)">
+            <summary>
+            Adds an epilog to the target method.
+            </summary>
+            <param name="lastInstruction">The instruction that marks the end of the <paramref name="methodBody" /></param>
+            <param name="methodBody">The method body of the target method.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo">
+            <summary>
+            Represents a class that emits
+            the IL to save information about
+            the method currently being executed.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo.Emit(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Emits the IL to save information about
+            the method currently being executed.
+            </summary>
+            <seealso cref="T:LinFu.AOP.Interfaces.IInvocationInfo" />
+            <param name="targetMethod">The target method currently being executed.</param>
+            <param name="currentMethod">The method that will be passed to the <paramref name="invocationInfo" /> as the currently executing method.</param>
+            <param name="invocationInfo">The local variable that will store the resulting <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IInstructionEmitter">
+            <summary>
+            Represents a type that is capable of manipulating instructions within a given method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IInstructionEmitter.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits a set of instructions to the given <paramref name="IL">CilWorker</paramref>.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> responsible for the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IHostWeaver`1">
+            <summary>
+            Represents a weaver class that can modify its host.
+            </summary>
+            <typeparam name="THost">The host that holds the item to be modified.</typeparam>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IHostWeaver`1.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Imports references into the target <see cref="T:Mono.Cecil.ModuleDefinition" /> instance.
+            </summary>
+            <param name="module">The module that will hold the modified item.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IHostWeaver`1.AddAdditionalMembers(`0)">
+            <summary>
+            Adds additional members to the host type.
+            </summary>
+            <param name="host">The host that holds the current item being modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IInstructionProvider">
+            <summary>
+            Represents a type that can provide the instructions for a given method.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IInstructionProvider.GetInstructions(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines the instructions for a given method.
+            </summary>
+            <param name="method">The source method that contains the instructions.</param>
+            <returns>The set of instructions for the given method.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IMethodBodyRewriter">
+            <summary>
+            Represents a type that can modify method bodies.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IMethodBodyRewriter.Rewrite(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites a target method using the given CilWorker.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+            <param name="oldInstructions">The original instructions from the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter">
+            <summary>
+            Represents a type that can modify method bodies.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IMethodRewriter.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds local variables to the <paramref name="hostMethod" />.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver">
+            <summary>
+            Represents a type that can modify <see cref="T:Mono.Cecil.MethodDefinition" /> objects.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IModuleWeaver">
+            <summary>
+            Represents a class that can modify existing <see cref="T:Mono.Cecil.ModuleDefinition" /> instances.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver">
+            <summary>
+            Represents a type that can emit IL that instantiates an object
+            within a given method.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds local variables to the <paramref name="hostMethod" />.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver.ShouldIntercept(Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,Mono.Cecil.MethodReference)">
+            <summary>
+            Determines whether or not the object instantiation call to the <paramref name="constructor" />
+            should be instrumented.
+            </summary>
+            <param name="constructor">The constructor that will be used to instantiate the target type.</param>
+            <param name="concreteType">The type to be created.</param>
+            <param name="hostMethod">The method that contains the instantiation request.</param>
+            <returns>
+                <c>true</c> if the call to the <c>new</c> operator should be intercepted; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver.EmitNewObject(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,Mono.Cecil.MethodReference,Mono.Cecil.TypeReference)">
+            <summary>
+            Emits the necessary <paramref name="IL" /> necessary to instantiate
+            the <paramref name="concreteType" />.
+            </summary>
+            <param name="hostMethod">The method that contains the activation request.</param>
+            <param name="IL">The CilWorker that will be used to replace the existing instructions in the method body.</param>
+            <param name="targetConstructor">The constructor that is currently being used to instantiate the concrete type.</param>
+            <param name="concreteType">The <see cref="T:System.Type" /> that describes the object type that needs to be instantiated.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IPdbLoader">
+            <summary>
+            Represents a type that can load PDB files from disk.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IPdbLoader.LoadAssembly(System.Byte[],System.Byte[])">
+            <summary>
+            Loads an assembly into memory.
+            </summary>
+            <param name="assemblyArray">The bytes that represent the target assembly.</param>
+            <param name="pdbBytes">The bytes that represent the PDB file.</param>
+            <returns>A <see cref="T:System.Reflection.Assembly" /> that represents the loaded assembly.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IPdbLoader.LoadSymbols(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Loads the debug symbols from the target <paramref name="assembly" />.
+            </summary>
+            <param name="assembly">The assembly that contains the symbols to be loaded.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IPdbLoader.SaveSymbols(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Saves the debug symbols for the  target<paramref name="assembly" />.
+            </summary>
+            <param name="targetAssembly">The assembly that contains the symbols to be saved.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.ITypeWeaver">
+            <summary>
+            Represents a type that can modify an existing <see cref="T:Mono.Cecil.TypeDefinition" />.
+            </summary>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IWeaver`2">
+            <summary>
+            Represents a class that can weave (or modify)
+            a member embedded in an assembly.
+            </summary>
+            <typeparam name="T">The type of object to modify.</typeparam>
+            <typeparam name="THost">The host that holds the item to be modified.</typeparam>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IWeaver`2.ShouldWeave(`0)">
+            <summary>
+            Determines whether or not the current item should be modified.
+            </summary>
+            <param name="item">The target item.</param>
+            <returns>Returns <c>true</c> if the current item can be modified; otherwise, it should return <c>false.</c></returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IWeaver`2.Weave(`0)">
+            <summary>
+            Modifies the target <paramref name="item" />.
+            </summary>
+            <param name="item">The item to be modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InvocationInfo">
+            <summary>
+            Represents the information associated with
+            a single method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvocationInfo.#ctor(System.Object,System.Reflection.MethodBase,System.Diagnostics.StackTrace,System.Type[],System.Type[],System.Type,System.Object[])">
+            <summary>
+            Initializes the <see cref="T:LinFu.AOP.Cecil.InvocationInfo" /> instance.
+            </summary>
+            <param name="target">The target instance currently being called.</param>
+            <param name="targetMethod">The method currently being called.</param>
+            <param name="stackTrace"> The <see cref="T:System.Diagnostics.StackTrace" /> associated with the method call when the call was made.</param>
+            <param name="parameterTypes">The parameter types for the current target method.</param>
+            <param name="typeArguments">
+            If the <see cref="P:LinFu.AOP.Cecil.InvocationInfo.TargetMethod" /> method is a generic method,
+            this will hold the generic type arguments used to construct the
+            method.
+            </param>
+            <param name="returnType">The return type of the target method.</param>
+            <param name="arguments">The arguments used in the method call.</param>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.CallingMethod">
+            <summary>
+            This is the actual calling method that invoked the <see cref="P:LinFu.AOP.Cecil.InvocationInfo.TargetMethod" />.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.Target">
+            <summary>
+            The target instance currently being called.
+            </summary>
+            <remarks>This typically is a reference to a proxy object.</remarks>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.TargetMethod">
+            <summary>
+            The method currently being called.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.StackTrace">
+            <summary>
+            The <see cref="T:System.Diagnostics.StackTrace" /> associated
+            with the method call when the call was made.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.ReturnType">
+            <summary>
+            The return type of the <see cref="P:LinFu.AOP.Cecil.InvocationInfo.TargetMethod" />.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.ParameterTypes">
+            <summary>
+            The parameter types for the current target method.
+            </summary>
+            <remarks>
+                <para>
+            This could be very useful in cases where the actual target method
+            is based on a generic type definition. In such cases,
+            the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance needs to be able
+            to describe the actual parameter types being used by the
+            current generic type instantiation. This property helps
+            users determine which parameter types are actually being used
+            at the time of the method call.
+            </para>
+            </remarks>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.TypeArguments">
+            <summary>
+            If the <see cref="P:LinFu.AOP.Cecil.InvocationInfo.TargetMethod" /> method is a generic method,
+            this will hold the generic type arguments used to construct the
+            method.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.InvocationInfo.Arguments">
+            <summary>
+            The arguments used in the method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvocationInfo.ToString">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <returns>A string that represents the current object.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InvocationInfoEmitter">
+            <summary>
+            Represents the default implementation for the
+            <see cref="T:LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo" /> class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvocationInfoEmitter.#ctor">
+            <summary>
+            Initializes a new instance of the InvocationInfoEmitter class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvocationInfoEmitter.#ctor(System.Boolean)">
+            <summary>
+            Initializes a new instance of the InvocationInfoEmitter class.
+            </summary>
+            <param name="pushStackTrace">Determines whether or not stack trace information will be available at runtime.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvocationInfoEmitter.Emit(Mono.Cecil.MethodDefinition,Mono.Cecil.MethodReference,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Emits the IL to save information about
+            the method currently being executed.
+            </summary>
+            <seealso cref="T:LinFu.AOP.Interfaces.IInvocationInfo" />
+            <param name="targetMethod">The target method currently being executed.</param>
+            <param name="interceptedMethod">The method that will be passed to the <paramref name="invocationInfo" /> as the currently executing method.</param>
+            <param name="invocationInfo">The local variable that will store the resulting <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.InvocationInfoExtensions">
+            <summary>
+            Adds helper methods classes that implement the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" />
+            interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.InvocationInfoExtensions.Emit(LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo,System.Reflection.MethodInfo,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Emits the IL instructions that will store information about the method <paramref name="targetMethod">currently being executed</paramref>
+            and stores the results into the <paramref name="invocationInfo">variable.</paramref></summary>
+            <param name="emitter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IEmitInvocationInfo" /> instance.</param>
+            <param name="method">The method whose implementation will be intercepted.</param>
+            <param name="targetMethod">The actual method that will contain the resulting instructions.</param>
+            <param name="invocationInfo">The <see cref="T:Mono.Cecil.Cil.VariableDefinition">local variable</see> that will store the current <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.InvocationInfoExtensions.Proceed(LinFu.AOP.Interfaces.IInvocationInfo)">
+            <summary>
+            Invokes the currently executing method by using the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.Target" />
+            as the target instance, the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" /> as the method,
+            and uses the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.Arguments" /> for the method
+            arguments.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that contains information about the method call itself.</param>
+            <returns>The return value of the method call.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.InvocationInfoExtensions.Proceed(LinFu.AOP.Interfaces.IInvocationInfo,System.Object)">
+            <summary>
+            Invokes the currently executing method by using the <paramref name="target" />
+            as the target instance, the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" /> as the method,
+            and uses the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.Arguments" /> for the method
+            arguments.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that contains information about the method call itself.</param>
+            <param name="target">The target instance that will handle the method call.</param>
+            <returns>The return value of the method call.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.InvocationInfoExtensions.Proceed(LinFu.AOP.Interfaces.IInvocationInfo,System.Object,System.Object[])">
+            <summary>
+            Invokes the currently executing method by using the <paramref name="target" />
+            as the target instance, the <see cref="P:LinFu.AOP.Interfaces.IInvocationInfo.TargetMethod" /> as the method,
+            and uses the <paramref name="arguments" /> for the method
+            arguments.
+            </summary>
+            <param name="info">The <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance that contains information about the method call itself.</param>
+            <param name="target">The target instance that will handle the method call.</param>
+            <param name="arguments">The arguments that will be used for the actual method call.</param>
+            <returns>The return value of the method call.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Interfaces.IVerifier">
+            <summary>
+            A class that verifies a given <see cref="T:Mono.Cecil.AssemblyDefinition" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Interfaces.IVerifier.Verify(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Verifies the given <paramref name="assembly" /> instance.
+            </summary>
+            <param name="assembly">The assembly definition that needs to be verified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.InvokeMethodReplacement">
+            <summary>
+            Represents a class that emits the instructions that call the method replacement instead of the original method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvokeMethodReplacement.#ctor(Mono.Cecil.Cil.Instruction,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.InvokeMethodReplacement" /> class.
+            </summary>
+            <param name="executeOriginalInstructions">The instruction label that will be used if the original instructions should be executed.</param>
+            <param name="methodReplacementProvider">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="classMethodReplacementProvider">The variable that contains the class-level <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.InvokeMethodReplacement.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Emits the instructions that call the method replacement instead of the original method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the current method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.ISurroundMethodBody">
+            <summary>
+            Represents a type that can add a prolog and epilog instructions to a particular method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ISurroundMethodBody.AddProlog(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds a prolog to the given method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the given method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ISurroundMethodBody.AddEpilog(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds an epilog to the given method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the given method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.ITypeFilter">
+            <summary>
+            Represents a type that determines whether or not a particular type should be modified.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.ITypeFilter.ShouldWeave(Mono.Cecil.TypeReference)">
+            <summary>
+            Determines whether or not a type should be modified.
+            </summary>
+            <param name="type">The target type.</param>
+            <returns>Returns <c>true</c> if the type should be modified.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Loaders.AssemblyLoaderWithPdbSupport">
+            <summary>
+            Represents an <see cref="T:LinFu.Reflection.AssemblyLoader" /> class that adds support for loading PDB files into memory every time an assembly is loaded into memory.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.AssemblyLoaderWithPdbSupport.#ctor(LinFu.Reflection.IAssemblyLoader)">
+            <summary>
+            Initializes a new instance of the AssemblyLoaderWithPdbSupport class.
+            </summary>
+            <param name="loader">The <see cref="T:LinFu.Reflection.IAssemblyLoader" /> that will perform the actual load operation.</param>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.Loaders.AssemblyLoaderWithPdbSupport.AssemblyLoader">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.Reflection.IAssemblyLoader" /> instance that will be used to load assemblies into memory.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.AssemblyLoaderWithPdbSupport.Load(System.String)">
+            <summary>
+            Loads the target assembly (and its corresponding PDB file) into memory.
+            </summary>
+            <param name="assemblyFile">The full path and filename of the assembly to load.</param>
+            <returns>A loaded <see cref="T:System.Reflection.Assembly" /> instance.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.AssemblyLoaderWithPdbSupport.RemoveTemporaryFiles(System.String,System.String,System.String,System.String)">
+            <summary>
+            Removes the temporary backup files that were created during the load operation.
+            </summary>
+            <param name="assemblyFile">The full path and location of the original assembly file.</param>
+            <param name="pdbFile">The full path and location of the original PDB file.</param>
+            <param name="pdbTempFileName">The full path and location of the temporary pdb file.</param>
+            <param name="assemblyBackupFile">The full path and location of the backup assembly file.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Loaders.JITWeaver">
+            <summary>
+            Represents a loader that modifies a given assembly prior to being loaded from disk.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.JITWeaver.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.Loaders.JITWeaver" /> class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.JITWeaver.#ctor(LinFu.AOP.Cecil.Interfaces.IPdbLoader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.Loaders.JITWeaver" /> class.
+            </summary>
+            <param name="pdbLoader">The loader that will be responsible for loading the program debugging information into memory.</param>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.Loaders.JITWeaver.PdbLoader">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.AOP.Cecil.Interfaces.IPdbLoader" /> that will be used to load debug symbols into memory.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.Loaders.JITWeaver.AssemblyWeavers">
+            <summary>
+            Gets the value indicating the list of <see cref="T:System.Action`1" /> delegates
+            that will be used to modify the assemblies loaded into memory.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.Loaders.JITWeaver.AssemblyVerifier">
+            <summary>
+            Gets or sets the value indicating the <see cref="T:LinFu.AOP.Cecil.Interfaces.IVerifier" />
+            instance that will be used to ensure that the modified assemblies are valid.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.JITWeaver.Load(System.String)">
+            <summary>
+            Modifies a given assembly prior to being loaded from disk.
+            </summary>
+            <param name="assemblyFile">The filename of the target assembly.</param>
+            <returns>A valid assembly.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Loaders.PdbLoader">
+            <summary>
+            Represents the default implementation of the <see cref="T:LinFu.AOP.Cecil.Interfaces.IPdbLoader" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.PdbLoader.LoadAssembly(System.Byte[],System.Byte[])">
+            <summary>
+            Loads an assembly into memory.
+            </summary>
+            <param name="assemblyArray">The bytes that represent the target assembly.</param>
+            <param name="pdbBytes">The bytes that represent the PDB file.</param>
+            <returns>A <see cref="T:System.Reflection.Assembly" /> that represents the loaded assembly.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.PdbLoader.LoadSymbols(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Loads the debug symbols from the target <paramref name="assembly" />.
+            </summary>
+            <param name="assembly">The assembly that contains the symbols to be loaded.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Loaders.PdbLoader.SaveSymbols(Mono.Cecil.AssemblyDefinition)">
+            <summary>
+            Saves the debug symbols for the  target<paramref name="assembly" />.
+            </summary>
+            <param name="targetAssembly">The assembly that contains the symbols to be saved.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.MethodBodyRewriterParameters">
+            <summary>
+            Represents the parameters used to add interception to a given method body.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodBodyRewriterParameters.#ctor(Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction},Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,System.Func{Mono.Cecil.ModuleDefinition,Mono.Cecil.MethodReference},System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.MethodBodyRewriterParameters" /> class.
+            </summary>
+            <param name="IL">The CilWorker that is responsible for the current method body.</param>
+            <param name="oldInstructions">The value indicating the list of old instructions in the current method body.</param>
+            <param name="interceptionDisabled">The value that determines whether or not interception is disabled.</param>
+            <param name="invocationInfo">The local variable that will store the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="returnValue">The value indicating the local variable that will store the return value.</param>
+            <param name="methodReplacementProvider">The <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="aroundInvokeProvider">The <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</param>
+            <param name="classMethodReplacementProvider">The class-level<see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="getMethodReplacementProviderMethod">The functor that resolves the GetMethodReplacementProvider method.</param>
+            <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.OldInstructions">
+            <summary>
+            Gets the value indicating the list of old instructions in the current method body.
+            </summary>
+            <value>The value indicating the list of old instructions in the current method body.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.ClassMethodReplacementProvider">
+            <summary>
+            Gets the value indicating the class-level<see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <value>The class-level<see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.AroundInvokeProvider">
+            <summary>
+            Gets the value indicating the local variable used to store the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.MethodReplacementProvider">
+            <summary>
+            Gets the value indicating the local variable used to store the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.
+            </summary>
+            <value>The <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.TargetMethod">
+            <summary>
+            Gets the value indicating the TargetMethod to be modified.
+            </summary>
+            <value>The method to be modified.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.InterceptionDisabled">
+            <summary>
+            Gets the value indicating the local variable that will store the value that determines whether or not
+            interception is disabled.
+            </summary>
+            <value>The value that determines whether or not interception is disabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.InvocationInfo">
+            <summary>
+            Gets the value indicating the local variable that will store the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.
+            </summary>
+            <value>The local variable that will store the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.ReturnValue">
+            <summary>
+            Gets the value indicating the local variable that will store the return value.
+            </summary>
+            <value>The value indicating the local variable that will store the return value.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.RegistryType">
+            <summary>
+            Gets the value indicating the interception registry type that will be responsible for handling class-level interception events.
+            </summary>
+            <value>The interception registry type that will be responsible for handling class-level interception events.</value>
+        </member>
+        <member name="P:LinFu.AOP.Cecil.MethodBodyRewriterParameters.GetMethodReplacementProviderMethod">
+            <summary>
+            Gets the value indicating the functor that resolves the GetMethodReplacementProvider method.
+            </summary>
+            <value>The functor that resolves the GetMethodReplacementProvider method.</value>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions">
+            <summary>
+            Represents an extension class that adds helper methods to the <see cref="T:Mono.Cecil.MethodDefinition" /> type.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodDefinitionExtensions.AddLocal(Mono.Cecil.MethodDefinition,System.Type)">
+            <summary>
+            Adds a local variable to the given method.
+            </summary>
+            <param name="methodDef">The target method.</param>
+            <param name="localType">The variable type.</param>
+            <returns>A local variable definition.</returns>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions">
+            <summary>
+            Represents an extension class that adds method body interception support to the Mono.Cecil object model.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptAllMethodBodies(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptAllMethodBodies(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptMethodBody(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+            <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptMethodBody(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+            <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptMethodBody(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+            <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodBodyInterceptionExtensions.InterceptMethodBody(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Intercepts all method bodies on the target item.
+            </summary>
+            <param name="target">The target to be modified.</param>
+            <param name="methodFilter">The method filter that will determine the methods that will be modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions">
+            <summary>
+            Represents an extension class that adds method call interception support to the Mono.Cecil object model.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptAllMethodCalls(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptAllMethodCalls(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean})">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="typeFilter">The type filter that determines which types will be modified for interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean})">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="typeFilter">The type filter that determines the types that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.IMethodCallFilter,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="methodCallFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodCallFilter" /> instance that determines the method calls that will be intercepted.</param>
+            <param name="hostMethodFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodFilter" /> instance that determines the host method calls that will be modified</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.IMethodCallFilter,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception for all method calls made inside the target.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="methodCallFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodCallFilter" /> instance that determines the method calls that will be intercepted.</param>
+            <param name="hostMethodFilter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodFilter" /> instance that determines the host method calls that will be modified</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="typeFilter">The filter that will determine the target types that will be modified.</param>
+            <param name="hostMethodFilter">The filter that will determine the methods that will be modified on the target type.</param>
+            <param name="methodCallFilter">The filter that will determine which third-party methods will be intercepted on the target type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodCallInterceptionExtensions.InterceptMethodCalls(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the current <paramref name="target" /> to support third-party method call interception.
+            </summary>
+            <param name="target">The target object.</param>
+            <param name="typeFilter">The filter that will determine the target types that will be modified.</param>
+            <param name="hostMethodFilter">The filter that will determine the methods that will be modified on the target type.</param>
+            <param name="methodCallFilter">The filter that will determine which third-party methods will be intercepted on the target type.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.MethodRewriter">
+            <summary>
+            Provides the basic functionality for the <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.Rewrite(Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker,System.Collections.Generic.IEnumerable{Mono.Cecil.Cil.Instruction})">
+            <summary>
+            Rewrites a target method using the given CilWorker.
+            </summary>
+            <param name="method">The target method.</param>
+            <param name="IL">The CilWorker that will be used to rewrite the target method.</param>
+            <param name="oldInstructions">The original instructions from the target method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.AddAdditionalMembers(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Adds additional members to the host type.
+            </summary>
+            <param name="host">The host type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Adds additional references to the target module.
+            </summary>
+            <param name="module">The host module.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.AddLocals(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Adds local variables to the <paramref name="hostMethod" />.
+            </summary>
+            <param name="hostMethod">The target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.ShouldReplace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not the method rewriter should replace the <paramref name="oldInstruction" />.
+            </summary>
+            <param name="oldInstruction">The instruction that is currently being evaluated.</param>
+            <param name="hostMethod">The method that hosts the current instruction.</param>
+            <returns>
+                <c>true</c> if the method should be replaced; otherwise, it should return <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodRewriter.Replace(Mono.Cecil.Cil.Instruction,Mono.Cecil.MethodDefinition,Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Replaces the <paramref name="oldInstruction" /> with a new set of <paramref name="IL" /> instructions..
+            </summary>
+            <param name="oldInstruction">The instruction currently being evaluated.</param>
+            <param name="hostMethod">The method that contains the target instruction.</param>
+            <param name="IL">The CilWorker for the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.MethodRewriterExtensions">
+            <summary>
+            A helper class that extends Cecil to support the <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodRewriterExtensions.WeaveWith(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.IMethodRewriter,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Transforms the methods in the <paramref name="target" /> using the given method rewriter.
+            </summary>
+            <param name="target">The transformation target.</param>
+            <param name="rewriter">The method rewriter.</param>
+            <param name="filter">The method filter that determines which methods will be rewritten.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.MethodRewriterExtensions.WeaveWith(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.IMethodRewriter,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Transforms the methods in the <paramref name="target" /> using the given method rewriter.
+            </summary>
+            <param name="target">The transformation target.</param>
+            <param name="rewriter">The method rewriter.</param>
+            <param name="filter">The method filter that determines which methods will be rewritten.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.MethodWeaver">
+            <summary>
+            Represents the default implementation of the <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver" /> interface.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.#ctor(LinFu.AOP.Cecil.Interfaces.IMethodRewriter,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the MethodWeaver class.
+            </summary>
+            <param name="rewriter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter" /> instance that will modify the existing method.</param>
+            <param name="filter">The filter that determines which methods should be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.#ctor(LinFu.AOP.Cecil.Interfaces.IMethodRewriter,LinFu.AOP.Cecil.Interfaces.IInstructionProvider,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Initializes a new instance of the MethodWeaver class.
+            </summary>
+            <param name="rewriter">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodRewriter" /> instance that will modify the existing method.</param>
+            <param name="instructionProvider">The provider that will obtain the original instructions for the target method.</param>
+            <param name="filter">The filter that determines which methods should be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.ShouldWeave(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Determines whether or not a method should be modified.
+            </summary>
+            <param name="item">The target method.</param>
+            <returns>
+                <c>true</c> if the method should be modified; otherwise, it returns <c>false</c>.</returns>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.Weave(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Modifies a target method.
+            </summary>
+            <param name="method">The target method.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.AddAdditionalMembers(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Adds additional members to the target type.
+            </summary>
+            <param name="host">The target type to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.ImportReferences(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Imports additional references into the given module.
+            </summary>
+            <param name="module">The module that will store the additional references.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaver.Rewrite(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Rewrites an existing method.
+            </summary>
+            <param name="method">The method that needs to be modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.MethodWeaverVisitor">
+            <summary>
+            Represents a visitor class that can iterate over <see cref="T:Mono.Cecil.MethodDefinition" />
+            instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaverVisitor.#ctor(LinFu.AOP.Cecil.Interfaces.IMethodWeaver)">
+            <summary>
+            Initializes a new instance of the MethodWeaverVisitor class.
+            </summary>
+            <param name="methodWeaver">The <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver" /> that will be used to modify a given type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaverVisitor.VisitConstructor(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Visits a <see cref="T:Mono.Cecil.MethodDefinition" /> instance.
+            </summary>
+            <param name="ctor">The <see cref="T:Mono.Cecil.MethodDefinition" /> instance that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaverVisitor.VisitMethodDefinition(Mono.Cecil.MethodDefinition)">
+            <summary>
+            Visits a <see cref="T:Mono.Cecil.MethodDefinition" /> instance.
+            </summary>
+            <param name="method">The <see cref="T:Mono.Cecil.MethodDefinition" /> instance that will be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaverVisitor.VisitModuleDefinition(Mono.Cecil.ModuleDefinition)">
+            <summary>
+            Visits a <see cref="T:Mono.Cecil.ModuleDefinition" /> instance.
+            </summary>
+            <param name="module">A <see cref="T:Mono.Cecil.ModuleDefinition" /> object.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.MethodWeaverVisitor.VisitTypeDefinition(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Visits a <see cref="T:Mono.Cecil.TypeDefinition" /> instance.
+            </summary>
+            <param name="type">A <see cref="T:Mono.Cecil.TypeDefinition" /> object.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions">
+            <summary>
+            An extension class that adds support for intercepting the 'new' operator with LinFu.AOP.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptAllNewInstances(Mono.Cecil.IReflectionStructureVisitable)">
+            <summary>
+            Modifies a <paramref name="target" /> to support intercepting all calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptAllNewInstances(Mono.Cecil.IReflectionVisitable)">
+            <summary>
+            Modifies a <paramref name="target" /> to support intercepting all calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies a <paramref name="target" /> to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+            <param name="typeFilter">The functor that determines which type instantiations should be intercepted.</param>
+            <param name="methodFilter">The filter that determines which host methods will be modified</param>
+            <remarks>
+            The type filter determines the concrete types that should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;TypeReference, bool&gt; filter =
+            concreteType =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies a <paramref name="target" /> assembly to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+            <param name="constructorFilter">The functor that determines which type instantiations should be intercepted.</param>
+            <param name="methodFilter">The filter that determines which host methods will be modified</param>
+            <remarks>
+            The type filter determines which concrete types and constructors should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;MethodReference, TypeReference, bool&gt; filter =
+            (constructor, concreteType, hostMethod) =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean})">
+            <summary>
+            Modifies a <paramref name="target" /> assembly to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+            <param name="typeFilter">The functor that determines which type instantiations should be intercepted.</param>
+            <remarks>
+            The type filter determines the concrete types that should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;TypeReference, bool&gt; filter =
+            concreteType =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean})">
+            <summary>
+            Modifies a <paramref name="target" /> assembly to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The assembly to be modified.</param>
+            <param name="typeFilter">The functor that determines which type instantiations should be intercepted.</param>
+            <remarks>
+            The type filter determines the concrete types that should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;TypeReference, bool&gt; filter =
+            concreteType =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionStructureVisitable,System.Func{Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the <paramref name="target" /> to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The item to be modified.</param>
+            <param name="methodFilter">The filter that determines which host methods will be modified</param>
+            <param name="typeFilter">The filter that determines which types will be modified.</param>
+            <remarks>
+            The type filter determines which concrete types and constructors should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;MethodReference, TypeReference, bool&gt; filter =
+            (constructor, concreteType, hostMethod) =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionVisitable,System.Func{Mono.Cecil.MethodReference,Mono.Cecil.TypeReference,System.Boolean},System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the <paramref name="target" /> to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The item to be modified.</param>
+            <param name="constructorFilter">The functor that determines which type instantiations should be intercepted.</param>
+            <param name="methodFilter">The filter that determines which host methods will be modified</param>
+            <remarks>
+            The type filter determines which concrete types and constructors should be intercepted at runtime.
+            For example, the following functor code intercepts types named "Foo":
+            <code>
+            Func&lt;MethodReference, TypeReference, bool&gt; filter =
+            (constructor, concreteType, hostMethod) =&gt; concreteType.Name == "Foo";
+            </code></remarks>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.INewInstanceFilter,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Modifies the <paramref name="target" /> to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The item to be modified.</param>
+            <param name="newInstanceFilter">The filter that will determine which constructor calls should be intercepted.</param>
+            <param name="methodFilter">The filter that will determine which host methods should be modified to support new instance interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstances(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.INewInstanceFilter,LinFu.AOP.Cecil.Interfaces.IMethodFilter)">
+            <summary>
+            Modifies the <paramref name="target" /> to support intercepting calls to the 'new' operator.
+            </summary>
+            <param name="target">The item to be modified.</param>
+            <param name="newInstanceFilter">The filter that will determine which constructor calls should be intercepted.</param>
+            <param name="methodFilter">The filter that will determine which host methods should be modified to support new instance interception.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstancesWith(Mono.Cecil.IReflectionStructureVisitable,LinFu.AOP.Cecil.Interfaces.INewObjectWeaver,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the methods in the given <paramref name="target" /> using the custom <see cref="T:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver" /> instance.
+            </summary>
+            <param name="target">The host that contains the methods that will be modified.</param>
+            <param name="weaver">The custom <see cref="T:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver" /> that will replace all calls to the new operator with the custom code emitted by the given weaver.</param>
+            <param name="filter">The method filter that will determine which methods should be modified.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.NewOperatorInterceptionExtensions.InterceptNewInstancesWith(Mono.Cecil.IReflectionVisitable,LinFu.AOP.Cecil.Interfaces.INewObjectWeaver,System.Func{Mono.Cecil.MethodReference,System.Boolean})">
+            <summary>
+            Modifies the methods in the given <paramref name="target" /> using the custom <see cref="T:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver" /> instance.
+            </summary>
+            <param name="target">The host that contains the methods that will be modified.</param>
+            <param name="weaver">The custom <see cref="T:LinFu.AOP.Cecil.Interfaces.INewObjectWeaver" /> that will replace all calls to the new operator with the custom code emitted by the given weaver.</param>
+            <param name="filter">The method filter that will determine which methods should be modified.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.SaveReturnValue">
+            <summary>
+            Represents an instruction emitter that saves the return value from a given method call.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SaveReturnValue.#ctor(Mono.Cecil.TypeReference,Mono.Cecil.Cil.VariableDefinition)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.SaveReturnValue" /> class.
+            </summary>
+            <param name="returnType">The return type.</param>
+            <param name="returnValue">The return value.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SaveReturnValue.Emit(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Saves the return value from a given method call.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> pointing to the target method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.SurroundMethodBody">
+            <summary>
+            Represents a class that surrounds a call site with calls to an <see cref="T:LinFu.AOP.Interfaces.IAroundInvoke" /> instance.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SurroundMethodBody.#ctor(LinFu.AOP.Cecil.IMethodBodyRewriterParameters,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.IMethodBodyRewriterParameters" /> class.
+            </summary>
+            <param name="parameters">The parameters that describe the context of the emitter call.</param>
+            <param name="providerName">The name of the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> property.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SurroundMethodBody.#ctor(Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,Mono.Cecil.Cil.VariableDefinition,System.Type,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:LinFu.AOP.Cecil.IMethodBodyRewriterParameters" /> class.
+            </summary>
+            <param name="methodReplacementProvider">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IMethodReplacementProvider" /> instance.</param>
+            <param name="aroundInvokeProvider">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> instance</param>
+            <param name="invocationInfo">The variable that contains the <see cref="T:LinFu.AOP.Interfaces.IInvocationInfo" /> instance.</param>
+            <param name="interceptionDisabled">The variable that determines whether or not interception is disabled</param>
+            <param name="returnValue">The variable that contains the method return value.</param>
+            <param name="registryType">The interception registry type that will be responsible for handling class-level interception events.</param>
+            <param name="providerName">The name of the <see cref="T:LinFu.AOP.Interfaces.IAroundInvokeProvider" /> property.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SurroundMethodBody.AddProlog(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds a prolog to the given method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the given method body.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.SurroundMethodBody.AddEpilog(Mono.Cecil.Cil.CilWorker)">
+            <summary>
+            Adds an epilog to the given method body.
+            </summary>
+            <param name="IL">The <see cref="T:Mono.Cecil.Cil.CilWorker" /> that points to the given method body.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.Extensions.TypeDefinitionExtensions">
+            <summary>
+            Adds helper methods to the <see cref="T:Mono.Cecil.TypeDefinition" /> class.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.Extensions.TypeDefinitionExtensions.WeaveWith(Mono.Cecil.TypeDefinition,LinFu.AOP.Cecil.Interfaces.IMethodWeaver)">
+            <summary>
+            Applies a <see cref="T:LinFu.AOP.Cecil.Interfaces.IMethodWeaver" /> instance to all methods
+            within the given <paramref name="targetType" />.
+            </summary>
+            <param name="targetType">The target module.</param>
+            <param name="weaver">The <see cref="T:LinFu.AOP.Cecil.Interfaces.ITypeWeaver" /> instance that will modify the methods in the given target type.</param>
+        </member>
+        <member name="T:LinFu.AOP.Cecil.TypeWeaverVisitor">
+            <summary>
+            Represents a visitor class that can iterate over <see cref="T:Mono.Cecil.TypeDefinition" />
+            instances.
+            </summary>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.TypeWeaverVisitor.#ctor(LinFu.AOP.Cecil.Interfaces.ITypeWeaver)">
+            <summary>
+            Initializes a new instance of the TypeWeaverVisitor class.
+            </summary>
+            <param name="weaver">The <see cref="T:LinFu.AOP.Cecil.Interfaces.ITypeWeaver" /> that will be used to modify a given type.</param>
+        </member>
+        <member name="M:LinFu.AOP.Cecil.TypeWeaverVisitor.VisitTypeDefinition(Mono.Cecil.TypeDefinition)">
+            <summary>
+            Visits a <see cref="T:Mono.Cecil.TypeDefinition" /> instance.
+            </summary>
+            <param name="type">A <see cref="T:Mono.Cecil.TypeDefinition" /> object.</param>
+        </member>
+    </members>
+</doc>

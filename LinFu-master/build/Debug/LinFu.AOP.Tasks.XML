@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LinFu.AOP.Tasks</name>
+    </assembly>
+    <members>
+        <member name="T:LinFu.AOP.Tasks.PostWeaveTask">
+            <summary>
+            Represents an MSBuild task for LinFu.AOP that allows users to inject an aspect framework into their applications
+            at postbuild time.
+            </summary>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.TargetFile">
+            <summary>
+            Gets or sets the value indicating the full path and filename of the target assembly.
+            </summary>
+            <value>The target assembly filename.</value>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.OutputFile">
+            <summary>
+            Gets or sets the value indicating the full path and filename of the output assembly.
+            </summary>
+            <value>The output assembly filename.</value>
+            <remarks>This field is optional; if blank, the default value will be the same value as the <see cref="P:LinFu.AOP.Tasks.PostWeaveTask.TargetFile" /> property.</remarks>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.InterceptAllMethodCalls">
+            <summary>
+            Gets or sets the value indicating whether or not third party method calls should be intercepted in the target assembly.
+            </summary>
+            <value>A boolean value indicating whether or not third party method call interception should be enabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.InterceptAllMethodBodies">
+            <summary>
+            Gets or sets the value indicating whether or not method bodies should be intercepted in the target assembly.
+            </summary>
+            <value>A boolean value indicating whether or not method body interception should be enabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.InterceptAllNewInstances">
+            <summary>
+            Gets or sets the value indicating whether or not new instances should be intercepted in the target assembly.
+            </summary>
+            <value>A boolean value indicating whether or not new instance interception should be enabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.InterceptAllFields">
+            <summary>
+            Gets or sets the value indicating whether or not field reads and writes should be intercepted in the target assembly.
+            </summary>
+            <value>A boolean value indicating whether or not field reads and writes should be enabled.</value>
+        </member>
+        <member name="P:LinFu.AOP.Tasks.PostWeaveTask.InterceptAllExceptions">
+            <summary>
+            Gets or sets the value indicating whether or not thrown exceptions should be intercepted in the target assembly.
+            </summary>
+            <value>A boolean value indicating whether or not exception interception should be enabled.</value>
+        </member>
+        <member name="M:LinFu.AOP.Tasks.PostWeaveTask.Execute">
+            <summary>
+            Executes the postweaver.
+            </summary>
+            <returns>Returns <c>true</c> if the operation succeeded. Otherwise, it will return <c>false</c>.</returns>
+        </member>
+    </members>
+</doc>

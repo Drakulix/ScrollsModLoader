@@ -6,6 +6,7 @@ namespace ScrollsModLoader.Interfaces
 {
 	public abstract class ModAPIContainer {
 		public virtual void Initialize (ModAPI api) {}
+		public virtual string OwnFolder () { return ""; }
 	}
 
 	public abstract class BaseMod : ModAPIContainer
@@ -22,6 +23,10 @@ namespace ScrollsModLoader.Interfaces
 
 		public sealed override void Initialize(ModAPI api) {
 			this.modAPI = api;
+		}
+
+		public sealed override string OwnFolder() {
+			return modAPI.OwnFolder (this.GetName());
 		}
 	}
 

@@ -24,6 +24,11 @@ namespace ScrollsModLoader
 		{
 			sceneHandler.LoadScene (providerDesc);
 		}
+
+		public string OwnFolder(string modName)
+		{
+			return Platform.getGlobalScrollsInstallPath () + modName;
+		}
 	}
 }
 

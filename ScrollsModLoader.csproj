@@ -26,6 +26,7 @@
         <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
         <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/OX.Copyable/bin/${ProjectConfigName}/OX.Copyable.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${ProjectConfigName}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
         <Command type="AfterBuild" command="rm Assembly-CSharp.dll" workingdir="${TargetDir}" />
+        <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
@@ -100,6 +101,11 @@
     <Compile Include="Patch.cs" />
     <Compile Include="PatchHeaderMenu.cs" />
     <Compile Include="PatchSettingsMenu.cs" />
+    <Compile Include="APIHandler.cs" />
+    <Compile Include="ICardListCallback.cs" />
+    <Compile Include="ListItem.cs" />
+    <Compile Include="PatchModsMenu.cs" />
+    <Compile Include="UIListPopup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

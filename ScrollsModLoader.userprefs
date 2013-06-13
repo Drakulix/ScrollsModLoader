@@ -1,0 +1,54 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="GameReplay.Mod/Mod.cs">
+    <Files>
+      <File FileName="Platform.cs" Line="49" Column="51" />
+      <File FileName="Patcher.cs" Line="1" Column="1" />
+      <File FileName="Hooks.cs" Line="1" Column="1" />
+      <File FileName="Dialogs.cs" Line="1" Column="1" />
+      <File FileName="ScrollsModLoader.Interfaces/BaseMod.cs" Line="29" Column="11" />
+      <File FileName="Extensions.cs" Line="1" Column="1" />
+      <File FileName="OX.Copyable/OX.Copyable.csproj" Line="1" Column="1" />
+      <File FileName="OX.Copyable/Copyable.cs" Line="1" Column="1" />
+      <File FileName="PatchUpdater.cs" Line="1" Column="1" />
+      <File FileName="Patch.cs" Line="1" Column="1" />
+      <File FileName="PatchSettingsMenu.cs" Line="1" Column="1" />
+      <File FileName="ScrollsModLoader.Interfaces/ModAPI.cs" Line="8" Column="11" />
+      <File FileName="ScrollsModLoader.Interfaces/SceneProvider.cs" Line="2" Column="7" />
+      <File FileName="APIHandler.cs" Line="30" Column="61" />
+      <File FileName="UIListPopup.cs" Line="1" Column="1" />
+      <File FileName="ListItem.cs" Line="1" Column="1" />
+      <File FileName="ICardListCallback.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/Player.cs" Line="1" Column="1" />
+      <File FileName="PatchModsMenu.cs" Line="1" Column="1" />
+      <File FileName="Logger.mod/Logger.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/Mod.cs" Line="300" Column="48" />
+      <File FileName="GameReplay.Mod/Recorder.cs" Line="1" Column="1" />
+      <File FileName="ModLoader.cs" Line="132" Column="11" />
+      <File FileName="GameReplay.Mod/Extensions.cs" Line="4" Column="18" />
+      <File FileName="ScrollsFilter.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/ICardListCallback.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/ListItem.cs" Line="2" Column="7" />
+      <File FileName="GameReplay.Mod/JsonMessageSplitter.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/EndGameScreen.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="GameReplay.Mod" expanded="True">
+            <Node name="References" expanded="True" />
+          </Node>
+          <Node name="OX.Copyable" expanded="True" />
+          <Node name="ScrollsModLoader" expanded="True" selected="True" />
+          <Node name="ScrollsModLoader.Interfaces" expanded="True">
+            <Node name="References" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

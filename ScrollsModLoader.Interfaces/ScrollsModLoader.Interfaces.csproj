@@ -35,10 +35,15 @@
     <Reference Include="LinFu.AOP.Interfaces">
       <HintPath>..\LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Template.mod\UnityEngine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseMod.cs" />
+    <Compile Include="ModAPI.cs" />
+    <Compile Include="SceneProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
