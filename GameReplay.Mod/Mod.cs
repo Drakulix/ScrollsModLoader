@@ -263,7 +263,7 @@ namespace GameReplay.Mod
 		}
 
 		public int getId(){
-			return Path.GetFileNameWithoutExtension(filename);
+			return Convert.ToInt16(Path.GetFileNameWithoutExtension(filename));
 		}
 		
 		/*public String enemyID() {
@@ -288,7 +288,7 @@ namespace GameReplay.Mod
 			NameValueCollection postParams = getPostParams();
 			
 			Extensions.HttpUploadFile("http://a.scrollsguide.com/replay/upload",
-				toUpload.fileName(), "replay", "scr/replay", nvc);
+				toUpload.fileName(), "replay", "scr/replay", postParams);
 		}
 		
 		private NameValueCollection getPostParams()
