@@ -154,10 +154,10 @@ namespace GameReplay.Mod
 		{
 			playing = true;
 
-			String log = File.ReadAllText (fileName);
+			String log = File.ReadAllText (fileName).Split(new char[] {'}'}, 2)[1];
 
 			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
-			App.Communicator.isActive = false;
+			//App.Communicator.isActive = false;
 			SceneLoader.loadScene("_BattleModeView");
 			App.Communicator.setData(log);
 
@@ -214,10 +214,11 @@ namespace GameReplay.Mod
 						if (playing)
 						{
 							typeof(BattleModeUI).GetField("callback", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(info.Target(), this);
-							App.ChatUI.SetEnabled(true);
+							// NOTE: Not yet working, needs alternative ICommListener for Chat messages
+							/*App.ChatUI.SetEnabled(true);
 							App.ChatUI.SetLocked(false);
 							App.ChatUI.Show(false);
-							App.ChatUI.SetCanOpenContextMenu(false);
+							App.ChatUI.SetCanOpenContextMenu(false);*/
 							//activate chat on replays but disable profile or trading menus (wired bugs)
 						}
 					}
