@@ -12,36 +12,42 @@ namespace GameReplay.Mod
 		private string gameID;
 		//private DateTime timestamp;
 
-		public Recorder (String saveFolder)
+		public Recorder(String saveFolder)
 		{
 			this.saveFolder = saveFolder;
-			App.Communicator.addListener (this);
+			App.Communicator.addListener(this);
 			//timestamp = DateTime.Now;
 		}
 
-		public void handleMessage (Message msg)
+		public void handleMessage(Message msg)
 		{
 			if (msg is BattleRedirectMessage || msg is BattleRejoinMessage || msg is FailMessage || msg is OkMessage)
+			{
 				return;
+			}
 
-			if (msg is GameInfoMessage) {
+			if (msg is GameInfoMessage)
+			{
 				gameID = (msg as GameInfoMessage).gameId.ToString();
 			}
 
-			messages.Add (msg.getRawText());
+			messages.Add(msg.getRawText());
 
-			if (msg is NewEffectsMessage && msg.getRawText().Contains("EndGame")) {
+			if (msg is NewEffectsMessage && msg.getRawText().Contains("EndGame"))
+			{
 				//save
-				File.WriteAllLines (saveFolder+Path.DirectorySeparatorChar+gameID+".sgr", messages.ToArray ());
+				File.WriteAllLines(saveFolder + Path.DirectorySeparatorChar + gameID + ".sgr", messages.ToArray());
 			}
 
 			if (msg is HandViewMessage)
+			{
 				return;
+			}
 
 			//TO-DO:
 			//steaming
 		}
-		public void onReconnect ()
+		public void onReconnect()
 		{
 			return; //I (still) don't care
 		}
