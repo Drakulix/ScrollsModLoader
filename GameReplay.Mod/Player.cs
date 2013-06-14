@@ -154,7 +154,7 @@ namespace GameReplay.Mod
 		{
 			playing = true;
 
-			String log = File.ReadAllText (fileName).Split(new char[] {'}'}, 2)[1];
+			String log = File.ReadAllText (fileName);
 
 			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
 			App.Communicator.isActive = false;

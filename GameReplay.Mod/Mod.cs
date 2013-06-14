@@ -377,9 +377,9 @@ namespace GameReplay.Mod
 			return filename;
 		}
 
-		public int getId()
+		public long getId()
 		{
-			return Convert.ToInt32(Path.GetFileNameWithoutExtension(filename));
+			return Convert.ToInt64(Path.GetFileNameWithoutExtension(filename));
 		}
 	}
 
@@ -438,7 +438,7 @@ namespace GameReplay.Mod
 			this.callback = p;
 		}
 
-		public void startDownload(int gameId)
+		public void startDownload(long gameId)
 		{
 			saveLocation = callback.getRecordFolder() + Path.DirectorySeparatorChar + gameId + ".sgr";
 
