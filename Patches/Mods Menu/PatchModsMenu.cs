@@ -1,34 +1,19 @@
 using System;
+using System.IO;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using Mono.Cecil;
 using LinFu.AOP.Interfaces;
 using UnityEngine;
 using ScrollsModLoader.Interfaces;
+using JsonFx.Json;
 
 namespace ScrollsModLoader
 {
 	public class PatchModsMenu : Patch, SceneProvider, IListCallback, IOkStringCancelCallback, IOkCallback
 	{
-		public PatchModsMenu(TypeDefinitionCollection types) : base (types) {
-
-			//add mods
-			repositories.Add (new Repo("ScrollsGuide", "http://mods.Scrollsguide.com/"));
-
-
-
-			downloadableMods.Add (new Mod("GameRecorder", "Record Games!", "v1.0"));
-			downloadableMods.Add (new Mod("DeckSync", "Export/Import Decks!", "v1.0"));
-			for (int i=0; i < 30; i++)
-				downloadableMods.Add (new Mod("TestMod", "Fill that List!", "v2.0!"));
-
-			installedMods.Add(new Mod("Logger", "Debug Network logging", "v0.1"));
-
-			//downloadableMods.Add (new Mod("DeckSync"));
-
-		}
-
 		private bool first = true;
 		private int defaultTextSize;
 		private Texture2D text;
@@ -44,6 +29,20 @@ namespace ScrollsModLoader
 		private GUISkin tradeSkinClose;
 		private GUISkin lobbySkin;
 		*/
+
+		public PatchModsMenu(TypeDefinitionCollection types) : base (types) {
+
+			//downloadableMods.Add (new Mod("GameRecorder", "Record Games!", "v1.0"));
+			//downloadableMods.Add (new Mod("DeckSync", "Export/Import Decks!", "v1.0"));
+			//for (int i=0; i < 30; i++)
+			//	downloadableMods.Add (new Mod("TestMod", "Fill that List!", "v2.0!"));
+
+			//installedMods.Add(new Mod("Logger", "Debug Network logging", "v0.1"));
+
+			//downloadableMods.Add (new Mod("DeckSync"));
+
+		}
+
 		public override MethodDefinition[] patchedMethods() {
 			MethodDefinition DrawHeaderButtons = Hooks.getMethDef (Hooks.getTypeDef (assembly, "LobbyMenu"), "drawHeaderButtons");
 			return new MethodDefinition[] {DrawHeaderButtons};
@@ -110,7 +109,8 @@ namespace ScrollsModLoader
 			repoListPopup.Init (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f+40.0f, (float)Screen.width/4.5f, (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f), false, true, repositories, this, null, null, false, true, true, true, null, true, false);
 			repoListPopup.enabled = true;
 			repoListPopup.SetOpacity(1f);
-			repoListPopup.setSelectedItem (repositories[0]);
+			if (repositories.Count > 0)
+				repoListPopup.setSelectedItem (repositories [0]);
 
 			downloadableListPopup = new GameObject ("Downloadable List").AddComponent<UIListPopup> ();
 			downloadableListPopup.transform.parent = parentScene.transform;
@@ -196,10 +196,7 @@ namespace ScrollsModLoader
 		public void PopupOk (string popupType, string choice)
 		{
 			if (popupType.Equals("addRepo")) {
-				Item repo = new Repo("Test", choice);
-				repositories.Add(repo);
-				repoListPopup.SetItemList(repositories);
-				repoListPopup.setSelectedItem(repo);
+				//RepoManager.addRepository (choice);
 			}
 		}
 		public void PopupCancel (string popupType)
@@ -211,65 +208,24 @@ namespace ScrollsModLoader
 		{
 			return;
 		}
-	}
 
-	//recycle the CardListPopup API
 
-	public class Repo : Item {
 
-		private String name;
-		private String url;
 
-		public Repo (String name, String url) {
-			this.name = name;
-			this.url = url;
+		public void selectRepo(Repo repo) {
+
 		}
 
-		public bool selectable ()
-		{
-			return true;
-		}
-		public Texture getImage ()
-		{
-			return null;
-		}
-		public string getName ()
-		{
-			return name;
-		}
-		public string getDesc ()
-		{
-			return url;
-		}
-	}
-
-	public class Mod : Item {
-
-		private String name;
-		private String desc;
-		private String version;
-
-		public Mod (String name, String desc, String version) {
-			this.name = name;
-			this.desc = desc;
-			this.version = version;
-		}
-	
-		public bool selectable ()
-		{
-			return true;
-		}
-		public Texture getImage ()
-		{
-			return null;
-		}
-		public string getName ()
-		{
-			return name;
-		}
-		public string getDesc ()
-		{
-			return desc+", "+version;
+		public void removeRepository(string url) {
+			Repo remRepo = null;
+			foreach (Repo repo in repositories) {
+				if (repo.getDesc ().Equals (url))
+					remRepo = repo;
+			}
+			if (remRepo != null)
+				repositories.Remove (remRepo);
+			repoListPopup.SetItemList (repositories);
+			repoListPopup.setSelectedItem (repositories[0]);
 		}
 	}
 }

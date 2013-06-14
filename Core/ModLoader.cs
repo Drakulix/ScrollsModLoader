@@ -33,17 +33,13 @@ namespace ScrollsModLoader {
 
 		public object Intercept (IInvocationInfo info)
 		{
-			//Console.WriteLine (info.TargetMethod.Name);
-			foreach (Patch patch in loader.GetPatches()) {
-				if (patch.patchedMethods ().Where (item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count () > 0)
-					return patch.Intercept (info);
-			}
+			//list for unloading
+			List<String> modsToUnload = new List<String> ();
 
-			List<BaseMod> modsToUnload = new List<BaseMod> ();
-
-			//we are loaded, get the hooks
-			foreach (BaseMod mod in loader.GetModInstances()) {
-				MethodDefinition[] requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion());
+			//load beforeinvoke
+			foreach (String id in loader.modOrder) {
+				BaseMod mod = loader.modInstances [id];
+				MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType().GetMethod("GetHooks").Invoke(null, new object[] { types, SharedConstants.getGameVersion() } );
 				if (requestedHooks.Where(item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count() > 0) {
 					object returnVal;
 					try {
@@ -52,17 +48,34 @@ namespace ScrollsModLoader {
 						}
 					} catch (Exception exp) {
 						Console.WriteLine(exp);
-						modsToUnload.Add (mod);
+						modsToUnload.Add (id);
 					}
 				}
 			}
 
-			foreach (BaseMod mod in modsToUnload) {
-				loader.UnloadMod (mod);
+			//unload
+			foreach (String id in modsToUnload) {
+				loader.unloadMod (loader.modManager.installedMods.Find (delegate(LocalMod lmod) {
+					return (lmod.id.Equals (id));
+				}));
 			}
 			modsToUnload.Clear ();
 
-			object ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
+
+			//check for patch call
+			object ret = null;
+			bool patchFound = false;
+			foreach (Patch patch in loader.patches) {
+				if (patch.patchedMethods ().Where (item => item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name)).Count () > 0) {
+					ret = patch.Intercept (info);
+					patchFound = true;
+				}
+			}
+			if (!patchFound)
+				ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
+
+
+			//backup return value
 			object retBack = null;
 			try {
 				retBack = ret.Copy ();
@@ -70,8 +83,11 @@ namespace ScrollsModLoader {
 				retBack = ret;
 			}
 
-			foreach (BaseMod mod in loader.GetModInstances()) {
-				MethodDefinition[] requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion ());
+
+			//load afterinvoke
+			foreach (String id in loader.modOrder) {
+				BaseMod mod = loader.modInstances [id];
+				MethodDefinition[] requestedHooks = (MethodDefinition[]) mod.GetType().GetMethod("GetHooks").Invoke(null, new object[] { types, SharedConstants.getGameVersion() } );
 				if (requestedHooks.Where(item => item.Name.Equals(info.TargetMethod.Name) && item.DeclaringType.Name.Equals(info.TargetMethod.DeclaringType.Name)).Count() > 0) {
 					try {
 						mod.AfterInvoke (new InvocationInfo(info), ref ret);
@@ -83,14 +99,18 @@ namespace ScrollsModLoader {
 					} catch (Exception exp) {
 						ret = retBack;
 						Console.WriteLine(exp);
-						loader.UnloadMod (mod);
+						modsToUnload.Add (id);
 					}
 				}
 			}
 
-			foreach (BaseMod mod in modsToUnload) {
-				loader.UnloadMod (mod);
+			//unload
+			foreach (String id in modsToUnload) {
+				loader.unloadMod (loader.modManager.installedMods.Find (delegate(LocalMod lmod) {
+					return (lmod.id.Equals (id));
+				}));
 			}
+			modsToUnload.Clear ();
 
 			return ret;
 		}
@@ -126,155 +146,223 @@ namespace ScrollsModLoader {
 	{
 		static bool init = false;
 		static ModLoader instance = null;
-		private List<String> modList = new List<String>();
-		private List<BaseMod> modInstances = new List<BaseMod>();
-		private List<Patch> patches = new List<Patch>();
+		private String modLoaderPath;
+
+		public ModManager modManager;
+		public List<String> modOrder = new List<String>();
+
+		private bool isRepatchNeeded = false;
+
+		public Dictionary<String, BaseMod> modInstances = new Dictionary<String, BaseMod>();
+		public List<Patch> patches = new List<Patch>();
+
 		private APIHandler publicAPI = null;
 
 		public ModLoader ()
 		{
-			//System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
-			//Console.WriteLine (t);
+			modLoaderPath = Platform.getGlobalScrollsInstallPath() + System.IO.Path.DirectorySeparatorChar + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
 
-			String installPath = Platform.getGlobalScrollsInstallPath();
-			String modLoaderPath = installPath + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
-			bool repatchNeeded = false;
 
-			//load mod list
+			//load installed mods
+			modManager = new ModManager (this);
+
+
+			//load order list
 			if (!File.Exists (modLoaderPath+"mods.ini")) {
 				File.CreateText (modLoaderPath+"mods.ini").Close();
 				//first launch, set hooks for patches
-				repatchNeeded = true;
+				this.queueRepatch();
 			}
-			modList = File.ReadAllLines (modLoaderPath+"mods.ini").ToList();
+			modOrder = File.ReadAllLines (modLoaderPath+"mods.ini").ToList();
 
-			//match it with mods avaiable
-			if (!Directory.Exists (modLoaderPath+"mods"))
-				Directory.CreateDirectory (modLoaderPath+"mods");
-			String[] folderList = (from subdirectory in Directory.GetDirectories(modLoaderPath+"mods")
-									where Directory.GetFiles(subdirectory, "*.mod.dll").Length != 0 ||
-			                       		  Directory.GetFiles(subdirectory, "*.Mod.dll").Length != 0
-									select subdirectory).ToArray();
+
+
+			//match order with installed mods
+			foreach (LocalMod mod in modManager.installedMods) {
+				if (mod.enabled)
+					if (!modOrder.Contains (mod.localId))
+						modOrder.Add (mod.localId);
+			}
+
+			//clean up not available mods
+			foreach (String id in modOrder.ToArray()) {
+				if (modManager.installedMods.Find (delegate(LocalMod mod) {
+					return (mod.id.Equals (id));
+				}) == null)
+					modOrder.Remove (id);
+			}
+
+
+
+			//get Scrolls Types list
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
+
+			//get ModAPI
+			publicAPI = new APIHandler (this);
+
+			//loadPatches
+			this.loadPatches (types);
+
+			//loadModsStatic
+			this.loadModsStatic (types);
+
+			//save ModList
+			File.Delete (modLoaderPath+"mods.ini");
+			StreamWriter modOrderWriter = File.CreateText (modLoaderPath+"mods.ini");
+			foreach (String modId in modOrder) {
+				modOrderWriter.WriteLine (modId);
+			}
+			modOrderWriter.Flush ();
+			modOrderWriter.Close ();
+
+			//repatch
+			this.repatchIfNeeded ();
+		}
+
+		public void loadPatches(TypeDefinitionCollection types) {
+
+			//get Patches
+			patches.Add (new PatchUpdater (types));
+			//patches.Add(new PatchOffline(types));
+
+			PatchSettingsMenu settingsMenuHook = new PatchSettingsMenu (types);
+			publicAPI.setSceneCallback (settingsMenuHook);
+			patches.Add (settingsMenuHook);
+
+			PatchModsMenu modMenuHook = new PatchModsMenu (types);
+			modMenuHook.Initialize (publicAPI);
+			patches.Add (modMenuHook);
+
+			//add Hooks
+			foreach (Patch patch in patches) {
+				foreach (MethodDefinition definition in patch.patchedMethods())
+					ScrollsFilter.AddHook (definition);
+			}
+		}
+
+		public void loadModsStatic(TypeDefinitionCollection types) {
+			//get Mods
+			foreach (LocalMod mod in modManager.installedMods) {
+				if (mod.enabled) {
+					if (this.loadModStatic (mod.installPath) == null) {
+						modManager.disableMod(mod);
+						modOrder.Remove (mod.localId);
+					}
+				}
+			}
+		}
+
+		public Mod loadModStatic(String filePath) {
+			//get Scrolls Types list
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
+			return this._loadModStatic (types, filePath);
+		}
+
+		public void loadModStatic(TypeDefinitionCollection types, String filepath) {
+			this._loadModStatic (types, filepath);
+		}
+
+		public Mod _loadModStatic(TypeDefinitionCollection types, String filepath) {
+			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
+			AppDomain.CurrentDomain.AssemblyResolve += resolver;
+			
+
+			Assembly modAsm = Assembly.LoadFile(filepath);
+			Type modClass = (from _modClass in modAsm.GetTypes ()
+			                 where _modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
+			                 select _modClass).First();
+
+			//no mod classes??
+			if (modClass == null) {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return null;
+			}
+
+			//get hooks
+			MethodDefinition[] hooks = (MethodDefinition[]) modClass.GetMethod ("GetHooks").Invoke (null, new object[] {
+				types,
+				SharedConstants.getGameVersion ()
+			});
+
+			TypeDefinition[] typeDefs = new TypeDefinition[types.Count];
+			types.CopyTo(typeDefs, 0);
+
+			//check hooks
+			foreach (MethodDefinition hook in hooks) {
+				//type/method does not exists
+				if ((from type in typeDefs
+				     where type.Equals(hook.DeclaringType)
+				     select type).Count() == 0) {
+					//disable mod
+					AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+					return null;
+				}
+			}
+
+			//add hooks
+			foreach (MethodDefinition hook in hooks) {
+				ScrollsFilter.AddHook (hook);
+			}
+
+			//mod object for local mods on ModManager
+			Mod mod = new Mod();
+			mod.id = "00000000000000000000000000000000";
+			mod.name = (String)modClass.GetMethod("GetName").Invoke(null, null);
+			mod.version = (int)modClass.GetMethod("GetVersion").Invoke(null, null);
+			mod.versionCode = ""+mod.version;
+			mod.description = "";
+
+			AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+			return mod;
+		}
+
+
+		public void loadMods() {
+
+			foreach (String id in modOrder) {
+				this.loadMod(modManager.installedMods.Find (delegate(LocalMod mod) {
+					return (mod.id.Equals (id));
+				}));
+			}
+
+		}
+
+		public void loadMod(LocalMod mod) {
 
 			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
 			AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
-			//load mods
-			foreach (String folder in folderList) {
-				try {
-					String[] modFiles = Directory.GetFiles (folder, "*.mod.dll");
-					if (Platform.getOS() != Platform.OS.Win) modFiles.Concat(Directory.GetFiles (folder, "*.Mod.dll")).ToArray();
-					foreach (String modFile in modFiles) {
-						Assembly mod = Assembly.LoadFile(modFile);
-						Type[] modClasses = (from modClass in mod.GetTypes ()
-						                     where modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
-						                     select modClass).ToArray();
-						foreach (Type modClass in modClasses) {
-							modInstances.Add((BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
-							//Console.WriteLine("added mod");
-						} 
-					}
-				} catch (ReflectionTypeLoadException exp) {
-					Console.WriteLine(exp.ToString());
-				}
+			Assembly modAsm = Assembly.LoadFile(mod.installPath);
+			Type modClass = (from _modClass in modAsm.GetTypes ()
+			                 where _modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
+			                 select _modClass).First();
+
+
+			//no mod classes??
+			if (modClass == null) {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return;
 			}
 
-			//check mod list
-			List<BaseMod> modInstancesCpy = new List<BaseMod>(modInstances);
-			foreach (BaseMod mod in modInstancesCpy) {
-				if (!modList.Contains (mod.GetName()+"."+mod.GetVersion())) {
-					modList.Add (mod.GetName()+"."+mod.GetVersion());
-					repatchNeeded = true;
-					break;
-				} else {
-					//re-sort for mod order calling
-					modInstances.Remove (mod);
-					modInstances.Insert(modList.IndexOf(mod.GetName()+"."+mod.GetVersion()), mod);
-				}
-			}
-			
-			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
-			TypeDefinition[] typeArray = new TypeDefinition[types.Count];
-			types.CopyTo(typeArray, 0);
+			modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
 
-			//get ModAPI
-			APIHandler api = new APIHandler ();
+		}
 
-			//add Patches
-			patches.Add(new PatchUpdater(types));
-			//patches.Add(new PatchOffline(types));
+		public void unloadMod(LocalMod mod) {
 
-			PatchSettingsMenu settingsMenuHook = new PatchSettingsMenu (types);
-			api.setSceneCallback (settingsMenuHook);
-			patches.Add (settingsMenuHook);
+			modManager.disableMod (mod);
+			modOrder.Remove (mod.localId);
+			modInstances.Remove (mod.localId);
 
-			PatchModsMenu modMenuHook = new PatchModsMenu (types);
-			modMenuHook.Initialize (api);
-			patches.Add (modMenuHook);
+		}
 
-			publicAPI = api;
+		public void queueRepatch() {
+			isRepatchNeeded = true;
+		}
 
-			foreach (BaseMod mod in modInstances) {
-				mod.Initialize (publicAPI);
-			}
+		public void repatchIfNeeded() {
+			if (isRepatchNeeded) {
 
-			//we are loaded, get the hooks
-			foreach (BaseMod mod in modInstancesCpy) {
-
-				MethodDefinition[] requestedHooks = new MethodDefinition[] { };
-
-				bool hooksAreValid = true;
-				try {
-					requestedHooks = mod.GetHooks (types, SharedConstants.getGameVersion());
-				} catch {
-					modInstances.Remove (mod);
-					hooksAreValid = false;
-				}
-
-				//check hooks
-				foreach (MethodDefinition hook in requestedHooks) {
-					//type does not exists
-					if ((from type in typeArray
-					     where type.Equals(hook.DeclaringType)
-					     select type).Count() == 0) {
-						//disable mod
-						modInstances.Remove (mod);
-						hooksAreValid = false;
-						break;
-					}
-				}
-				if (!hooksAreValid)
-					continue;
-
-				//add hooks
-				foreach (MethodDefinition hook in requestedHooks) {
-					ScrollsFilter.AddHook(hook);
-				}
-			}
-
-			//remove old mods from list
-			foreach (String modDesc in modList.ToArray()) {
-				bool loadedModFound = false;
-				foreach (BaseMod mod in modInstances) {
-					if (modDesc.Equals (mod.GetName()+"."+mod.GetVersion()))
-						loadedModFound = true;
-				}
-				if (!loadedModFound)
-					modList.Remove (modDesc);
-			}
-
-			//save ModList
-			File.Delete (modLoaderPath+"mods.ini");
-			StreamWriter modListWriter = File.CreateText (modLoaderPath+"mods.ini");
-			foreach (String modDesc in modList) {
-				modListWriter.WriteLine (modDesc);
-			}
-			modListWriter.Flush ();
-			modListWriter.Close ();
-
-			//repatch if necessary
-			if (repatchNeeded) {
-				
 				Patcher patcher = new Patcher ();
 				if (!patcher.patchAssembly ()) {
 					//normal patching should never fail at this point
@@ -282,29 +370,16 @@ namespace ScrollsModLoader {
 					//TO-DO get hook that crashed the patching and deactive mod instead
 					//No idea how to do that correctly however
 					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. ModLoader failed to load and will de-install itself");
-					File.Delete(installPath+"Assembly-CSharp.dll");
-					File.Copy(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
+					File.Delete(Platform.getGlobalScrollsInstallPath()+"Assembly-CSharp.dll");
+					File.Copy(Platform.getGlobalScrollsInstallPath()+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", Platform.getGlobalScrollsInstallPath()+"Assembly-CSharp.dll");
 					Application.Quit();
 				}
 
-				//restart the game
-				if (Platform.getOS() == Platform.OS.Win)
-				{
-					Console.WriteLine(Platform.getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe");
-					//try {
-						new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start();
-					//} catch {}
-					Application.Quit();
-				}
-				else if (Platform.getOS() == Platform.OS.Mac)
-				{
-					new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start();
-					Application.Quit();
-				} else {
-					Application.Quit();
-				}
+				Platform.RestartGame ();
 			}
 		}
+
+
 
 		private static System.Reflection.Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
@@ -323,18 +398,7 @@ namespace ScrollsModLoader {
 			}
 		}
 
-		public BaseMod[] GetModInstances() {
-			return modInstances.ToArray();
-		}
 
-		public Patch[] GetPatches() {
-			return patches.ToArray();
-		}
-
-		public void UnloadMod(BaseMod mod) {
-			modInstances.Remove (mod);
-			mod.Initialize (null);
-		}
 
 		//initial game callback
 		public static void Init() {
@@ -348,9 +412,8 @@ namespace ScrollsModLoader {
 			instance = new ModLoader();
 			MethodBodyReplacementProviderRegistry.SetProvider (new SimpleMethodReplacementProvider(instance));
 
-			foreach (BaseMod mod in instance.modInstances) {
-				mod.Init ();
-			}
+			//otherwise we can finally load
+			instance.loadMods ();
 		}
 	}
 }

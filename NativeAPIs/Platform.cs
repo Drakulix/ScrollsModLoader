@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
+using UnityEngine;
 
 namespace ScrollsModLoader
 {
@@ -96,6 +98,20 @@ namespace ScrollsModLoader
 
 			Console.WriteLine("Install Path: "+path);
 			return path;
+		}
+
+		public static void RestartGame() {
+			//restart the game
+			if (getOS () == OS.Win) {
+				Console.WriteLine (getGlobalScrollsInstallPath () + "..\\..\\Scrolls.exe");
+				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
+				Application.Quit ();
+			} else if (getOS () == OS.Mac) {
+				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start ();
+				Application.Quit ();
+			} else {
+				Application.Quit ();
+			}
 		}
 	}
 }
