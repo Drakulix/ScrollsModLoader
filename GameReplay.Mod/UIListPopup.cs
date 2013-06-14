@@ -89,7 +89,7 @@ public class UIListPopup : MonoBehaviour
         this.cardWidth = (this.cardHeight * 100f) / 75f;
         this.labelX = (this.cardWidth * 1.45f);
         this.labelsWidth = ((this.innerRect.width - this.labelX) /*- this.costIconSize*/) - this.scrollBarSize;
-        this.maxCharsName = (int) (this.labelsWidth / 12f);
+        this.maxCharsName = (int) (this.labelsWidth / 8f);
         this.maxCharsRK = (int) (this.labelsWidth / 10f);
 		this.rightrightbutton = rightrightbutton;
     }

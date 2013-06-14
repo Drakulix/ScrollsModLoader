@@ -12,6 +12,7 @@ using ScrollsModLoader.Interfaces;
 using System.ComponentModel;
 using System.Net;
 using System.Text.RegularExpressions;
+using JsonFx.Json;
 
 namespace GameReplay.Mod
 {
@@ -122,7 +123,8 @@ namespace GameReplay.Mod
 						jsonms.runParsing();
 						String line = jsonms.getNextMessage();
 						bool searching = true;
-						String enemyName = null;
+						String player1name = null;
+						String player2name = null;
 						//String enemyId = null;
 						String deckName = null;
 						ResourceType type = ResourceType.NONE;
@@ -134,15 +136,16 @@ namespace GameReplay.Mod
 								Message msg = Message.createMessage(Message.getMessageName(line), line);
 								if (msg is GameInfoMessage)
 								{
-									if ((msg as GameInfoMessage).white.Equals(App.Communicator.getUserScreenName()))
+									GameInfoMessage gim = (GameInfoMessage) msg;
+									if (gim.white.Equals(App.Communicator.getUserScreenName()))
 									{
-										enemyName = (msg as GameInfoMessage).black;
-										//enemyId = (msg as GameInfoMessage).getPlayerProfileId(TileColor.black);
+										player1name = gim.white;
+										player2name = gim.black;
 									}
-									else
+									else 
 									{
-										enemyName = (msg as GameInfoMessage).white;
-										//enemyId = (msg as GameInfoMessage).getPlayerProfileId(TileColor.white);
+										player1name = gim.black;
+										player2name = gim.white;
 									}
 									deckName = (msg as GameInfoMessage).deck;
 								}
@@ -150,7 +153,7 @@ namespace GameReplay.Mod
 								{
 									type = (msg as ActiveResourcesMessage).types[0];
 								}
-								if (enemyName != null && type != ResourceType.NONE)
+								if (player2name != null && type != ResourceType.NONE)
 									searching = false;
 							}
 							catch
@@ -160,7 +163,7 @@ namespace GameReplay.Mod
 							line = jsonms.getNextMessage();
 						}
 
-						recordList.Add(new Record(File.GetCreationTime(file).ToLongDateString() + " - " + File.GetCreationTime(file).ToLongTimeString(), "VS " + enemyName + " - " + deckName, /*enemyId,*/ file, type));
+						recordList.Add(new Record(File.GetCreationTime(file).ToLongDateString() + " - " + File.GetCreationTime(file).ToLongTimeString(),player1name +  " vs " + player2name + " - " + deckName, /*enemyId,*/ file, type));
 					}
 				}
 
@@ -399,18 +402,25 @@ namespace GameReplay.Mod
 
 		private void Upload()
 		{
-			NameValueCollection postParams = getPostParams();
-
-			bool uploaded = Extensions.HttpUploadFile("http://a.scrollsguide.com/replay/upload",
-				toUpload.fileName(), "replay", "scr/replay", postParams);
-
-			if (uploaded)
+			if (canShare())
 			{
-				App.Popups.ShowOk(m, "fail", "Replay uploaded", "Your replay has been uploaded. See it on scrollsguide.com/replays!", "Ok");
+				NameValueCollection postParams = getPostParams();
+
+				ResultMessage result = Extensions.HttpUploadFile("http://a.scrollsguide.com/replay/upload",
+					toUpload.fileName(), "replay", "scr/replay", postParams);
+
+				if (result.msg.Equals("success"))
+				{
+					App.Popups.ShowOk(m, "fail", "Replay shared", "Your replay has been shared. See it on scrollsguide.com/replays!", "Ok");
+				}
+				else
+				{
+					App.Popups.ShowOk(m, "fail", "Replay not shared", "There was an error sharing your replay: " + result.data, "Ok");
+				}
 			}
 			else
 			{
-				App.Popups.ShowOk(m, "fail", "Replay not uploaded", "There was an error uploading your replay. Try again later :)", "Ok");
+				App.Popups.ShowOk(m, "fail", "Replay not shared", "This replay was already shared.", "Ok");
 			}
 		}
 
@@ -422,6 +432,16 @@ namespace GameReplay.Mod
 			nvc.Add("mtime", Convert.ToString(Extensions.ToUnixTimestamp(File.GetCreationTimeUtc(toUpload.fileName())))); // creation time
 
 			return nvc;
+		}
+
+		private bool canShare()
+		{
+			String html = new WebClient().DownloadString("http://a.scrollsguide.com/replay/canshare/" + toUpload.getId());
+
+			JsonReader r = new JsonReader();
+			ResultMessage rm = r.Read(html, System.Type.GetType("ResultMessage")) as ResultMessage;
+
+			return rm.data.Equals("yes");
 		}
 	}
 
@@ -442,10 +462,19 @@ namespace GameReplay.Mod
 		{
 			saveLocation = callback.getRecordFolder() + Path.DirectorySeparatorChar + gameId + ".sgr";
 
-			wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+			if (File.Exists(saveLocation))
+			{
+				Console.WriteLine("Using cached replay file");
+				callback.getPlayer().LaunchReplay(saveLocation);
+			}
+			else
+			{
+				Console.WriteLine("Downloading replay from internet");
+				wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+				wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
 
-			wc.DownloadFileAsync(new Uri("http://a.scrollsguide.com/replay/download/" + gameId + "?true"), saveLocation);
+				wc.DownloadFileAsync(new Uri("http://a.scrollsguide.com/replay/download/" + gameId + "?true"), saveLocation);
+			}
 		}
 
 		void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -459,9 +488,11 @@ namespace GameReplay.Mod
 			String[] keys = wc.ResponseHeaders.AllKeys;
 
 			String contentType = "";
-			for (int i = 0; i < keys.Length; i++){
+			for (int i = 0; i < keys.Length; i++)
+			{
 				Console.WriteLine(keys[i]);
-				if (keys[i].Equals("Content-Type")){
+				if (keys[i].Equals("Content-Type"))
+				{
 					contentType = wc.ResponseHeaders.Get(i);
 				}
 			}
