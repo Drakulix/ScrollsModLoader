@@ -21,10 +21,7 @@ namespace GameReplay.Mod
 		private Record selectedRecord;
 
 		public Mod ()
-		{
-			if (!Directory.Exists (this.OwnFolder()+Path.DirectorySeparatorChar+"Records"+Path.DirectorySeparatorChar))
-				Directory.CreateDirectory (this.OwnFolder()+Path.DirectorySeparatorChar+"Records"+Path.DirectorySeparatorChar);
-		}
+		{}
 
 		public override string GetName ()
 		{
@@ -38,6 +35,9 @@ namespace GameReplay.Mod
 
 		public override void Init ()
 		{
+			if (!Directory.Exists (this.OwnFolder()+Path.DirectorySeparatorChar+"Records"+Path.DirectorySeparatorChar))
+				Directory.CreateDirectory (this.OwnFolder()+Path.DirectorySeparatorChar+"Records"+Path.DirectorySeparatorChar);
+
 			player = new Player (this.OwnFolder()+Path.DirectorySeparatorChar+"Records");
 			App.Communicator.addListener (this);
 		}

@@ -139,7 +139,7 @@ namespace GameReplay.Mod
 		private void LaunchReplay() {
 			playing = true;
 
-			String log = File.ReadAllText (fileName);
+			String log = File.ReadAllText (fileName).Split(new char[] {'}'}, 2)[1];
 
 			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
 			App.Communicator.isActive = false;
@@ -149,7 +149,7 @@ namespace GameReplay.Mod
 			while (playing) {
 				if (readNextMsg == false) {
 					//delay messages otherwise the game rushes through in about a minute.
-					Thread.Sleep (1500);
+					Thread.Sleep (1000);
 					while (paused) Thread.Sleep (1000);
 					readNextMsg = true;
 				}
