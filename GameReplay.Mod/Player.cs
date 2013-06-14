@@ -156,6 +156,42 @@ namespace GameReplay.Mod
 
 			String log = File.ReadAllText (fileName).Split(new char[] {'}'}, 2)[1];
 
+			//FIX Profile ID
+			JsonMessageSplitter jsonms = new JsonMessageSplitter();
+			jsonms.feed(log);
+			jsonms.runParsing();
+			String line = jsonms.getNextMessage();
+
+			bool searching = true;
+			String idWhite;
+			String idBlack;
+			String realID;
+
+			while (line != null && searching) {
+				try {
+					Message msg = Message.createMessage (Message.getMessageName (line), line);
+					if (msg is GameInfoMessage) {
+						idWhite = (msg as GameInfoMessage).getPlayerProfileId (TileColor.white);
+						idBlack = (msg as GameInfoMessage).getPlayerProfileId (TileColor.black);
+					}
+					if (msg is NewEffectsMessage) {
+						if (msg.getRawText ().Contains (idWhite)) {
+							realID = idWhite;
+							searching = false;
+						}
+						if (msg.getRawText ().Contains (idBlack)) {
+							realID = idBlack;
+							searching = false;
+						}
+					}
+				} catch {
+				}
+			}
+
+			if (realID != null) {
+				log.Replace (realID, App.MyProfile.ProfileInfo.id);
+			}
+
 			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
 			//App.Communicator.isActive = false;
 			SceneLoader.loadScene("_BattleModeView");
