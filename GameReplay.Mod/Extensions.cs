@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Specialized;
 using System.Net;
 using System.Reflection;
+using GameReplay.Mod;
+using JsonFx.Json;
 
 public static class Extensions
 {
@@ -107,7 +109,7 @@ public static class Extensions
 		Directory.Delete(target_dir, false);
 	}
 
-	public static bool HttpUploadFile(string url, string file, string paramName, string contentType, NameValueCollection nvc)
+	public static ResultMessage HttpUploadFile(string url, string file, string paramName, string contentType, NameValueCollection nvc)
 	{
 		string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
 		byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
@@ -149,15 +151,22 @@ public static class Extensions
 		rs.Write(trailer, 0, trailer.Length);
 		rs.Close();
 
-		bool success = false;
+		ResultMessage result = new ResultMessage();
+		result.msg = "fail";
+		result.data = "Please try again later :)";
 		WebResponse wresp = null;
 		try
 		{
 			wresp = wr.GetResponse();
 			Stream stream2 = wresp.GetResponseStream();
 			StreamReader reader2 = new StreamReader(stream2);
-			System.Diagnostics.Debug.WriteLine(string.Format("File uploaded, server response is: {0}", reader2.ReadToEnd()));
-			success = true;
+
+			String fromServer = reader2.ReadToEnd();
+
+			Console.WriteLine(string.Format("File uploaded, server response is: {0}", fromServer));
+
+			JsonReader r = new JsonReader();
+			result = r.Read(fromServer, System.Type.GetType("ResultMessage")) as ResultMessage;
 		}
 		catch (Exception ex)
 		{
@@ -173,7 +182,7 @@ public static class Extensions
 			wr = null;
 		}
 
-		return success;
+		return result;
 	}
 
 	public static long ToUnixTimestamp(DateTime d)
@@ -190,4 +199,11 @@ public static class Extensions
 		typeof(Popups).GetField("description", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(popups, description);
 		typeof(Popups).GetField("okText", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(popups, okText);
 	}
+
+	/*
+	public static void ShowSharePopup(this Popups popups, String title, String description)
+	{
+		typeof(Popups).GetField("overlay.enabled", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(popups, true);
+	}
+	 * */
 }
