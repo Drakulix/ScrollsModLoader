@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using ScrollsModLoader.Interfaces;
 
 namespace ScrollsModLoader
@@ -27,7 +28,7 @@ namespace ScrollsModLoader
 
 		public string OwnFolder(string modName)
 		{
-			return Platform.getGlobalScrollsInstallPath () + modName;
+			return Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "mods" + Path.DirectorySeparatorChar + modName;
 		}
 	}
 }
