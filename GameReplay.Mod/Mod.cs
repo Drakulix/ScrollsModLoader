@@ -28,20 +28,6 @@ namespace GameReplay.Mod
 
 		public Mod()
 		{
-		}
-
-		public override string GetName()
-		{
-			return "GameReplay";
-		}
-
-		public override int GetVersion()
-		{
-			return 1;
-		}
-
-		public override void Init()
-		{
 			recordFolder = this.OwnFolder() + Path.DirectorySeparatorChar + "Records";
 			if (!Directory.Exists(recordFolder + Path.DirectorySeparatorChar))
 			{
@@ -51,6 +37,15 @@ namespace GameReplay.Mod
 			App.Communicator.addListener(this);
 		}
 
+		public static string GetName()
+		{
+			return "GameReplay";
+		}
+
+		public static int GetVersion()
+		{
+			return 1;
+		}
 
 		public void handleMessage(Message msg)
 		{
@@ -76,7 +71,7 @@ namespace GameReplay.Mod
 			return player;
 		}
 
-		public override MethodDefinition[] GetHooks(TypeDefinitionCollection scrollsTypes, int version)
+		public static MethodDefinition[] GetHooks(TypeDefinitionCollection scrollsTypes, int version)
 		{
 			MethodDefinition[] defs = new MethodDefinition[] {
 				scrollsTypes["ProfileMenu"].Methods.GetMethod("Start")[0],
@@ -92,22 +87,22 @@ namespace GameReplay.Mod
 
 		public override bool BeforeInvoke(InvocationInfo info, out object returnValue)
 		{
-			if (info.TargetMethod().Equals("getButtonRect"))
+			if (info.targetMethod.Equals("getButtonRect"))
 			{
-				foreach (StackFrame frame in info.StackTrace().GetFrames())
+				foreach (StackFrame frame in info.stackTrace.GetFrames())
 				{
 					if (frame.GetMethod().Name.Contains("BeforeInvoke"))
 						break;
 					if (frame.GetMethod().Name.Contains("drawEditButton"))
 					{
-						returnValue = typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.Target(), new object[] { 2 });
+						returnValue = typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.target, new object[] { 2 });
 						return true;
 					}
 				}
 				returnValue = null;
 				return false;
 			}
-			if (info.Target() is ProfileMenu && info.TargetMethod().Equals("Start") && App.SceneValues.profilePage.isMe())
+			if (info.target is ProfileMenu && info.targetMethod.Equals("Start") && App.SceneValues.profilePage.isMe())
 			{
 
 				//list them
@@ -168,18 +163,18 @@ namespace GameReplay.Mod
 				}
 
 				recordListPopup = new GameObject("Record List").AddComponent<UIListPopup>();
-				recordListPopup.transform.parent = ((ProfileMenu)info.Target()).transform;
-				Rect frame = (Rect)typeof(ProfileMenu).GetField("frameRect", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target());
+				recordListPopup.transform.parent = ((ProfileMenu)info.target).transform;
+				Rect frame = (Rect)typeof(ProfileMenu).GetField("frameRect", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.target);
 				recordListPopup.Init(new Rect(frame.center.x - frame.width / 2.0f, frame.center.y - frame.height / 2.0f + 32.0f, frame.width, frame.height - (float)Screen.height * 0.055f * 3.0f), false, true, recordList, this, null, null, false, true, false, true, null, true, false);
 				recordListPopup.enabled = true;
 				recordListPopup.SetOpacity(1f);
 			}
-			if (info.TargetMethod().Equals("drawEditButton"))
+			if (info.targetMethod.Equals("drawEditButton"))
 			{
-				Rect rect = (Rect)typeof(ProfileMenu).GetField("frameRect", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target());
+				Rect rect = (Rect)typeof(ProfileMenu).GetField("frameRect", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.target);
 				//LobbyMenu.drawShadowText (new Rect(rect.center.x-(float)Screen.width/8.0f/2.0f, rect.center.y-rect.height/2.0f-(float)Screen.height*0.055f*3.0f-40.0f, (float)Screen.width/8.0f, 35.0f), "Match History", Color.white);
 
-				if ((bool)typeof(ProfileMenu).GetField("showEdit", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target()))
+				if ((bool)typeof(ProfileMenu).GetField("showEdit", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.target))
 				{
 					recordListPopup.enabled = false;
 					recordListPopup.SetOpacity(0f);
@@ -189,10 +184,10 @@ namespace GameReplay.Mod
 					new ScrollsFrame(new Rect(rect.center.x - rect.width / 2.0f - 20.0f, rect.center.y - rect.height / 2.0f, rect.width + 40.0f, rect.height - (float)Screen.height * 0.055f - 20.0f)).AddNinePatch(ScrollsFrame.Border.DARK_CURVED, NinePatch.Patches.CENTER).Draw();
 					recordListPopup.enabled = true;
 					recordListPopup.SetOpacity(1f);
-					GUIStyle labelSkin = (GUIStyle)typeof(ProfileMenu).GetField("usernameStyle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target());
+					GUIStyle labelSkin = (GUIStyle)typeof(ProfileMenu).GetField("usernameStyle", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.target);
 					labelSkin.fontSize = 32;
 					GUI.Label(new Rect(rect.center.x - (float)Screen.width / 6.0f / 2.0f, rect.center.y - rect.height / 2.0f - 40.0f, (float)Screen.width / 6.0f, 35.0f), "Match History", labelSkin);
-					if (LobbyMenu.drawButton((Rect)typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.Target(), new object[] { 0 }), "Load Replay", (GUISkin)typeof(ProfileMenu).GetField("guiSkin", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target())))
+					if (LobbyMenu.drawButton((Rect)typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.target, new object[] { 0 }), "Load Replay", (GUISkin)typeof(ProfileMenu).GetField("guiSkin", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.target)))
 					{
 						LoadReplay();
 					}

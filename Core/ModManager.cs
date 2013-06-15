@@ -57,7 +57,8 @@ namespace ScrollsModLoader
 					//new local installed mod
 					Mod localMod = loader.loadModStatic (Directory.GetFiles (folder, "*.mod.dll") [0]);
 					if (localMod != null) {
-						mod = new LocalMod(true, Path.GetDirectoryName(folder), null, null, null, true, localMod.name, localMod.description, localMod.version, localMod.versionCode);
+						mod = new LocalMod(true, (Directory.GetFiles (folder, "*.mod.dll") [0]), this.generateUniqueID(), null, null, true, localMod.name, localMod.description, localMod.version, localMod.versionCode);
+						updateConfig(mod);
 						loader.queueRepatch ();
 					}
 				}
@@ -69,12 +70,14 @@ namespace ScrollsModLoader
 
 		public void checkForUpdates() {
 			foreach (LocalMod mod in installedMods) {
-				Mod onlineMod = repoManager.getModOnRepo (mod.source, mod);
-				if (onlineMod == null)
-					continue;
-				if (onlineMod.version > mod.version) {
-					mod.version = onlineMod.version;
-					this.updateMod (mod);
+				if (!mod.localInstall) {
+					Mod onlineMod = repoManager.getModOnRepo (mod.source, mod);
+					if (onlineMod == null)
+						continue;
+					if (onlineMod.version > mod.version) {
+						mod.version = onlineMod.version;
+						this.updateMod (mod);
+					}
 				}
 			}
 		}
@@ -85,9 +88,12 @@ namespace ScrollsModLoader
 
 		public void installMod(Repo repo, Mod mod) {
 
-			LocalMod lmod = new LocalMod (false, null, this.generateUniqueID(), mod.id, repo, true, mod.name, mod.description, mod.version, mod.versionCode); 
+			String newID = this.generateUniqueID ();
+			String installPath = modsPath + Path.DirectorySeparatorChar + newID + Path.DirectorySeparatorChar + mod.name + ".mod.dll";
 
-			String folder = modsPath + Path.DirectorySeparatorChar + lmod.localId + Path.DirectorySeparatorChar;
+			LocalMod lmod = new LocalMod (false, installPath, newID, mod.id, repo, true, mod.name, mod.description, mod.version, mod.versionCode); 
+
+			String folder = modsPath + Path.DirectorySeparatorChar + newID + Path.DirectorySeparatorChar;
 			if (Directory.Exists (folder))
 				Directory.Delete (folder);
 			Directory.CreateDirectory (folder);
@@ -127,8 +133,9 @@ namespace ScrollsModLoader
 
 		public void updateConfig(LocalMod mod) {
 			//update config
-			String folder = modsPath + Path.DirectorySeparatorChar + mod.localId + Path.DirectorySeparatorChar;
-			File.Delete (folder + "config.json");
+			String folder = Path.GetDirectoryName (mod.installPath) + Path.DirectorySeparatorChar;
+			if (File.Exists(folder + "config.json"))
+				File.Delete (folder + "config.json");
 			StreamWriter configFile = File.CreateText (folder + "config.json");
 			configFile.Write (this.jsonConfigFromMod (mod));
 			configFile.Flush ();
@@ -182,8 +189,6 @@ namespace ScrollsModLoader
 			this.localInstall = localInstall;
 			if (localInstall)
 				this.installPath = installPath;
-			else
-				this.installPath = localId;
 			this.source = source;
 			this.enabled = enabled;
 

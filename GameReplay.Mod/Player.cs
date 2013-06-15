@@ -52,7 +52,7 @@ namespace GameReplay.Mod
 		public bool BeforeInvoke(InvocationInfo info, out object returnValue)
 		{
 
-			switch ((String)info.TargetMethod())
+			switch ((String)info.targetMethod)
 			{
 				case "runEffect":
 					{
@@ -70,7 +70,7 @@ namespace GameReplay.Mod
 					{
 						if (playing)
 						{
-							typeof(BattleMode).GetMethod("deselectAllTiles", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(info.Target(), null);
+							typeof(BattleMode).GetMethod("deselectAllTiles", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(info.target, null);
 						}
 						returnValue = null;
 						return false;
@@ -161,11 +161,10 @@ namespace GameReplay.Mod
 			jsonms.feed(log);
 			jsonms.runParsing();
 			String line = jsonms.getNextMessage();
-
 			bool searching = true;
-			String idWhite;
-			String idBlack;
-			String realID;
+			String idWhite = null;
+			String idBlack = null;
+			String realID = null;
 
 			while (line != null && searching) {
 				try {
@@ -186,6 +185,8 @@ namespace GameReplay.Mod
 					}
 				} catch {
 				}
+				jsonms.runParsing();
+				line = jsonms.getNextMessage();
 			}
 
 			if (realID != null) {
@@ -232,14 +233,14 @@ namespace GameReplay.Mod
 
 		public void AfterInvoke(InvocationInfo info, ref object returnValue)
 		{
-			switch (info.TargetMethod())
+			switch (info.targetMethod)
 			{
 				case "Start":
 					{
 						if (playing)
 						{
-							battleModeUI = (BattleModeUI)info.Target();
-							endGameButton = ((GameObject)typeof(BattleModeUI).GetField("endTurnButton", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(info.Target()));
+							battleModeUI = (BattleModeUI)info.target;
+							endGameButton = ((GameObject)typeof(BattleModeUI).GetField("endTurnButton", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(info.target));
 							endGameButton.renderer.material.mainTexture = pauseButton;
 							battleModeUI.StartCoroutine("FadeInEndTurn");
 						}
@@ -249,7 +250,7 @@ namespace GameReplay.Mod
 					{
 						if (playing)
 						{
-							typeof(BattleModeUI).GetField("callback", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(info.Target(), this);
+							typeof(BattleModeUI).GetField("callback", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(info.target, this);
 							// NOTE: Not yet working, needs alternative ICommListener for Chat messages
 							/*App.ChatUI.SetEnabled(true);
 							App.ChatUI.SetLocked(false);

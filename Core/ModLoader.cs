@@ -187,7 +187,7 @@ namespace ScrollsModLoader {
 			//clean up not available mods
 			foreach (String id in modOrder.ToArray()) {
 				if (modManager.installedMods.Find (delegate(LocalMod mod) {
-					return (mod.id.Equals (id));
+					return (mod.localId.Equals (id));
 				}) == null)
 					modOrder.Remove (id);
 			}
@@ -319,9 +319,10 @@ namespace ScrollsModLoader {
 
 		public void loadMods() {
 
+			BaseMod.Initialize (publicAPI);
 			foreach (String id in modOrder) {
 				this.loadMod(modManager.installedMods.Find (delegate(LocalMod mod) {
-					return (mod.id.Equals (id));
+					return (mod.localId.Equals (id));
 				}));
 			}
 
@@ -334,7 +335,7 @@ namespace ScrollsModLoader {
 
 			Assembly modAsm = Assembly.LoadFile(mod.installPath);
 			Type modClass = (from _modClass in modAsm.GetTypes ()
-			                 where _modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
+			                 where _modClass.InheritsFrom (typeof(BaseMod))
 			                 select _modClass).First();
 
 

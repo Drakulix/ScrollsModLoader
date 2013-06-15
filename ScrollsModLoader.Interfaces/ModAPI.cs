@@ -5,7 +5,7 @@ namespace ScrollsModLoader.Interfaces
 	public interface ModAPI
 	{
 		//Folder
-		string OwnFolder(String name);
+		string OwnFolder(BaseMod mod);
 
 		//GUI Stuff
 		bool AddScene (String desc, SceneProvider provider);
