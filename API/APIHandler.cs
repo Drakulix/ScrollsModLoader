@@ -8,6 +8,7 @@ namespace ScrollsModLoader
 	{
 		private PatchSettingsMenu sceneHandler = null;
 		private ModLoader loader;
+		private LocalMod currentlyLoading = null;
 
 		public APIHandler (ModLoader loader)
 		{
@@ -30,18 +31,24 @@ namespace ScrollsModLoader
 
 		public string OwnFolder(BaseMod mod)
 		{
-			String name = null;
+			String installpath = null;
 
-			if (!loader.modInstances.ContainsValue(mod))
-				name = "Unknown";
 			foreach (String id in loader.modInstances.Keys) {
 				if (loader.modInstances [id].Equals (mod))
-					name = loader.modManager.installedMods.Find (delegate(LocalMod lmod) {
-						return (lmod.id.Equals (id));
+					installpath = loader.modManager.installedMods.Find (delegate(LocalMod lmod) {
+						return (lmod.localId.Equals (id));
 					}).installPath;
 			}
 
-			return Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "mods" + Path.DirectorySeparatorChar + name;
+			if (installpath == null && currentlyLoading != null)
+				return Path.GetDirectoryName(currentlyLoading.installPath);
+			if (installpath == null)
+				return Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "mods" + Path.DirectorySeparatorChar + "Unknown" + Path.DirectorySeparatorChar;
+			return Path.GetDirectoryName(installpath);
+		}
+
+		public void setCurrentlyLoading(LocalMod mod) {
+			currentlyLoading = mod;
 		}
 	}
 }

@@ -345,7 +345,9 @@ namespace ScrollsModLoader {
 				return;
 			}
 
+			publicAPI.setCurrentlyLoading (mod);
 			modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+			publicAPI.setCurrentlyLoading (null);
 
 		}
 
