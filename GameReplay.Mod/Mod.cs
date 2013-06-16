@@ -70,7 +70,7 @@ namespace GameReplay.Mod
 		{
 			return player;
 		}
-
+		
 		public static MethodDefinition[] GetHooks(TypeDefinitionCollection scrollsTypes, int version)
 		{
 			MethodDefinition[] defs = new MethodDefinition[] {
@@ -92,7 +92,9 @@ namespace GameReplay.Mod
 				foreach (StackFrame frame in info.stackTrace.GetFrames())
 				{
 					if (frame.GetMethod().Name.Contains("BeforeInvoke"))
+					{
 						break;
+					}
 					if (frame.GetMethod().Name.Contains("drawEditButton"))
 					{
 						returnValue = typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.target, new object[] { 2 });
@@ -111,7 +113,6 @@ namespace GameReplay.Mod
 				{
 					if (file.EndsWith("sgr"))
 					{
-
 						JsonMessageSplitter jsonms = new JsonMessageSplitter();
 						String log = File.ReadAllText(file);
 						jsonms.feed(log);
@@ -149,7 +150,9 @@ namespace GameReplay.Mod
 									type = (msg as ActiveResourcesMessage).types[0];
 								}
 								if (player2name != null && type != ResourceType.NONE)
+								{
 									searching = false;
+								}
 							}
 							catch
 							{
@@ -447,16 +450,23 @@ namespace GameReplay.Mod
 
 		private Mod callback = null;
 
+		private String saveDirectory;
 		private String saveLocation;
 
 		public ReplayDownloader(Mod p)
 		{
 			this.callback = p;
+			
+			saveDirectory = p.getRecordFolder() + Path.DirectorySeparatorChar + "downloads" + Path.DirectorySeparatorChar;
+			if (!Directory.Exists(saveDirectory))
+			{
+				Directory.CreateDirectory(saveDirectory);
+			}
 		}
 
 		public void startDownload(long gameId)
 		{
-			saveLocation = callback.getRecordFolder() + Path.DirectorySeparatorChar + gameId + ".sgr";
+			saveLocation = saveDirectory + gameId + ".sgr";
 
 			if (File.Exists(saveLocation))
 			{
