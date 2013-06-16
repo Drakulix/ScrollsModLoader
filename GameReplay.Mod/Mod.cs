@@ -242,8 +242,9 @@ namespace GameReplay.Mod
 
 				// try a few regexes until a match is found
 				List<RegexPattern> patterns = new List<RegexPattern>();
-				patterns.Add(new RegexPattern("^http://a\\.scrollsguide\\.com/replay/download/([0-9]+)(\\?true)?$", 1)); // full replay url with or without ?true
+				patterns.Add(new RegexPattern("^http://(www\\.)?scrollsguide\\.com/replays/r/([0-9]+)$", 2)); // full replay url in browser
 				patterns.Add(new RegexPattern("^([0-9]+)$", 1)); // just the replay number
+				patterns.Add(new RegexPattern("^http://a\\.scrollsguide\\.com/replay/download/([0-9]+)(\\?true)?$", 1)); // full replay url with or without ?true
 				bool hasMatch = false;
 				for (int i = 0; i < patterns.Count && !hasMatch; i++)
 				{
