@@ -190,7 +190,7 @@ namespace GameReplay.Mod
 			}
 
 			if (realID != null) {
-				log.Replace (realID, App.MyProfile.ProfileInfo.id);
+				log = log.Replace (realID, App.MyProfile.ProfileInfo.id);
 			}
 
 			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
