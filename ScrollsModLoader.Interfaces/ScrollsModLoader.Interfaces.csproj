@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ScrollsModLoader.Interfaces</RootNamespace>
     <AssemblyName>ScrollsModLoader.Interfaces</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -33,9 +33,6 @@
     <ConsolePause>false</ConsolePause>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="JsonFx">
-      <HintPath>..\..\..\..\AppData\Local\Mojang\Scrolls\game\Scrolls_Data\Managed\JsonFx.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="Mono.Cecil">
       <HintPath>..\LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
@@ -44,7 +41,7 @@
       <HintPath>..\LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\AppData\Local\Mojang\Scrolls\game\Scrolls_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

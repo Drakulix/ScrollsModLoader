@@ -34,6 +34,12 @@ namespace ScrollsModLoader
 		}
 
 		public void tryAddRepository(string url) {
+
+			foreach (Item repo in repositories) {
+				if (new Uri ((repo as Repo).url).Host.Equals (new Uri (url).Host))
+					return;
+			}
+
 			if (!this.readRepository (url)) {
 				App.Popups.ShowOk (this, "addFail", "Failure", url + " does not seem to be a valid Mod Repository", "OK");
 			} else {
