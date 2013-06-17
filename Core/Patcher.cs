@@ -136,9 +136,52 @@ namespace ScrollsModLoader
 			}
 		}
 
-		public bool saveModePatchAssembly() {
-			//TO-DO implement
+		public bool safeModePatchAssembly() {
+			String installPath = Platform.getGlobalScrollsInstallPath();
+			if (installPath == null) return false;
+
+			try {
+				//load assembly
+				Hooks.loadBaseAssembly(installPath+"Assembly-CSharp.dll");
+				//load self
+				Hooks.loadInjectAssembly(installPath+"ScrollsModLoader.dll");
+			} catch (Exception exp) {
+				//something must be gone horribly wrong if it crashes here
+				Console.WriteLine (exp);
+				return false;
+			}
+
+			//add hooks
+			if (!Hooks.hookStaticVoidMethodAtEnd ("App.Awake", "Patcher.safeLaunch"))
+				return false;
+
+			try {
+
+				//save assembly
+				Hooks.savePatchedAssembly();
+
+			} catch (Exception exp) {
+
+				//also very unlikely, but for safety
+				Console.WriteLine (exp);
+				return false;
+
+			}
+
 			return true;
+		}
+
+		public static void safeLaunch() {
+			//updater to be implemented
+			String installPath = Platform.getGlobalScrollsInstallPath();
+			if (System.IO.File.Exists (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
+				System.IO.File.Delete (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
+				new Patcher ().patchAssembly ();
+			}
+			if (true) { //updater did succeed
+				System.IO.File.CreateText (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
+				Platform.RestartGame ();
+			}
 		}
 	}
 }

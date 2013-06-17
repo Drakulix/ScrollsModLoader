@@ -101,7 +101,8 @@ namespace ScrollsModLoader
 			File.Delete (modBackupPath+"Assembly-CSharp.dll");
 
 			if (Platform.getOS () == Platform.OS.Win) {
-
+				Extensions.DeleteDirectory (gameFolder+ "Scrolls_Data");
+				File.Delete (gameFolder + "Scrolls.exe");
 			} else {
 				Extensions.DeleteDirectory (gameFolder+ "MacScrolls.app");
 			}
@@ -126,25 +127,13 @@ namespace ScrollsModLoader
 			//repatch
 			Patcher patcher = new Patcher ();
 			if (!patcher.patchAssembly ()) {
-				if (!patcher.saveModePatchAssembly ()) {
-					//TO-DO implement
-					
+				if (!patcher.safeModePatchAssembly ()) {
+					Dialogs.showNotification ("ScrollsModLoader inject failed", "ScrollsModLoader failed in patch itself into the updated files. It will uninstall itself, for more informations visit ScrollsGuide.com");
 				}
 			}
 
 			//restart the game
-			if (Platform.getOS () == Platform.OS.Win) {
-				new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
-				Application.Quit ();
-			} else if (Platform.getOS () == Platform.OS.Mac) {
-				new Process { StartInfo = { FileName = Platform.getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start ();
-				Application.Quit ();
-			} else {
-				Application.Quit ();
-			}
-
-			//} else
-			//	return info.TargetMethod.Invoke (info.Target, info.Arguments);
+			Platform.RestartGame ();
 
 		}
 
