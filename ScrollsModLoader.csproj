@@ -88,6 +88,9 @@
     <Reference Include="Ionic.Zip.Big">
       <HintPath>Ionic.Zip.Big.dll</HintPath>
     </Reference>
+    <Reference Include="JsonFx">
+      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\JsonFx.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patches\Patch.cs" />
@@ -108,6 +111,10 @@
     <Compile Include="Resources\AssemblyInfo.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="API\ScrollsExtension.cs" />
+    <Compile Include="Core\ModManager.cs" />
+    <Compile Include="Core\RepoManager.cs" />
+    <Compile Include="Core\WebAPI\RepoInfoMessage.cs" />
+    <Compile Include="Core\WebAPI\ModListMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -119,6 +126,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="NativeAPIs\MonoMac.dll" />
     <EmbeddedResource Include="Resources\Mods.png" />
+    <EmbeddedResource Include="Resources\Mono.Cecil.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
