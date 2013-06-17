@@ -7,6 +7,9 @@ namespace ScrollsModLoader.Interfaces
 		//Folder
 		string OwnFolder(BaseMod mod);
 
+		//File Open
+		string FileOpenDialog ();
+
 		//GUI Stuff
 		bool AddScene (String desc, SceneProvider provider);
 		void LoadScene (String providerDesc);

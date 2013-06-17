@@ -23,8 +23,17 @@ namespace ScrollsModLoader
 		public static List<MethodDefinition> hooks = new List<MethodDefinition>();
 
 		public static void AddHook(MethodDefinition method) {
-			Console.WriteLine (method.Name);
 			hooks.Add (method);
+		}
+
+		public static void clearHooks() {
+			hooks.Clear ();
+		}
+
+		public static void Log()
+		{
+			foreach (MethodDefinition def in hooks)
+				Console.WriteLine (def);
 		}
 
 		public ScrollsFilter ()
@@ -36,7 +45,6 @@ namespace ScrollsModLoader
 		{
 			foreach (MethodDefinition foundMethod in hooks)
 				if (foundMethod.EqualsReference (targetMethod)) {
-					Console.WriteLine ("MethodFilter: "+targetMethod.Name);
 					return true;
 				}
 			return false;
@@ -53,7 +61,6 @@ namespace ScrollsModLoader
 		{
 			foreach (MethodDefinition foundMethod in hooks)
 				if (foundMethod.DeclaringType.FullName.Equals (targetType.FullName)) {
-					Console.WriteLine ("TypeFilter: "+foundMethod.Name);
 					return true;
 				}
 			return false;

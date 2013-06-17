@@ -123,9 +123,9 @@ public class UIListPopup : MonoBehaviour
                 GUI.color = new Color(1f, 1f, 1f, 0.5f);
             }
             GUI.skin = this.cardListPopupGradientSkin;
-            Rect rect6 = new Rect(this.fieldHeight + 2f, num * this.fieldHeight, ((this.innerRect.width - this.scrollBarSize) - this.fieldHeight) - 2f, this.fieldHeight);
+				Rect rect6 = new Rect(this.fieldHeight + 2f, num * this.fieldHeight, ((this.innerRect.width - this.scrollBarSize) - this.fieldHeight) - 2f, this.fieldHeight);
 			if (rightrightbutton) {
-				rect6.width = rect6.width - this.fieldHeight - 2f;
+				rect6.width = rect6.width - this.fieldHeight*2 - 2f;
 			}
             if ((rect6.yMax < this.scrollPos.y) || (rect6.y > (this.scrollPos.y + rect3.height)))
             {
@@ -138,9 +138,8 @@ public class UIListPopup : MonoBehaviour
                 {
                     if (GUI.Button(rect6, string.Empty))
                     {
-						if (!rightrightbutton)
-                        	this.callback.ItemClicked(this, card2);
-						else {
+						if (rightrightbutton)
+ 						{
 							if (this.selectable)
 							{
 								if (!this.selectedCards.Contains(card2))
@@ -157,6 +156,7 @@ public class UIListPopup : MonoBehaviour
 								card = card2;
 							}
 						}
+						this.callback.ItemClicked(this, card2);
                     }
                 }
                 else
@@ -186,8 +186,9 @@ public class UIListPopup : MonoBehaviour
 					rect9alt = new Rect(this.fieldHeight+2f, num * this.fieldHeight, this.fieldHeight, this.fieldHeight);
 				else
 					rect9alt = rect9;
-				Rect rect10 = new Rect (((this.innerRect.width - this.scrollBarSize) - this.fieldHeight), num * this.fieldHeight, this.fieldHeight, this.fieldHeight);
-                if ((this.itemButtonTexture == null) && !this.selectable)
+				Rect rect10 = new Rect (((this.innerRect.width - this.scrollBarSize) - this.fieldHeight*2), num * this.fieldHeight, this.fieldHeight, this.fieldHeight);
+				Rect rect11 = new Rect (((this.innerRect.width - this.scrollBarSize) - this.fieldHeight), num * this.fieldHeight, this.fieldHeight, this.fieldHeight);
+				if ((this.itemButtonTexture == null) && !this.selectable)
                 {
                     GUI.enabled = false;
                 }
@@ -213,7 +214,12 @@ public class UIListPopup : MonoBehaviour
 				if (rightrightbutton) {
 					if (GUI.Button(rect10, string.Empty) && card2.selectable())
 					{
-						callback.ButtonClicked (this, ECardListButton.BUTTON_RIGHT);
+						callback.ButtonClicked (this, ECardListButton.BUTTON_RIGHT, card2);
+						App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
+					}
+						if (GUI.Button (rect11, string.Empty, ((GUISkin)Resources.Load("_GUISkins/CloseButton")).button)) {
+						callback.ItemCanceled (this, card2);	
+						GUI.DrawTexture(rect11, ResourceManager.LoadTexture("Arena/scroll_browser_button_cb_checked"));
 						App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
 					}
 				}
@@ -261,7 +267,10 @@ public class UIListPopup : MonoBehaviour
         if (card != null)
         {
             this.callback.ItemButtonClicked(this, card);
+			if (rightrightbutton)
+					callback.ButtonClicked (this, ECardListButton.BUTTON_LEFT, card);
         }
+		
         GUI.skin = this.lobbySkin;
         if (this.buttonLeftContent != null)
         {
@@ -273,12 +282,13 @@ public class UIListPopup : MonoBehaviour
             {
                 if (this.selectable)
                 {
-                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_LEFT, new List<Item>(this.selectedCards));
-                    this.selectedCards.Clear();
+                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_LEFT, new List<Item>(this.selectedCards), card);
+                    if (!this.rightrightbutton)
+						this.selectedCards.Clear();
                 }
                 else
                 {
-                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_LEFT);
+                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_LEFT, card);
                 }
                 App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
             }
@@ -307,12 +317,12 @@ public class UIListPopup : MonoBehaviour
             {
                 if (this.selectable)
                 {
-                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_RIGHT, new List<Item>(this.selectedCards));
+                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_RIGHT, new List<Item>(this.selectedCards), card);
                     this.selectedCards.Clear();
                 }
                 else
                 {
-                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_RIGHT);
+                    this.callback.ButtonClicked(this, ECardListButton.BUTTON_RIGHT, card);
                 }
                 App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
             }
@@ -430,14 +440,24 @@ public class UIListPopup : MonoBehaviour
 	public void setSelectedItem(Item item)
 	{
 		List<Item> items = new List<Item> ();
-		items.Add (item);
+		if (item != null)
+			items.Add (item);
+		selectedCards = items;
+	}
+
+	public void setSelectedItems(List<Item> items)
+	{
 		selectedCards = items;
 	}
 
 	public Item selectedItem() {
 		return selectedCards [0];
 	}
-
+	
+	public List<Item> selectedItems() {
+		return selectedCards;
+	}
+	
     private void Start()
     {
         this.lobbySkin = (GUISkin) Resources.Load("_GUISkins/Lobby");

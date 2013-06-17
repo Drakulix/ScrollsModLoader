@@ -118,15 +118,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <EmbeddedResource Include="LinFu-master\build\Release\LinFu.AOP.Cecil.dll">
-      <Link>Resources\LinFu.AOP.Cecil.dll</Link>
-    </EmbeddedResource>
-    <EmbeddedResource Include="LinFu-master\build\Release\LinFu.AOP.Interfaces.dll">
-      <Link>Resources\LinFu.AOP.Interfaces.dll</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="NativeAPIs\MonoMac.dll" />
     <EmbeddedResource Include="Resources\Mods.png" />
-    <EmbeddedResource Include="Resources\Mono.Cecil.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">

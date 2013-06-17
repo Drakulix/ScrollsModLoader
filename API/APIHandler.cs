@@ -29,15 +29,19 @@ namespace ScrollsModLoader
 			sceneHandler.LoadScene (providerDesc);
 		}
 
+		public string FileOpenDialog() {
+			return Dialogs.fileOpenDialog ();
+		}
+
 		public string OwnFolder(BaseMod mod)
 		{
 			String installpath = null;
 
 			foreach (String id in loader.modInstances.Keys) {
 				if (loader.modInstances [id].Equals (mod))
-					installpath = loader.modManager.installedMods.Find (delegate(LocalMod lmod) {
-						return (lmod.localId.Equals (id));
-					}).installPath;
+					installpath = (loader.modManager.installedMods.Find (delegate(Item lmod) {
+						return ((lmod as LocalMod).localId.Equals (id));
+					}) as LocalMod).installPath;
 			}
 
 			if (installpath == null && currentlyLoading != null)

@@ -64,10 +64,12 @@ namespace ScrollsModLoader
 				Dialogs.showNotification ("Patching failed", "ScrollsModLoader was unable to prepare your client, you are likely using an incompatible version. More at ScrollsGuide.com");
 			}
 
-			byte[] linfucecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Cecil.dll").ReadToEnd ();
-			System.IO.File.Create (installPath+"LinFu.AOP.Cecil.dll").Write (linfucecil, 0, linfucecil.Length);
-			byte[] linfuinterfaces = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Interfaces.dll").ReadToEnd ();
-			System.IO.File.Create (installPath+"LinFu.AOP.Interfaces.dll").Write (linfuinterfaces, 0, linfuinterfaces.Length);
+			//byte[] linfucecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Cecil.dll").ReadToEnd ();
+			//System.IO.File.Create (installPath+"LinFu.AOP.Cecil.dll").Write (linfucecil, 0, linfucecil.Length);
+			//byte[] linfuinterfaces = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Interfaces.dll").ReadToEnd ();
+			//System.IO.File.Create (installPath+"LinFu.AOP.Interfaces.dll").Write (linfuinterfaces, 0, linfuinterfaces.Length);
+			//byte[] monocecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.Mono.Cecil.dll").ReadToEnd ();
+			//System.IO.File.Create (installPath+"Mono.Cecil.dll").Write (monocecil, 0, monocecil.Length);
 
 			Console.WriteLine ("Done");
 
@@ -80,6 +82,7 @@ namespace ScrollsModLoader
 			if (installPath == null) return false;
 
 			//"weave" the assembly
+			ScrollsFilter.Log ();
 			if (!weaveAssembly (installPath+"Assembly-CSharp.dll"))
 				return false;
 			Console.WriteLine ("Weaved Assembly");

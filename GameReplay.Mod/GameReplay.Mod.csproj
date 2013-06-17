@@ -29,14 +29,17 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx">
+      <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\JsonFx.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -49,8 +52,8 @@
     <Compile Include="Player.cs" />
     <Compile Include="ProfileMenuList.cs" />
     <Compile Include="Recorder.cs" />
-    <Compile Include="Replay.cs" />
     <Compile Include="UIListPopup.cs" />
+    <Compile Include="ResultMessage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

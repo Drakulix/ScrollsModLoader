@@ -2,6 +2,7 @@ using System;
 using Mono.Cecil;
 using LinFu.AOP.Interfaces;
 
+
 namespace ScrollsModLoader.Interfaces
 {
 	public abstract class ModAPIContainer {

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ScrollsModLoader.Interfaces;
 using JsonFx.Json;
+using Mono.Cecil;
 using UnityEngine;
 
 namespace ScrollsModLoader
@@ -16,16 +17,16 @@ namespace ScrollsModLoader
 
 		private String modsPath;
 		private ModLoader loader;
-		private RepoManager repoManager;
+		public RepoManager repoManager;
 
 		//private List<BaseMod> modInstances = new List<BaseMod>();
-		public List<LocalMod> installedMods = new List<LocalMod> ();
+		public List<Item> installedMods = new List<Item> ();
 
 
 		public ModManager(ModLoader loader) {
 
 			this.loader = loader;
-			repoManager = new RepoManager ();
+			repoManager = new RepoManager (this);
 
 			String installPath = Platform.getGlobalScrollsInstallPath();
 			String modLoaderPath = installPath + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
@@ -36,11 +37,22 @@ namespace ScrollsModLoader
 			modsPath = modLoaderPath + "mods";
 
 			this.loadInstalledMods ();
-
+			this.sortInstalledMods ();
 		}
 
+		public void sortInstalledMods() {
+			installedMods.Sort (delegate(Item mod1, Item mod2) { //-1 higher, 0 equal, 1 lower
 
-
+				if ((loader.modOrder.Contains ((mod1 as LocalMod).localId) && (mod1 as LocalMod).enabled) && (loader.modOrder.Contains ((mod2 as LocalMod).localId) && (mod2 as LocalMod).enabled)) {
+					return loader.modOrder.IndexOf ((mod1 as LocalMod).localId) - loader.modOrder.IndexOf ((mod2 as LocalMod).localId);
+				} else if (loader.modOrder.Contains ((mod1 as LocalMod).localId) && (mod1 as LocalMod).enabled) {
+					return -1;
+				} else if (loader.modOrder.Contains ((mod2 as LocalMod).localId) && (mod2 as LocalMod).enabled) {
+					return 1;
+				} else
+					return 0;
+			});
+		}
 
 		public void loadInstalledMods() {
 
@@ -69,14 +81,14 @@ namespace ScrollsModLoader
 		}
 
 		public void checkForUpdates() {
-			foreach (LocalMod mod in installedMods) {
-				if (!mod.localInstall) {
-					Mod onlineMod = repoManager.getModOnRepo (mod.source, mod);
+			foreach (Item mod in installedMods) {
+				if (!(mod as LocalMod).localInstall) {
+					Mod onlineMod = repoManager.getModOnRepo ((mod as LocalMod).source, (mod as LocalMod));
 					if (onlineMod == null)
 						continue;
-					if (onlineMod.version > mod.version) {
-						mod.version = onlineMod.version;
-						this.updateMod (mod);
+					if (onlineMod.version > (mod as LocalMod).version) {
+						(mod as LocalMod).version = onlineMod.version;
+						this.updateMod ((mod as LocalMod));
 					}
 				}
 			}
@@ -91,7 +103,7 @@ namespace ScrollsModLoader
 			String newID = this.generateUniqueID ();
 			String installPath = modsPath + Path.DirectorySeparatorChar + newID + Path.DirectorySeparatorChar + mod.name + ".mod.dll";
 
-			LocalMod lmod = new LocalMod (false, installPath, newID, mod.id, repo, true, mod.name, mod.description, mod.version, mod.versionCode); 
+			LocalMod lmod = new LocalMod (false, installPath, newID, mod.id, repo, false, mod.name, mod.description, mod.version, mod.versionCode); 
 
 			String folder = modsPath + Path.DirectorySeparatorChar + newID + Path.DirectorySeparatorChar;
 			if (Directory.Exists (folder))
@@ -99,14 +111,18 @@ namespace ScrollsModLoader
 			Directory.CreateDirectory (folder);
 
 			this.updateMod (lmod);
+			this.installedMods.Add (lmod);
+
+			//add hooks
+			loader.loadModStatic (lmod.installPath);
 		}
 
 		public void deinstallMod(LocalMod mod) {
 			loader.unloadMod (mod);
 			installedMods.Remove (mod);
-			String folder = modsPath + Path.DirectorySeparatorChar + mod.localId + Path.DirectorySeparatorChar;
+			String folder = Path.GetDirectoryName(mod.installPath);
 			if (Directory.Exists (folder))
-				Directory.Delete (folder);
+				Extensions.DeleteDirectory(folder);
 		}
 
 		public void updateMod(LocalMod mod) {
@@ -116,7 +132,8 @@ namespace ScrollsModLoader
 		}
 
 		public byte[] downloadMod(LocalMod mod) {
-			return new WebClient ().DownloadData (mod.source.url + "/download/mod/" + mod.id);
+			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
+			return new WebClient ().DownloadData (mod.source.url + "download/mod/" + mod.id);
 		}
 
 		public void updateFile(LocalMod mod) {
@@ -140,6 +157,7 @@ namespace ScrollsModLoader
 			configFile.Write (this.jsonConfigFromMod (mod));
 			configFile.Flush ();
 			configFile.Close ();
+			this.sortInstalledMods ();
 		}
 
 
@@ -148,10 +166,25 @@ namespace ScrollsModLoader
 		public void enableMod(LocalMod mod) {
 			mod.enabled = true;
 			this.updateConfig (mod);
+			ScrollsFilter.clearHooks ();
+			String modLoaderPath = Platform.getGlobalScrollsInstallPath() + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
+			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
+			loader.loadModsStatic (types);
+			loader.loadMod (mod);
 		}
 		public void disableMod(LocalMod mod) {
+			this.disableMod (mod, true);
+		}
+		public void disableMod(LocalMod mod, bool rebuild) {
 			mod.enabled = false;
 			this.updateConfig (mod);
+			loader._unloadMod (mod);
+			if (rebuild) {
+				ScrollsFilter.clearHooks ();
+				String modLoaderPath = Platform.getGlobalScrollsInstallPath() + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
+				TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
+				loader.loadModsStatic (types);
+			}
 		}
 
 
@@ -168,8 +201,8 @@ namespace ScrollsModLoader
 			while (searching) {
 				newGuid = Guid.NewGuid ().ToString ("N");
 				searching = false;
-				foreach (LocalMod mod in installedMods)
-					if (mod.localId.Equals (newGuid))
+				foreach (Item mod in installedMods)
+					if ((mod as LocalMod).localId.Equals (newGuid))
 						searching = true;
 			}
 			return newGuid;
@@ -187,8 +220,7 @@ namespace ScrollsModLoader
 		public LocalMod(bool localInstall, String installPath, String localId, String serverId, Repo source, bool enabled, String name, String description, int version, String versionCode) {
 			this.localId = localId;
 			this.localInstall = localInstall;
-			if (localInstall)
-				this.installPath = installPath;
+			this.installPath = installPath;
 			this.source = source;
 			this.enabled = enabled;
 
@@ -202,6 +234,8 @@ namespace ScrollsModLoader
 		public override bool Equals(object mod) {
 			if (mod is LocalMod) {
 				return (mod as LocalMod).localId.Equals (this.localId);
+			} else if (mod is Mod && !this.localInstall) {
+				return (mod as Mod).id.Equals (this.id);
 			} else
 				return false;
 		}

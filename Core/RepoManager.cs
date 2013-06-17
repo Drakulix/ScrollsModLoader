@@ -12,12 +12,14 @@ namespace ScrollsModLoader
 	{
 		public List<Item> repositories = new List<Item>();
 		private Dictionary<Repo, List<Item>> modsPerRepo = new Dictionary<Repo, List<Item>>();
+		private ModManager modManager;
 
-		public RepoManager ()
+		public RepoManager (ModManager modManager)
 		{
+			this.modManager = modManager;
 
 			//add repos
-			this.tryAddRepository ("http://mods.ScrollsGuide.com/");
+			this.readRepository ("http://mods.ScrollsGuide.com/");
 
 			//load repo list
 			String installPath = Platform.getGlobalScrollsInstallPath();
@@ -27,11 +29,19 @@ namespace ScrollsModLoader
 			}
 			String[] repos = File.ReadAllLines (modLoaderPath+"repo.ini");
 			foreach (String repo in repos)
-				this.tryAddRepository(repo);
+				this.readRepository(repo);
 
 		}
 
 		public void tryAddRepository(string url) {
+			if (!this.readRepository (url)) {
+				App.Popups.ShowOk (this, "addFail", "Failure", url + " does not seem to be a valid Mod Repository", "OK");
+			} else {
+				this.updateRepoList ();
+			}
+		}
+
+		private bool readRepository(string url) {
 
 			//normalize it
 			Uri urlNorm = new Uri (url);
@@ -40,9 +50,9 @@ namespace ScrollsModLoader
 			String repoinfo = null;
 			try {
 				WebClient client = new WebClient ();
-				repoinfo = client.DownloadString (new Uri(url+"/repoinfo"));
+				repoinfo = client.DownloadString (new Uri("http://"+url+"/repoinfo"));
 			} catch {
-				return;
+				return false;
 			}
 
 			RepoInfoMessage message = null;
@@ -50,34 +60,38 @@ namespace ScrollsModLoader
 				JsonReader reader = new JsonReader();
 				message = reader.Read(repoinfo, typeof(RepoInfoMessage)) as RepoInfoMessage;
 			} catch {
-				App.Popups.ShowOk (this, "addFail", "Failure", url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			if (message == null) {
-				App.Popups.ShowOk (this, "addFail", "Failure", url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			if (!message.msg.Equals("success")) {
-				App.Popups.ShowOk (this, "addFail", "Failure", url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			Repo repo = message.data;
+			repo.tryToGetFavicon ();
 			repositories.Add(repo);
 
-			this.tryToFetchModList (repo);
+			return this.tryToFetchModList (repo);
 		}
 
-		public void tryToFetchModList(Repo repo) {
+		public void removeRepository(Repo repo) {
+			repositories.Remove (repo);
+			updateRepoList ();
+		}
+
+		public bool tryToFetchModList(Repo repo) {
 
 			String modlist = null;
 			try {
 				WebClient client = new WebClient ();
-				modlist = client.DownloadString (new Uri(repo.url+"/modlist"));
+				modlist = client.DownloadString (new Uri(repo.url+"modlist"));
 			} catch {
-				return;
+				repositories.Remove (repo);
+				return false;
 			}
 
 			ModListMessage message = null;
@@ -86,23 +100,38 @@ namespace ScrollsModLoader
 				message = reader.Read(modlist, typeof(ModListMessage)) as ModListMessage;
 			} catch {
 				repositories.Remove (repo);
-				App.Popups.ShowOk (this, "addFail", "Failure", repo.url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			if (message == null) {
 				repositories.Remove (repo);
-				App.Popups.ShowOk (this, "addFail", "Failure", repo.url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			if (!message.msg.Equals("success")) {
 				repositories.Remove (repo);
-				App.Popups.ShowOk (this, "addFail", "Failure", repo.url + " does not seem to be a valid Mod Repository", "OK");
-				return;
+				return false;
 			}
 
 			modsPerRepo.Add (repo, new List<Item>(message.data));
+			return true;
+		}
+
+		public List<Item> getModListForRepo(Repo source) {
+			List<Item> modlist = null;
+			foreach (Repo repo in repositories)
+				if (repo.Equals (source))
+						modlist = modsPerRepo [repo];
+			if (modlist != null) {
+				modlist = modlist.FindAll (delegate(Item mod) {
+					foreach (LocalMod lmod in modManager.installedMods) {
+						if (lmod.Equals(mod) && lmod.source.Equals(source))
+							return false;
+					}
+					return true;
+				});
+			}
+			return modlist;
 		}
 
 		public Mod getModOnRepo(Repo source, Mod localMod) {
@@ -110,6 +139,19 @@ namespace ScrollsModLoader
 				if (repo.Equals (source))
 					return (Mod)modsPerRepo [repo].Find (localMod.Equals);
 			return null;
+		}
+
+		public void updateRepoList() {
+			String installPath = Platform.getGlobalScrollsInstallPath();
+			String modLoaderPath = installPath + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
+			File.Delete (modLoaderPath+"repo.ini");
+			StreamWriter repoWriter = File.CreateText (modLoaderPath+"repo.ini");
+			foreach (Repo repo in repositories) {
+				if (repo.Equals(repositories[0])) continue;
+				repoWriter.WriteLine (repo.url);
+			}
+			repoWriter.Flush ();
+			repoWriter.Close ();
 		}
 
 		public void PopupOk (string popupType)
@@ -126,9 +168,11 @@ namespace ScrollsModLoader
 		public int mods;
 		private WWW tex;
 
-		public Repo () {
+		public Repo () {}
+
+		public void tryToGetFavicon() {
 			try {
-				this.tex = new WWW (url+"/favicon.png");
+				this.tex = new WWW (url + "/favicon.png");
 			} catch {
 				this.tex = null;
 			}
@@ -148,10 +192,7 @@ namespace ScrollsModLoader
 					return null;
 				}
 			}
-			if (tex.isDone)
-				return tex.texture;
-			else
-				return null;
+			return tex.texture;
 		}
 		public string getName ()
 		{
