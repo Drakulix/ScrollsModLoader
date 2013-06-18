@@ -110,6 +110,8 @@ namespace ScrollsModLoader
 
 				//save assembly
 				Hooks.savePatchedAssembly();
+
+				Platform.PlatformPatches(installPath);
 				
 			} catch (Exception exp) {
 
@@ -152,6 +154,9 @@ namespace ScrollsModLoader
 			}
 
 			//add hooks
+			if (!Hooks.hookStaticVoidMethodAtBegin ("App.Awake", "Updater.updateIfNeeded"))
+				return false;
+
 			if (!Hooks.hookStaticVoidMethodAtEnd ("App.Awake", "Patcher.safeLaunch"))
 				return false;
 
@@ -159,6 +164,8 @@ namespace ScrollsModLoader
 
 				//save assembly
 				Hooks.savePatchedAssembly();
+
+				Platform.PlatformPatches(installPath);
 
 			} catch (Exception exp) {
 
@@ -178,7 +185,7 @@ namespace ScrollsModLoader
 				System.IO.File.Delete (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
 				new Patcher ().patchAssembly ();
 			}
-			if (true) { //updater did succeed
+			if (Updater.tryUpdate()) { //updater did succeed
 				System.IO.File.CreateText (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
 				Platform.RestartGame ();
 			}

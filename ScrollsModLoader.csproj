@@ -11,6 +11,8 @@
     <AssemblyName>ScrollsModLoader</AssemblyName>
     <StartupObject>ScrollsModLoader.Patcher</StartupObject>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SignAssembly>false</SignAssembly>
+    <AssemblyOriginatorKeyFile>Summoner.key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,9 +81,6 @@
       <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -90,6 +89,9 @@
     </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\JsonFx.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\Template.mod\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -110,11 +112,13 @@
     <Compile Include="Core\Hooks.cs" />
     <Compile Include="Resources\AssemblyInfo.cs" />
     <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="API\ScrollsExtension.cs" />
     <Compile Include="Core\ModManager.cs" />
     <Compile Include="Core\RepoManager.cs" />
     <Compile Include="Core\WebAPI\RepoInfoMessage.cs" />
     <Compile Include="Core\WebAPI\ModListMessage.cs" />
+    <Compile Include="Core\Updater.cs" />
+    <Compile Include="Core\WebAPI\VersionMessage.cs" />
+    <Compile Include="NativeAPIs\WindowsDialog.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -122,13 +126,13 @@
     <EmbeddedResource Include="Resources\Mods.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
-      <Project>{E839D070-EA04-47D2-9F1A-A0379BDDC898}</Project>
-      <Name>ScrollsModLoader.Interfaces</Name>
-    </ProjectReference>
     <ProjectReference Include="OX.Copyable\OX.Copyable.csproj">
       <Project>{44974FCD-7B84-425D-B8F1-8FF029335B89}</Project>
       <Name>OX.Copyable</Name>
+    </ProjectReference>
+    <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
+      <Project>{E839D070-EA04-47D2-9F1A-A0379BDDC898}</Project>
+      <Name>ScrollsModLoader.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

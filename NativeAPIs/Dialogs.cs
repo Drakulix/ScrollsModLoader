@@ -30,13 +30,18 @@ namespace ScrollsModLoader
 			//TO-DO implement Windows Dialog
 			switch (Platform.getOS()) {
 			case Platform.OS.Win:
-				System.Reflection.Assembly forms = System.Reflection.Assembly.Load ("System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+				/*System.Reflection.Assembly forms = System.Reflection.Assembly.Load ("System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 				Type OpenFileDialogType = forms.GetType ("System.Windows.Forms.OpenFileDialog");
 				object fileDialog = OpenFileDialogType.GetConstructor (Type.EmptyTypes).Invoke (null); 
 				OpenFileDialogType.GetField ("Filter").SetValue (fileDialog, "All files (*.*)|*.*");
 				if ((bool)OpenFileDialogType.GetMethod ("ShowDialog").Invoke (fileDialog, null)) {
 					return (string)OpenFileDialogType.GetField("FileName").GetValue(fileDialog);
-				}
+				}*/
+				String ret = WindowsDialog.ShowWindowsDialog ();
+				if (ret.Equals (""))
+					return null;
+				else
+					return ret;
 			case Platform.OS.Mac:
 				byte[] monoMacLoad = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ScrollsModLoader.NativeAPIs.MonoMac.dll").ReadToEnd();
 					System.Reflection.Assembly monoMac = System.Reflection.Assembly.Load(monoMacLoad);

@@ -46,7 +46,7 @@ namespace ScrollsModLoader {
 						types,
 						SharedConstants.getGameVersion ()
 					});
-					if (requestedHooks.Where (item => item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name)).Count () > 0) {
+					if (requestedHooks.Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
 						object returnVal;
 						try {
 							if (mod.BeforeInvoke (new InvocationInfo (info), out returnVal)) {
@@ -73,9 +73,13 @@ namespace ScrollsModLoader {
 			object ret = null;
 			bool patchFound = false;
 			foreach (Patch patch in loader.patches) {
-				if (patch.patchedMethods ().Where (item => item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name)).Count () > 0) {
-					ret = patch.Intercept (info);
-					patchFound = true;
+				if (patch.patchedMethods ().Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
+					try {
+						ret = patch.Intercept (info);
+						patchFound = true;
+					} catch (Exception ex) {
+						Console.WriteLine (ex);
+					}
 				}
 			}
 			if (!patchFound)
@@ -98,8 +102,11 @@ namespace ScrollsModLoader {
 					mod = loader.modInstances [id];
 				} catch {}
 				if (mod != null) {
-					MethodDefinition[] requestedHooks = (MethodDefinition[]) mod.GetType().GetMethod("GetHooks").Invoke(null, new object[] { types, SharedConstants.getGameVersion() } );
-					if (requestedHooks.Where (item => item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name)).Count () > 0) {
+					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
+						types,
+						SharedConstants.getGameVersion ()
+					});
+					if (requestedHooks.Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
 						try {
 							mod.AfterInvoke (new InvocationInfo (info), ref ret);
 							try {

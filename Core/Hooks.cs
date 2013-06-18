@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
@@ -65,7 +66,7 @@ namespace ScrollsModLoader
 
 		private static bool hookStaticVoidMethodAtEnd_Int(MethodDefinition hookedMethod, MethodDefinition callMeth) {
 			try {
-				ArrayList retInstructions = new ArrayList();
+				HashSet<Instruction> retInstructions = new HashSet<Instruction>();
 				foreach (Instruction instr in hookedMethod.Body.Instructions) {
 					if (instr.OpCode == OpCodes.Ret) {
 						retInstructions.Add(instr);

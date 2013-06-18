@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace ScrollsModLoader
@@ -111,6 +112,26 @@ namespace ScrollsModLoader
 				Application.Quit ();
 			} else {
 				Application.Quit ();
+			}
+		}
+
+
+		public static void PlatformPatches(String path) {
+			if (getOS() == OS.Mac) {
+				String runsh = path + "/../../../../../run.sh";
+				String[] lines = File.ReadAllLines (runsh);
+				File.SetAttributes(runsh, FileAttributes.Normal);
+				File.Delete (runsh);
+				StreamWriter writer = File.CreateText (runsh);
+				for (int i = 0; i < lines.Count(); i++) {
+					String line = lines[i];
+					if (line.Contains("/installer") && !lines[i-1].Contains("sleep")) {
+						writer.WriteLine ("sleep 2");
+					}
+					writer.WriteLine (line);
+				}
+				writer.Close ();
+				new Process { StartInfo = { FileName = "chmod", Arguments = "+x \""+runsh+"\"", UseShellExecute=true } }.Start ();
 			}
 		}
 	}

@@ -145,6 +145,9 @@ namespace GameReplay.Mod
 
 		public void LaunchReplay(String name)
 		{
+			if (name == null || name.Equals (""))
+				return;
+
 			fileName = name;
 			replay = new Thread(new ThreadStart(LaunchReplay));
 			replay.Start();

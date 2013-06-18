@@ -37,6 +37,7 @@ namespace ScrollsModLoader
 			modsPath = modLoaderPath + "mods";
 
 			this.loadInstalledMods ();
+			this.checkForUpdates   ();
 			this.sortInstalledMods ();
 		}
 
@@ -93,8 +94,6 @@ namespace ScrollsModLoader
 				}
 			}
 		}
-
-
 
 
 

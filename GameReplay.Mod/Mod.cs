@@ -106,7 +106,6 @@ namespace GameReplay.Mod
 			}
 			if (info.target is ProfileMenu && info.targetMethod.Equals("Start") && App.SceneValues.profilePage.isMe())
 			{
-
 				//list them
 				recordList.Clear();
 				foreach (String file in Directory.GetFiles(recordFolder))
@@ -161,7 +160,7 @@ namespace GameReplay.Mod
 							line = jsonms.getNextMessage();
 						}
 
-						recordList.Add(new Record(File.GetCreationTime(file).ToLongDateString() + " - " + File.GetCreationTime(file).ToLongTimeString(),player1name +  " vs " + player2name + " - " + deckName, /*enemyId,*/ file, type));
+						recordList.Add(new Record(File.GetCreationTime(file).ToShortDateString() + " - " + File.GetCreationTime(file).ToShortTimeString(),player1name +  " vs " + player2name + " - " + deckName, /*enemyId,*/ file, type));
 					}
 				}
 
@@ -171,6 +170,9 @@ namespace GameReplay.Mod
 				recordListPopup.Init(new Rect(frame.center.x - frame.width / 2.0f, frame.center.y - frame.height / 2.0f + 32.0f, frame.width, frame.height - (float)Screen.height * 0.055f * 3.0f), false, true, recordList, this, null, null, false, true, false, true, null, true, false);
 				recordListPopup.enabled = true;
 				recordListPopup.SetOpacity(1f);
+
+				returnValue = null;
+				return false;
 			}
 			if (info.targetMethod.Equals("drawEditButton"))
 			{
@@ -195,8 +197,15 @@ namespace GameReplay.Mod
 						LoadReplay();
 					}
 				}
+
+				returnValue = null;
+				return false;
 			}
-			return player.BeforeInvoke(info, out returnValue);
+			if (!(info.target is ProfileMenu))
+				return player.BeforeInvoke(info, out returnValue);
+			
+			returnValue = null;
+			return false;
 		}
 
 
@@ -224,7 +233,7 @@ namespace GameReplay.Mod
 		{
 			//player.LaunchReplay (((Record)card).fileName());
 			selectedRecord = (Record)card;
-			App.Popups.ShowMultibutton(this, "Replayer", card.getDesc(), new string[] { "Play", "Share", "Back" });
+			App.Popups.ShowMultibutton(this, "Replayer", card.getDesc(), new string[] { "Play", "Share", "Delete" });
 		}
 
 		public void ItemHovered(UIListPopup popup, Item card)
@@ -234,7 +243,7 @@ namespace GameReplay.Mod
 
 		public void LoadReplay()
 		{
-			App.Popups.ShowMultibutton(this, "Load", "Load", new string[] { "From File", "From Link", "Back" });
+			App.Popups.ShowMultibutton(this, "Load", "Load", new string[] { "From File", "From Link" });
 		}
 
 		public void PopupOk(string popupType, string choice)
@@ -274,13 +283,14 @@ namespace GameReplay.Mod
 			}
 			else
 			{
-				if (choice.Equals("Play"))
-				{
-					player.LaunchReplay(selectedRecord.fileName());
-				}
-				else if (choice.Equals("Share"))
-				{
-					new ReplayUploader(this, selectedRecord);
+				if (choice.Equals ("Play")) {
+					player.LaunchReplay (selectedRecord.fileName ());
+				} else if (choice.Equals ("Share")) {
+					new ReplayUploader (this, selectedRecord);
+				} else if (choice.Equals ("Delete")) {
+					File.Delete (selectedRecord.fileName ());
+					recordList.Remove(selectedRecord);
+					recordListPopup.SetItemList (recordList);
 				}
 				else if (choice.Equals("From File"))
 				{
