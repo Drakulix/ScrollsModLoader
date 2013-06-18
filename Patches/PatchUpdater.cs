@@ -25,36 +25,10 @@ namespace ScrollsModLoader
 		public override MethodDefinition[] patchedMethods() {
 			MethodDefinition PopupOk = Hooks.getMethDef (Hooks.getTypeDef (assembly, "Login"), "PopupOk");
 
-			//test patch
-			//MethodDefinition Name = Hooks.getMethDef (Hooks.getTypeDef (assembly, "Communicator"), "getUserScreenName");
-
-
 			return new MethodDefinition[] { PopupOk };//, Name};
 		}
 
 		public override object Intercept (IInvocationInfo info) {
-
-			//test patch for returning functions
-			/*if (info.TargetMethod.Name.Equals ("getUserScreenName")) {
-				return ((String)info.TargetMethod.Invoke(info.Target, info.Arguments))+"!";
-			}*/
-
-			/*Dictionary<string, int> map = null;
-			FieldInfo field = null;
-			try {
-				field = typeof(Login).GetField ("_<>f__switch$map21", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
-			} catch (NullReferenceException exp) {
-				return info.TargetMethod.Invoke (info.Target, info.Arguments);
-			}
-			try {
-				map = (Dictionary<string, int>)field.GetValue(info.Target);
-			} catch (NullReferenceException exp) {
-				return info.TargetMethod.Invoke (info.Target, info.Arguments);
-			}
-
-			int i = 0;
-			if (info.Arguments [0] != null && map != null && map.TryGetValue (((String)info.Arguments[0]), out i) && i == 0) {*/
-			//update
 
 			if (!info.Arguments[0].Equals("update"))	{
 				return info.TargetMethod.Invoke (info.Target, info.Arguments);

@@ -5,7 +5,7 @@ namespace ScrollsModLoader
 	public class VersionMessage : Message
 	{
 		public new String msg;
-		private VersionField data;
+		public VersionField data;
 
 		public VersionMessage ()
 		{
@@ -16,7 +16,7 @@ namespace ScrollsModLoader
 		}
 	}
 
-	internal class VersionField {
+	public class VersionField {
 		public int version;
 	}
 }

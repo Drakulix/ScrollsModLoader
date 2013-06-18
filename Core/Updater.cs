@@ -23,7 +23,7 @@ namespace ScrollsModLoader
 			String versionMessageRaw = client.DownloadString (new Uri("http://mods.scrollsguide.com/version"));
 
 			JsonReader reader = new JsonReader ();
-			VersionMessage versionMessage = (VersionMessage)reader.Read (versionMessageRaw);
+			VersionMessage versionMessage = (VersionMessage)reader.Read (versionMessageRaw, typeof(VersionMessage));
 
 			int version = versionMessage.version ();
 

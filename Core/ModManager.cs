@@ -82,7 +82,7 @@ namespace ScrollsModLoader
 		}
 
 		public void checkForUpdates() {
-			foreach (Item mod in installedMods) {
+			foreach (Item mod in installedMods.ToList()) {
 				if (!(mod as LocalMod).localInstall) {
 					Mod onlineMod = repoManager.getModOnRepo ((mod as LocalMod).source, (mod as LocalMod));
 					if (onlineMod == null)
@@ -230,6 +230,10 @@ namespace ScrollsModLoader
 			this.versionCode = versionCode;
 		}
 
+		public override int GetHashCode () {
+			return localId.GetHashCode();
+		}
+
 		public override bool Equals(object mod) {
 			if (mod is LocalMod) {
 				return (mod as LocalMod).localId.Equals (this.localId);
@@ -270,6 +274,10 @@ namespace ScrollsModLoader
 				return (mod as Mod).id.Equals (this.id);
 			} else
 				return false;
+		}
+
+		public override int GetHashCode () {
+			return id.GetHashCode();
 		}
 	}
 }

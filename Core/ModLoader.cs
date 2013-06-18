@@ -11,6 +11,8 @@ using Mono.Cecil;
 using OX.Copyable;
 using ScrollsModLoader.Interfaces;
 using UnityEngine;
+using System.Threading;
+using JsonFx.Json;
 
 namespace ScrollsModLoader {
 
@@ -173,6 +175,7 @@ namespace ScrollsModLoader {
 		private bool isRepatchNeeded = false;
 
 		public Dictionary<String, BaseMod> modInstances = new Dictionary<String, BaseMod>();
+		public static Dictionary<String, ExceptionLogger> logger = new Dictionary<String, ExceptionLogger> ();
 		public List<Patch> patches = new List<Patch>();
 
 		private APIHandler publicAPI = null;
@@ -361,6 +364,7 @@ namespace ScrollsModLoader {
 
 			publicAPI.setCurrentlyLoading (mod);
 			modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+			logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
 			publicAPI.setCurrentlyLoading (null);
 
 			if (!modOrder.Contains (mod.localId))
@@ -450,7 +454,73 @@ namespace ScrollsModLoader {
 			}*/
 		}
 
+		public static void UnhandledExceptionHandler(object sender, ThreadExceptionEventArgs e) {
+			if (e.Exception.TargetSite.Module.Assembly.GetName().Name.Equals("Assembly-CSharp")
+			    || e.Exception.TargetSite.Module.Assembly.GetName().Name.Equals("ScrollsModLoader")
+			    || e.Exception.TargetSite.Module.Assembly.Location.ToLower().Equals(Platform.getGlobalScrollsInstallPath().ToLower())
+			    || e.Exception.TargetSite.Module.Assembly.Location.Equals("")) { //no location or Managed => mod loader crash
 
+				//unload ScrollsModLoader
+				MethodBodyReplacementProviderRegistry.SetProvider (new NoMethodReplacementProvider());
+
+				//check for frequent crashes
+				if (!System.IO.File.Exists (Platform.getGlobalScrollsInstallPath () + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
+					System.IO.File.CreateText (Platform.getGlobalScrollsInstallPath () + System.IO.Path.DirectorySeparatorChar + "check.txt");
+					Platform.RestartGame ();
+				} else {
+					try {
+						foreach (String id in instance.modOrder) {
+							BaseMod mod = instance.modInstances [id];
+							if (mod != null) {
+								try {
+									instance.unloadMod((LocalMod)instance.modManager.installedMods.Find (delegate(Item lmod) {
+										return ((lmod as LocalMod).id.Equals (id));
+									}));
+								} catch {}
+							}
+						}
+					} catch {}
+					instance.repatch ();
+				}
+
+			} else if (instance != null && logger != null && logger.Count > 0) {
+
+				Assembly asm = e.Exception.TargetSite.Module.Assembly;
+				Type modClass = (from _modClass in asm.GetTypes ()
+				                 where _modClass.InheritsFrom (typeof(BaseMod))
+				                 select _modClass).First();
+
+				//no mod classes??
+				if (modClass == null) {
+					return;
+				}
+
+				foreach (String id in instance.modOrder) {
+					BaseMod mod = null;
+					try {
+						mod = instance.modInstances [id];
+					} catch {}
+					if (mod != null) {
+						if (modClass.Equals(mod.GetType())) {
+							String folder = Path.GetDirectoryName (asm.Location);
+							if (File.Exists (folder + Path.DirectorySeparatorChar + "config.json")) {
+								JsonReader reader = new JsonReader ();
+								LocalMod lmod = (LocalMod) reader.Read (File.ReadAllText (folder + Path.DirectorySeparatorChar + "config.json"), typeof(LocalMod));
+								logger [lmod.localId].logException (e.Exception);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		public class NoMethodReplacementProvider : IMethodReplacementProvider 
+		{
+			public bool CanReplace (object host, IInvocationInfo info)
+			{
+				return false;
+			}
+		}
 
 		//initial game callback
 		public static void Init() {
@@ -461,11 +531,23 @@ namespace ScrollsModLoader {
 				return;
 			init = true;
 
+			//Install global mod exception helper
+			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+
+			if (Updater.tryUpdate()) { //updater did succeed
+				Platform.RestartGame ();
+			}
+
 			instance = new ModLoader();
 			MethodBodyReplacementProviderRegistry.SetProvider (new SimpleMethodReplacementProvider(instance));
 
 			//otherwise we can finally load
 			instance.loadMods ();
+
+			//delete checks for loading crashes
+			if (System.IO.File.Exists (Platform.getGlobalScrollsInstallPath() + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
+				System.IO.File.Delete (Platform.getGlobalScrollsInstallPath() + System.IO.Path.DirectorySeparatorChar + "check.txt");
+
 		}
 	}
 }

@@ -5,11 +5,8 @@ using LinFu.AOP.Interfaces;
 
 namespace ScrollsModLoader.Interfaces
 {
-	public abstract class ModAPIContainer {
-		public virtual string OwnFolder () { return ""; }
-	}
 
-	public abstract class BaseMod : ModAPIContainer
+	public abstract class BaseMod
 	{
 		protected static ModAPI modAPI;
 
@@ -20,9 +17,9 @@ namespace ScrollsModLoader.Interfaces
 			BaseMod.modAPI = api;
 		}
 
-		public sealed override string OwnFolder() {
+		public string OwnFolder() {
 			return modAPI.OwnFolder (this);
-		}
+		} 
 	}
 
 	public class InvocationInfo {

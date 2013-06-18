@@ -140,7 +140,7 @@ namespace ScrollsModLoader
 			return modlist;
 		}
 
-		public Mod getModOnRepo(Repo source, Mod localMod) {
+		public Mod getModOnRepo(Repo source, LocalMod localMod) {
 			foreach (Repo repo in repositories)
 				if (repo.Equals (source))
 					return (Mod)modsPerRepo [repo].Find (localMod.Equals);
@@ -214,6 +214,10 @@ namespace ScrollsModLoader
 				return (this.name.Equals ((repo as Repo).name) && this.url.Equals ((repo as Repo).url));
 			else
 				return false;
+		}
+
+		public override int GetHashCode () {
+			return url.GetHashCode();
 		}
 	}
 }
