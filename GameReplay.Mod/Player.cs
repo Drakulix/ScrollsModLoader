@@ -103,8 +103,6 @@ namespace GameReplay.Mod
 						{ //quit on Esc/Back Arrow
 							playing = false;
 							App.Communicator.setData("");
-							//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
-							//App.Communicator.isActive = true;
 							SceneLoader.loadScene("_Lobby");
 							returnValue = null;
 							return true;
@@ -112,7 +110,6 @@ namespace GameReplay.Mod
 					}
 					break;
 				case "ShowEndTurn":
-					//case "ShowReconnectPopup":
 					{
 						if (playing)
 						{
@@ -133,9 +130,6 @@ namespace GameReplay.Mod
 			{
 				playing = false;
 				App.Communicator.setData("");
-				//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (false);
-				//App.Communicator.isActive = true;
-				//SceneLoader.loadScene("_HomeScreen");
 			}
 		}
 		public void onReconnect()
@@ -196,8 +190,6 @@ namespace GameReplay.Mod
 				log = log.Replace (realID, App.MyProfile.ProfileInfo.id);
 			}
 
-			//App.SceneValues.battleMode = new SceneValues.SV_BattleMode (true);
-			//App.Communicator.isActive = false;
 			SceneLoader.loadScene("_BattleModeView");
 			App.Communicator.setData(log);
 
@@ -214,23 +206,6 @@ namespace GameReplay.Mod
 					readNextMsg = true;
 				}
 			}
-
-			// not working
-			/*jsonms.runParsing();
-			String line = jsonms.getNextMessage ();
-			while (line != null) {
-				try {
-					Message msg = Message.createMessage (Message.getMessageName(line), line);
-					//Console.WriteLine (msg.getRawText());
-					typeof(Communicator).GetMethod ("preHandleMessage", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (App.Communicator, new object[] { msg });
-					foreach (ICommListener listener in listeners) {
-						listener.handleMessage (msg);
-					}
-				} catch {}
-				//Console.WriteLine (line);
-				jsonms.runParsing();
-				line = jsonms.getNextMessage ();
-			}*/
 
 		}
 
@@ -267,7 +242,6 @@ namespace GameReplay.Mod
 					{
 						if (playing && endGameButton.renderer.material.mainTexture != pauseButton && endGameButton.renderer.material.mainTexture != playButton)
 						{
-							//Console.WriteLine(endGameButton.renderer.material.mainTexture.height+" "+endGameButton.renderer.material.mainTexture.width);
 							if (paused)
 							{
 								endGameButton.renderer.material.mainTexture = playButton;

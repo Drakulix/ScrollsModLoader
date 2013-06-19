@@ -294,7 +294,6 @@ namespace GameReplay.Mod
 				}
 				else if (choice.Equals("From File"))
 				{
-					//TO-DO implement File Open Dialog on High-Level API
 					String path = modAPI.FileOpenDialog ();
 					player.LaunchReplay (path);
 				}

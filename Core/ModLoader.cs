@@ -148,9 +148,9 @@ namespace ScrollsModLoader {
 		public bool CanReplace (object host, IInvocationInfo info)
 		{
 			StackTrace trace = info.StackTrace;
-			//Console.WriteLine (trace);
 			foreach (StackFrame frame in trace.GetFrames()) {
 				if (frame.GetMethod ().Name.Equals(info.TargetMethod.Name))
+					// this replacement disables us to hook rekursive functions, however the default one is broken
 					return false;
 			}
 			return true;
@@ -294,10 +294,17 @@ namespace ScrollsModLoader {
 			}
 
 			//get hooks
-			MethodDefinition[] hooks = (MethodDefinition[]) modClass.GetMethod ("GetHooks").Invoke (null, new object[] {
-				types,
-				SharedConstants.getGameVersion ()
-			});
+			MethodDefinition[] hooks = null;
+			try {
+				hooks =(MethodDefinition[]) modClass.GetMethod ("GetHooks").Invoke (null, new object[] {
+					types,
+					SharedConstants.getGameVersion ()
+				});
+			} catch {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return null;
+			}
+
 
 			TypeDefinition[] typeDefs = new TypeDefinition[types.Count];
 			types.CopyTo(typeDefs, 0);
@@ -321,11 +328,16 @@ namespace ScrollsModLoader {
 
 			//mod object for local mods on ModManager
 			Mod mod = new Mod();
-			mod.id = "00000000000000000000000000000000";
-			mod.name = (String)modClass.GetMethod("GetName").Invoke(null, null);
-			mod.version = (int)modClass.GetMethod("GetVersion").Invoke(null, null);
-			mod.versionCode = ""+mod.version;
-			mod.description = "";
+			try {
+				mod.id = "00000000000000000000000000000000";
+				mod.name = (String)modClass.GetMethod("GetName").Invoke(null, null);
+				mod.version = (int)modClass.GetMethod("GetVersion").Invoke(null, null);
+				mod.versionCode = ""+mod.version;
+				mod.description = "";
+			} catch {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return null;
+			}
 
 			AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 			return mod;
@@ -363,8 +375,21 @@ namespace ScrollsModLoader {
 			}
 
 			publicAPI.setCurrentlyLoading (mod);
-			modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
-			logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
+
+			int countmods = modInstances.Count;
+			int countlog = logger.Count;
+			try {
+				modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+				logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
+			} catch {
+				if (modInstances.Count > countmods)
+					modInstances.Remove (mod.localId);
+				if (logger.Count > countlog)
+					logger.Remove (mod.localId);
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return;
+			}
+
 			publicAPI.setCurrentlyLoading (null);
 
 			if (!modOrder.Contains (mod.localId))
@@ -423,12 +448,12 @@ namespace ScrollsModLoader {
 				modOrderWriter.Close ();
 
 				Patcher patcher = new Patcher ();
-				if (!patcher.patchAssembly ()) {
+				if (!patcher.patchAssembly (Platform.getGlobalScrollsInstallPath ())) {
 					//normal patching should never fail at this point
 					//because this is no update and we are already patched
 					//TO-DO get hook that crashed the patching and deactive mod instead
-					//No idea how to do that correctly however
-					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. ModLoader failed to load and will de-install itself");
+					//No idea how to do that correctly
+					Dialogs.showNotification ("Scrolls is broken", "Your Scrolls install appears to be broken or modified by other tools. Scrolls Summoner failed to load and will de-install itself");
 					File.Delete(Platform.getGlobalScrollsInstallPath()+"Assembly-CSharp.dll");
 					File.Copy(Platform.getGlobalScrollsInstallPath()+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", Platform.getGlobalScrollsInstallPath()+"Assembly-CSharp.dll");
 					Application.Quit();
@@ -439,26 +464,23 @@ namespace ScrollsModLoader {
 
 		private static System.Reflection.Assembly CurrentDomainOnAssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			//try {
-				Console.WriteLine(args.Name);
-				var asm = (from a in AppDomain.CurrentDomain.GetAssemblies()
-				           where a.GetName().FullName.Equals(args.Name)
-				           select a).FirstOrDefault();
-				if (asm == null) {
-					asm = System.Reflection.Assembly.GetExecutingAssembly();
-				}
-				return asm;
-			/*} catch (NullReferenceException exp) {
-				Console.WriteLine(exp);
-				return null;
-			}*/
+			var asm = (from a in AppDomain.CurrentDomain.GetAssemblies()
+			           where a.GetName().FullName.Equals(args.Name)
+			           select a).FirstOrDefault();
+			if (asm == null) {
+				asm = System.Reflection.Assembly.GetExecutingAssembly();
+			}
+			return asm;
 		}
 
-		public static void UnhandledExceptionHandler(object sender, ThreadExceptionEventArgs e) {
-			if (e.Exception.TargetSite.Module.Assembly.GetName().Name.Equals("Assembly-CSharp")
-			    || e.Exception.TargetSite.Module.Assembly.GetName().Name.Equals("ScrollsModLoader")
-			    || e.Exception.TargetSite.Module.Assembly.Location.ToLower().Equals(Platform.getGlobalScrollsInstallPath().ToLower())
-			    || e.Exception.TargetSite.Module.Assembly.Location.Equals("")) { //no location or Managed => mod loader crash
+		public static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e) {
+			if ((e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("Assembly-CSharp")
+			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("ScrollsModLoader")
+			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.Location.ToLower().Equals(Platform.getGlobalScrollsInstallPath().ToLower())
+			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.Location.Equals("")) { //no location or Managed => mod loader crash
+
+				//log
+				new ExceptionLogger ().logException ((Exception)e.ExceptionObject);
 
 				//unload ScrollsModLoader
 				MethodBodyReplacementProviderRegistry.SetProvider (new NoMethodReplacementProvider());
@@ -485,7 +507,7 @@ namespace ScrollsModLoader {
 
 			} else if (instance != null && logger != null && logger.Count > 0) {
 
-				Assembly asm = e.Exception.TargetSite.Module.Assembly;
+				Assembly asm = (e.ExceptionObject as Exception).TargetSite.Module.Assembly;
 				Type modClass = (from _modClass in asm.GetTypes ()
 				                 where _modClass.InheritsFrom (typeof(BaseMod))
 				                 select _modClass).First();
@@ -506,7 +528,8 @@ namespace ScrollsModLoader {
 							if (File.Exists (folder + Path.DirectorySeparatorChar + "config.json")) {
 								JsonReader reader = new JsonReader ();
 								LocalMod lmod = (LocalMod) reader.Read (File.ReadAllText (folder + Path.DirectorySeparatorChar + "config.json"), typeof(LocalMod));
-								logger [lmod.localId].logException (e.Exception);
+								if (!lmod.localInstall)
+									logger [lmod.localId].logException ((Exception)e.ExceptionObject);
 							}
 						}
 					}
@@ -520,13 +543,17 @@ namespace ScrollsModLoader {
 			{
 				return false;
 			}
+
+			public IInterceptor GetMethodReplacement (object host, IInvocationInfo info)
+			{
+				return null;
+			}
 		}
 
 		//initial game callback
 		public static void Init() {
 
 			//wiredly App.Awake() calls Init multiple times, but we do not want multiple instances
-			//TO-DO, find out why InjectBeforeEnd does this (Hooks.cs)
 			if (init)
 				return;
 			init = true;
@@ -534,10 +561,8 @@ namespace ScrollsModLoader {
 			//Install global mod exception helper
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
-			if (Updater.tryUpdate()) { //updater did succeed
-				Platform.RestartGame ();
-			}
-
+			Updater.updateIfNeeded(); //update
+			
 			instance = new ModLoader();
 			MethodBodyReplacementProviderRegistry.SetProvider (new SimpleMethodReplacementProvider(instance));
 
@@ -545,9 +570,13 @@ namespace ScrollsModLoader {
 			instance.loadMods ();
 
 			//delete checks for loading crashes
-			if (System.IO.File.Exists (Platform.getGlobalScrollsInstallPath() + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
-				System.IO.File.Delete (Platform.getGlobalScrollsInstallPath() + System.IO.Path.DirectorySeparatorChar + "check.txt");
+			if (System.IO.File.Exists (Platform.getGlobalScrollsInstallPath () + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
+				System.IO.File.Delete (Platform.getGlobalScrollsInstallPath () + System.IO.Path.DirectorySeparatorChar + "check.txt");
+			}
+		}
 
+		public static int getVersion() {
+			return 1;
 		}
 	}
 }

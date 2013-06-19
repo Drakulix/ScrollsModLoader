@@ -21,7 +21,6 @@ namespace ScrollsModLoader
 
 		public override object Intercept (IInvocationInfo info)
 		{
-			//typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance).SetValue (info.Target, false);
 			try {
 				Type lobbyMenu = typeof(LobbyMenu);
 

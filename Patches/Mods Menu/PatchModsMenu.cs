@@ -36,15 +36,6 @@ namespace ScrollsModLoader
 			this.modManager = this.loader.modManager;
 			this.repoManager = modManager.repoManager;
 
-			//downloadableMods.Add (new Mod("GameRecorder", "Record Games!", "v1.0"));
-			//downloadableMods.Add (new Mod("DeckSync", "Export/Import Decks!", "v1.0"));
-			//for (int i=0; i < 30; i++)
-			//	downloadableMods.Add (new Mod("TestMod", "Fill that List!", "v2.0!"));
-
-			//installedMods.Add(new Mod("Logger", "Debug Network logging", "v0.1"));
-
-			//downloadableMods.Add (new Mod("DeckSync"));
-
 		}
 
 		public override MethodDefinition[] patchedMethods() {
@@ -102,11 +93,6 @@ namespace ScrollsModLoader
 		}
 		public void OnCreate (MonoBehaviour parentScene)
 		{
-			//null, null, true, true, false, false, ResourceManager.LoadTexture ("ChatUI/buttonicon_add"), true);
-			//tradeSkin = (GUISkin)Resources.Load ("_GUISkins/TradeSystem");
-			//tradeSkinClose = (GUISkin)Resources.Load ("_GUISkins/TradeSystemCloseButton");
-			//lobbySkin = (GUISkin)Resources.Load ("_GUISkins/Lobby");
-
 			App.ChatUI.Show (false);
 			repoListPopup = new GameObject ("Repo List").AddComponent<UIListPopup> ();
 			repoListPopup.transform.parent = parentScene.transform;

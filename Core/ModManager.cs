@@ -19,9 +19,7 @@ namespace ScrollsModLoader
 		private ModLoader loader;
 		public RepoManager repoManager;
 
-		//private List<BaseMod> modInstances = new List<BaseMod>();
 		public List<Item> installedMods = new List<Item> ();
-
 
 		public ModManager(ModLoader loader) {
 

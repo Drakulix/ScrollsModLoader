@@ -38,7 +38,6 @@ namespace ScrollsModLoader
 					try	{
 						byte[] monoMacLoad = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("ScrollsModLoader.NativeAPIs.MonoMac.dll").ReadToEnd();
 						System.Reflection.Assembly.Load(monoMacLoad);
-						//System.Reflection.Assembly.LoadFile(Environment.CurrentDirectory+"/MonoMac.dll");
 					} catch (System.IO.FileLoadException) {
 						return OS.Unix;
 					}
@@ -64,9 +63,8 @@ namespace ScrollsModLoader
 			case Platform.OS.Mac:
 
 					//if we are already loaded from the game folder, get that instead
-					//TO-DO is that too unsecure? should be check if Assembly-CSharp is loaded instead?
 					if ((from file in Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).GetFiles()
-				    	 where file.Name.Contains ("Assembly-CSharp.dll")
+				    	 where file.Name.Contains ("ScrollsModLoader.dll")
 				    	 select file).Count() > 0)
 						return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString()+"/";
 
@@ -81,13 +79,13 @@ namespace ScrollsModLoader
 					
 					path = Dialogs.fileOpenDialog();
 					if (path == null) {
-						Dialogs.showNotification("No Selection was made", "Scrolls ModLoader was not able to find your local install of Scrolls. Scrolls ModLoader will close now");
+						Dialogs.showNotification("No Selection was made", "Scrolls Summoner was not able to find your local install of Scrolls. Scrolls Summoner will close now");
 						return null;
 					}
 					path += "/Contents/MacOS/game/MacScrolls.app/Contents/Data/Managed/";
 					
 					if (!System.IO.File.Exists(path+"Assembly-CSharp.dll")) {
-						Dialogs.showNotification("Wrong Selection", "The selected file is not a valid Scrolls.app. Scrolls ModLoader will close now");
+						Dialogs.showNotification("Wrong Selection", "The selected file is not a valid Scrolls.app. Scrolls Summoner will close now");
 						return null;
 					}
 
@@ -132,6 +130,9 @@ namespace ScrollsModLoader
 				}
 				writer.Close ();
 				new Process { StartInfo = { FileName = "chmod", Arguments = "+x \""+runsh+"\"", UseShellExecute=true } }.Start ();
+
+				byte[] sysdrawing = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.System.Drawing.dll").ReadToEnd ();
+				System.IO.File.Create (path + "/System.Drawing.dll").Write (sysdrawing, 0, sysdrawing.Length);
 			}
 		}
 	}

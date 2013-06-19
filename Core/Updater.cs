@@ -9,8 +9,7 @@ namespace ScrollsModLoader
 	public class Updater
 	{
 
-		private static int myVersion = 1;
-		private static byte[] token = {};
+		private static byte[] token = new byte[] { 8, 95, 174, 161, 22, 41, 180, 133 }; //public key
 
 		public static void updateIfNeeded() {
 			if (tryUpdate ())
@@ -27,7 +26,7 @@ namespace ScrollsModLoader
 
 			int version = versionMessage.version ();
 
-			if (version > myVersion) {
+			if (version > ModLoader.getVersion()) {
 
 				byte[] asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
 				String installPath = Platform.getGlobalScrollsInstallPath () + Path.DirectorySeparatorChar + "ModLoader" + Path.DirectorySeparatorChar;

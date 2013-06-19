@@ -57,7 +57,6 @@ namespace ScrollsModLoader
 				CilWorker initProc = hookedMethod.Body.CilWorker;
         		initProc.InsertBefore(hookedMethod.Body.Instructions[0], initProc.Create(OpCodes.Call,
 				    baseAssembly.MainModule.Import(callMeth.Resolve())));
-				    //callMeth.Resolve()));
 				return true;
 			} catch {
 				return false;
@@ -77,7 +76,6 @@ namespace ScrollsModLoader
 				foreach (Instruction ret in retInstructions) {
    	        		initProc.InsertBefore(ret, initProc.Create(OpCodes.Call,
 						baseAssembly.MainModule.Import(callMeth.Resolve())));
-						//callMeth.Resolve()));
 					overriden = true;
 				}
 				return overriden;

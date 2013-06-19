@@ -13,6 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Summoner.key.snk</AssemblyOriginatorKeyFile>
+    <ApplicationIcon>..\..\Downloads\summoner_icon_256.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -119,11 +120,13 @@
     <Compile Include="Core\Updater.cs" />
     <Compile Include="Core\WebAPI\VersionMessage.cs" />
     <Compile Include="NativeAPIs\WindowsDialog.cs" />
+    <Compile Include="Core\WebAPI\ExceptionLogger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="NativeAPIs\MonoMac.dll" />
     <EmbeddedResource Include="Resources\Mods.png" />
+    <EmbeddedResource Include="Resources\System.Drawing.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="OX.Copyable\OX.Copyable.csproj">

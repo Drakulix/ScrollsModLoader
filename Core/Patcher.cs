@@ -26,10 +26,11 @@ namespace ScrollsModLoader
 		public static void Main (string[] args)
 		{
 
+			Console.WriteLine ("Preparing...");
+
 			//get Path of Scrolls Data Folder
 			String installPath = Platform.getGlobalScrollsInstallPath();
 			if (installPath == null) return;
-
 
 			//create modloader folder
 			if (!System.IO.Directory.Exists(installPath+"ModLoader")) {
@@ -57,32 +58,29 @@ namespace ScrollsModLoader
 			Console.WriteLine ("Patching...");
 			//patch it
 			Patcher patcher = new Patcher();
-			if (!patcher.patchAssembly()) {
+			if (!patcher.patchAssembly(installPath)) {
 				Console.WriteLine("Patching failed");
-				//don't save patch at this point. If the "real" patcher fails, we should tell the user instead
+				//don't safe patch at this point. If the "real" patcher fails, we should tell the user instead
 				//save-patching is for installs, that get broken by updates, etc, to keep the install until ScrollsModLoader is updated
-				Dialogs.showNotification ("Patching failed", "ScrollsModLoader was unable to prepare your client, you are likely using an incompatible version. More at ScrollsGuide.com");
+				Dialogs.showNotification ("Patching failed", "Scrolls Summoner was unable to prepare your client, you are likely using an incompatible version. More at ScrollsGuide.com");
+				return;
 			}
 
-			//byte[] linfucecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Cecil.dll").ReadToEnd ();
-			//System.IO.File.Create (installPath+"LinFu.AOP.Cecil.dll").Write (linfucecil, 0, linfucecil.Length);
-			//byte[] linfuinterfaces = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.LinFu.AOP.Interfaces.dll").ReadToEnd ();
-			//System.IO.File.Create (installPath+"LinFu.AOP.Interfaces.dll").Write (linfuinterfaces, 0, linfuinterfaces.Length);
-			//byte[] monocecil = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.Mono.Cecil.dll").ReadToEnd ();
-			//System.IO.File.Create (installPath+"Mono.Cecil.dll").Write (monocecil, 0, monocecil.Length);
-
+			Dialogs.showNotification ("Patching done", "Scrolls Summoner successfully patched your Scrolls install. More infos at ScrollsGuide.com");
 			Console.WriteLine ("Done");
-
 			return;
 		}
 
 
-		public bool patchAssembly() {
-			String installPath = Platform.getGlobalScrollsInstallPath();
+		public bool patchAssembly(String installPath) {
 			if (installPath == null) return false;
 
 			//"weave" the assembly
+			Console.WriteLine ("------------------------------");
+			Console.WriteLine ("ModLoader Hooks:");
 			ScrollsFilter.Log ();
+			Console.WriteLine ("------------------------------");
+
 			if (!weaveAssembly (installPath+"Assembly-CSharp.dll"))
 				return false;
 			Console.WriteLine ("Weaved Assembly");
@@ -153,10 +151,6 @@ namespace ScrollsModLoader
 				return false;
 			}
 
-			//add hooks
-			if (!Hooks.hookStaticVoidMethodAtBegin ("App.Awake", "Updater.updateIfNeeded"))
-				return false;
-
 			if (!Hooks.hookStaticVoidMethodAtEnd ("App.Awake", "Patcher.safeLaunch"))
 				return false;
 
@@ -179,11 +173,13 @@ namespace ScrollsModLoader
 		}
 
 		public static void safeLaunch() {
-			//updater to be implemented
+
+			//if we get here, we NEED an update
+
 			String installPath = Platform.getGlobalScrollsInstallPath();
 			if (System.IO.File.Exists (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt")) {
 				System.IO.File.Delete (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
-				new Patcher ().patchAssembly ();
+				new Patcher ().patchAssembly (installPath);
 			}
 			if (Updater.tryUpdate()) { //updater did succeed
 				System.IO.File.CreateText (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");

@@ -41,13 +41,11 @@ namespace ScrollsModLoader
 						scene = sceneDescriptors [(String)info.Arguments[0]];
 						typeof(LobbyMenu).GetMethod ("fadeOutScene", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (App.LobbyMenu, new object[] {});
 						LoadScene("_Settings");
-						//info.TargetMethod.Invoke(info.Target, new object[] {"_Settings"});
 					} else {
 						if (scene != null)
 							typeof(LobbyMenu).GetMethod ("fadeOutScene", BindingFlags.NonPublic | BindingFlags.Instance).Invoke (App.LobbyMenu, new object[] {});
 						scene = null;
 						LoadScene((String)info.Arguments[0]);
-						//return info.TargetMethod.Invoke (info.Target, info.Arguments);
 					}
 				} catch (Exception exp) {
 					Console.WriteLine (exp);

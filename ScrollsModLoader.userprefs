@@ -1,29 +1,43 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Patches/Mods Menu/PatchModsMenu.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Core/Updater.cs">
     <Files>
       <File FileName="Core/Patcher.cs" Line="1" Column="1" />
-      <File FileName="Patches/Mods Menu/PatchModsMenu.cs" Line="27" Column="3" />
-      <File FileName="Core/ModLoader.cs" Line="391" Column="24" />
+      <File FileName="Patches/Mods Menu/PatchModsMenu.cs" Line="1" Column="1" />
+      <File FileName="Core/ModLoader.cs" Line="1" Column="1" />
       <File FileName="Extensions/Extensions.cs" Line="1" Column="1" />
       <File FileName="Patches/Patch.cs" Line="1" Column="1" />
       <File FileName="ScrollsModLoader.Interfaces/ModAPI.cs" Line="1" Column="1" />
-      <File FileName="Core/ModManager.cs" Line="122" Column="58" />
-      <File FileName="API/APIHandler.cs" Line="38" Column="21" />
-      <File FileName="Core/RepoManager.cs" Line="83" Column="22" />
+      <File FileName="Core/ModManager.cs" Line="1" Column="1" />
+      <File FileName="API/APIHandler.cs" Line="1" Column="1" />
+      <File FileName="Core/RepoManager.cs" Line="1" Column="1" />
       <File FileName="Core/WebAPI/ModListMessage.cs" Line="1" Column="1" />
       <File FileName="Core/WebAPI/RepoInfoMessage.cs" Line="1" Column="1" />
       <File FileName="Resources/AssemblyInfo.cs" Line="1" Column="1" />
-      <File FileName="API/ScrollsExtension.cs" Line="1" Column="1" />
-      <File FileName="GameReplay.Mod/Player.cs" Line="195" Column="4" />
-      <File FileName="GameReplay.Mod/Mod.cs" Line="193" Column="265" />
+      <File FileName="ScrollsModLoader.Interfaces/ScrollsExtension.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/Player.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/Mod.cs" Line="1" Column="1" />
       <File FileName="GameReplay.Mod/Recorder.cs" Line="1" Column="1" />
       <File FileName="ScrollsModLoader.Interfaces/BaseMod.cs" Line="1" Column="1" />
       <File FileName="NativeAPIs/Platform.cs" Line="1" Column="1" />
       <File FileName="GameReplay.Mod/Extensions.cs" Line="1" Column="1" />
-      <File FileName="Patches/Mods Menu/UIListPopup.cs" Line="190" Column="153" />
-      <File FileName="Patches/Mods Menu/ICardListCallback.cs" Line="12" Column="51" />
-      <File FileName="Core/ScrollsFilter.cs" Line="54" Column="6" />
+      <File FileName="Patches/Mods Menu/UIListPopup.cs" Line="1" Column="1" />
+      <File FileName="Patches/Mods Menu/ICardListCallback.cs" Line="1" Column="1" />
+      <File FileName="Core/ScrollsFilter.cs" Line="1" Column="1" />
+      <File FileName="NativeAPIs/Dialogs.cs" Line="1" Column="1" />
+      <File FileName="ScrollsModLoader.Interfaces/Properties/AssemblyInfo.cs" Line="1" Column="1" />
+      <File FileName="ScrollsModLoader.Interfaces/SceneProvider.cs" Line="1" Column="1" />
+      <File FileName="Patches/PatchUpdater.cs" Line="1" Column="1" />
+      <File FileName="Core/Updater.cs" Line="13" Column="44" />
+      <File FileName="Core/Hooks.cs" Line="1" Column="1" />
+      <File FileName="Core/WebAPI/VersionMessage.cs" Line="1" Column="1" />
+      <File FileName="API/ReflectionProxies/BaseModProxy.cs" Line="1" Column="1" />
+      <File FileName="API/ReflectionProxies/InvokationInfoProxy.cs" Line="1" Column="1" />
+      <File FileName="API/ReflectionProxies/SceneProvider.cs" Line="1" Column="1" />
+      <File FileName="Patches/PatchSettingsMenu.cs" Line="1" Column="1" />
+      <File FileName="NativeAPIs/WindowsDialog.cs" Line="1" Column="1" />
+      <File FileName="Core/WebAPI/ExceptionLogger.cs" Line="1" Column="1" />
+      <File FileName="GameReplay.Mod/Properties/AssemblyInfo.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -32,8 +46,10 @@
             <Node name="References" expanded="True" />
             <Node name="Properties" expanded="True" />
           </Node>
-          <Node name="OX.Copyable" expanded="True" />
-          <Node name="ScrollsModLoader" expanded="True">
+          <Node name="OX.Copyable" expanded="True">
+            <Node name="References" expanded="True" />
+          </Node>
+          <Node name="ScrollsModLoader" expanded="True" selected="True">
             <Node name="References" expanded="True" />
             <Node name="API" expanded="True" />
             <Node name="Core" expanded="True">
@@ -42,14 +58,13 @@
             <Node name="Extensions" expanded="True" />
             <Node name="NativeAPIs" expanded="True" />
             <Node name="Patches" expanded="True">
-              <Node name="Mods Menu" expanded="True">
-                <Node name="PatchModsMenu.cs" selected="True" />
-              </Node>
+              <Node name="Mods Menu" expanded="True" />
             </Node>
             <Node name="Resources" expanded="True" />
           </Node>
           <Node name="ScrollsModLoader.Interfaces" expanded="True">
             <Node name="References" expanded="True" />
+            <Node name="Properties" expanded="True" />
           </Node>
         </State>
       </Pad>
