@@ -286,7 +286,7 @@ namespace ScrollsModLoader
 		public void ItemHovered (UIListPopup popup, Item card) {}
 		public void ItemCanceled (UIListPopup popup, Item card) {
 			deinstallCache = (LocalMod)card;
-			App.Popups.ShowOkCancel (this, "removeMod", "Uninstallation Warning", "Are you sure you want to remove " + card.getName () + "?", "Deinstall", "Cancel");
+			App.Popups.ShowOkCancel (this, "removeMod", "Uninstallation Warning", "Are you sure you want to remove " + card.getName () + "?", "Uninstall", "Cancel");
 		}
 
 		public void PopupOk (string popupType, string choice)
@@ -307,7 +307,7 @@ namespace ScrollsModLoader
 		{
 			if (popupType.Equals ("removeMod")) {
 				modManager.deinstallMod (deinstallCache);
-				App.Popups.ShowOk (this, "remNotice", "Deinstallation Info", "Any uninstallation will not take place until you press 'Apply' or manually restart the game", "OK");
+				App.Popups.ShowOk (this, "remNotice", "Uninstallation Info", "Any uninstallation will not take place until you press 'Apply' or manually restart the game", "OK");
 				//downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
 			}
 		}
