@@ -160,7 +160,7 @@ namespace ScrollsModLoader
 			wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
 			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
 
-			wc.DownloadFileAsync (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+			wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
 
 			return modDownloaded;
 		}
