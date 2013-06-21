@@ -20,11 +20,7 @@ namespace ScrollsModLoader
 		private ModLoader loader;
 		public RepoManager repoManager;
 
-		private WebClient wc;
-
 		public List<Item> installedMods = new List<Item> ();
-		
-		private bool modDownloaded = false;
 
 		public ModManager(ModLoader loader) {
 
@@ -155,23 +151,9 @@ namespace ScrollsModLoader
 
 		public bool downloadMod(LocalMod mod, String location) {
 			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
-			wc = new WebClient();
-			
-			wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+			WebClient wc = new WebClient();
 
 			wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
-
-			return modDownloaded;
-		}
-
-		void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-		{
-		}
-
-		void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-		{
-			Console.WriteLine("Done downloading :)");
 
 			String[] keys = wc.ResponseHeaders.AllKeys;
 
@@ -191,14 +173,13 @@ namespace ScrollsModLoader
 
 			if (contentType.Equals("application/json")) // Error
 			{
-				modDownloaded = false;
+				return false;
 			}
 			else
 			{
-				modDownloaded = true;
+				return true;
 			}
 		}
-		
 		
 		public bool updateFile(LocalMod mod) {
 			String folder = modsPath + Path.DirectorySeparatorChar + mod.localId + Path.DirectorySeparatorChar;
