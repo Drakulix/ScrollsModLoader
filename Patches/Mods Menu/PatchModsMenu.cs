@@ -188,13 +188,13 @@ namespace ScrollsModLoader
 
 			GUI.skin.label.fontSize = 20;
 			if (GUI.Button (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), string.Empty)) {
-				App.Popups.ShowTextInput (this, "http://", "WARNING: Other repositories are NOT trusted by ScrollsGuide.", "addRepo", "Add Repository", "Please enter the URL of the repository you want to add", "Add");
+				App.Popups.ShowTextInput (this, "http://", "WARNING: Other repositories are NOT trusted by Scrollsguide.", "addRepo", "Add Repository", "Please enter the URL of the repository you want to add", "Add");
 			}
 			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), "Add Repository");
 
 			if (GUI.Button(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/9.0f + 1.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), string.Empty)) {
 				if (repoListPopup.selectedItem ().Equals (repoManager.repositories[0])) {
-					App.Popups.ShowOk (this, "remWarning", "Invalid Operation", "You cannot remove ScrollsGuide from your repository list", "OK");
+					App.Popups.ShowOk (this, "remWarning", "Invalid Operation", "You cannot remove Scrollsguide from your repository list", "OK");
 				} else {
 					repoManager.removeRepository ((Repo)repoListPopup.selectedItem ());
 					repoListPopup.SetItemList (repoManager.repositories);
@@ -205,7 +205,7 @@ namespace ScrollsModLoader
 			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/9.0f + 1.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), "Remove Repository");
 
 			if (GUI.Button(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/4.1f, (float)Screen.width/35.0f), string.Empty)) {
-				App.Popups.ShowInfo ("Downloading", "Please wait while the requested Mods are getting downloaded");
+				App.Popups.ShowInfo ("Downloading", "Please wait while the requested mods are being downloaded");
 				new Thread(downloadMods).Start();
 			}
 			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/4.1f, (float)Screen.width/35.0f), "Apply Changes");
@@ -215,8 +215,16 @@ namespace ScrollsModLoader
 			}
 			GUI.Label(new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f, (float)Screen.width/35.0f), "Apply (Restarts Scrolls)");
 
+			TextAnchor alignment = GUI.skin.label.alignment;
+			GUI.skin.label.alignment = TextAnchor.MiddleRight;
+			GUI.skin.label.normal.textColor = Color.Lerp(Color.white, Color.yellow, 0.4f);
+
+			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.91f, Screen.width * 0.3f, Screen.height * 0.03f),  "   The Summoner ModLoader is not an official Scrolls feature");
+			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.935f, Screen.width * 0.3f, Screen.height * 0.03f), "Read and submit bugs on http://www.scrollsguide.com/summoner");
+
 			GUI.skin.label.normal.textColor = textColor;
 			GUI.skin.label.fontSize = defaultTextSize;
+			GUI.skin.label.alignment = alignment;
 		}
 		public void OnDestroy ()
 		{
@@ -278,7 +286,7 @@ namespace ScrollsModLoader
 		public void ItemHovered (UIListPopup popup, Item card) {}
 		public void ItemCanceled (UIListPopup popup, Item card) {
 			deinstallCache = (LocalMod)card;
-			App.Popups.ShowOkCancel (this, "removeMod", "Deinstallation Warning", "Are you sure you want to remove " + card.getName () + "?", "Deinstall", "Cancel");
+			App.Popups.ShowOkCancel (this, "removeMod", "Uninstallation Warning", "Are you sure you want to remove " + card.getName () + "?", "Deinstall", "Cancel");
 		}
 
 		public void PopupOk (string popupType, string choice)
@@ -299,7 +307,7 @@ namespace ScrollsModLoader
 		{
 			if (popupType.Equals ("removeMod")) {
 				modManager.deinstallMod (deinstallCache);
-				App.Popups.ShowOk (this, "remNotice", "Deinstallation Info", "Any deinstallation will not take place until you press Apply or manually restart the game", "OK");
+				App.Popups.ShowOk (this, "remNotice", "Deinstallation Info", "Any uninstallation will not take place until you press 'Apply' or manually restart the game", "OK");
 				//downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
 			}
 		}

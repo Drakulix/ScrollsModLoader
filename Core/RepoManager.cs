@@ -19,7 +19,7 @@ namespace ScrollsModLoader
 			this.modManager = modManager;
 
 			//add repos
-			this.readRepository ("http://mods.ScrollsGuide.com/");
+			this.readRepository ("http://mods.Scrollsguide.com/");
 
 			//load repo list
 			String installPath = Platform.getGlobalScrollsInstallPath();

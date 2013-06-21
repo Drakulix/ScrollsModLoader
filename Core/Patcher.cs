@@ -63,11 +63,11 @@ namespace ScrollsModLoader
 				Console.WriteLine("Patching failed");
 				//don't safe patch at this point. If the "real" patcher fails, we should tell the user instead
 				//save-patching is for installs, that get broken by updates, etc, to keep the install until ScrollsModLoader is updated
-				Dialogs.showNotification ("Patching failed", "Scrolls Summoner was unable to prepare your client, you are likely using an incompatible version. More at ScrollsGuide.com");
+				Dialogs.showNotification ("Patching failed", "Scrolls Summoner was unable to prepare your client, you are likely using an incompatible version. More at scrollsguide.com");
 				return;
 			}
 
-			Dialogs.showNotification ("Patching done", "Scrolls Summoner successfully patched your Scrolls install. More infos at ScrollsGuide.com");
+			Dialogs.showNotification ("Patching complete", "Summoner successfully patched your Scrolls installation. Visit scrollsguide.com/summoner for more information. You can now start Scrolls and enjoy the benefits of Summoner");
 			Console.WriteLine ("Done");
 			return;
 		}

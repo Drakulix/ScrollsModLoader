@@ -102,7 +102,7 @@ namespace ScrollsModLoader
 			Patcher patcher = new Patcher ();
 			if (!patcher.patchAssembly (Platform.getGlobalScrollsInstallPath ())) {
 				if (!patcher.safeModePatchAssembly ()) {
-					Dialogs.showNotification ("Scrolls Summoner patch failed", "Scrolls Summoner failed in patch itself into the updated files. It will uninstall itself, for more informations visit ScrollsGuide.com");
+					Dialogs.showNotification ("Scrolls Summoner patch failed", "Scrolls Summoner failed in patch itself into the updated files. It will uninstall itself, for more informations visit scrollsguide.com");
 					File.Delete (Platform.getGlobalScrollsInstallPath () + "ScrollsModLoader.dll");
 					Extensions.DeleteDirectory (Platform.getGlobalScrollsInstallPath () + "ModLoader");
 				}
