@@ -21,6 +21,7 @@ namespace ScrollsModLoader
 
 		public List<Item> installedMods = new List<Item> ();
 		
+		private WebClient wc;
 		private bool modDownloaded = false;
 
 		public ModManager(ModLoader loader) {
@@ -152,12 +153,12 @@ namespace ScrollsModLoader
 
 		public bool downloadMod(LocalMod mod, String location) {
 			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
-			WebClient wc = new WebClient();
+			wc = new WebClient();
 			
 			wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
 			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
 			
-			wc.DownloadData (mod.source.url + "download/mod/" + mod.id, location);
+			wc.DownloadDataAsync (mod.source.url + "download/mod/" + mod.id, location);
 			
 			return modDownloaded;
 		}
