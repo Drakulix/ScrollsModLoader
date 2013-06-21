@@ -155,29 +155,26 @@ namespace ScrollsModLoader
 
 			wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
 
+			// now check whether the downloaded file is actually a mod, and not an error
 			String[] keys = wc.ResponseHeaders.AllKeys;
 
 			String contentType = "";
 			for (int i = 0; i < keys.Length; i++)
 			{
-				Console.WriteLine(keys[i]);
 				if (keys[i].Equals("Content-Type"))
 				{
 					contentType = wc.ResponseHeaders.Get(i);
 				}
 			}
 
-			Console.WriteLine("Content-Type: " + contentType);
-
-			System.Diagnostics.Debug.WriteLine("Done downloading the replay :)");
-
-			if (contentType.Equals("application/json")) // Error
-			{
-				return false;
-			}
-			else
+			if (contentType.Equals("application/x-msdos-program")) // success
 			{
 				return true;
+			}
+			else // for example "application/json" or none at all, error
+			{
+				removeMod(mod);
+				return false;
 			}
 		}
 		
