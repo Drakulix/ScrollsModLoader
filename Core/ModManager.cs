@@ -165,8 +165,6 @@ namespace ScrollsModLoader
 			return modDownloaded;
 		}
 
-		
-		
 		void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
 		{
 		}
