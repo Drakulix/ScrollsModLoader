@@ -15,6 +15,7 @@ namespace ScrollsModLoader.Interfaces
 
 		public static void Initialize(ModAPI api) {
 			BaseMod.modAPI = api;
+			ScrollsExtension.setAPI (api);
 		}
 
 		public string OwnFolder() {

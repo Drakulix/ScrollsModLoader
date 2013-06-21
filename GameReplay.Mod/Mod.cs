@@ -35,6 +35,8 @@ namespace GameReplay.Mod
 			}
 			player = new Player(recordFolder);
 			App.Communicator.addListener(this);
+
+			new Thread (new ThreadStart (parseRecords)).Start ();
 		}
 
 		public static string GetName()
@@ -51,7 +53,7 @@ namespace GameReplay.Mod
 		{
 			if (msg is BattleRedirectMessage)
 			{
-				recorder = new Recorder(recordFolder);
+				recorder = new Recorder(recordFolder, this);
 				Console.WriteLine("Recorder started: " + recorder);
 			}
 		}
@@ -107,62 +109,8 @@ namespace GameReplay.Mod
 			if (info.target is ProfileMenu && info.targetMethod.Equals("Start") && App.SceneValues.profilePage.isMe())
 			{
 				//list them
-				recordList.Clear();
-				foreach (String file in Directory.GetFiles(recordFolder))
-				{
-					if (file.EndsWith("sgr"))
-					{
-						JsonMessageSplitter jsonms = new JsonMessageSplitter();
-						String log = File.ReadAllText(file);
-						jsonms.feed(log);
-						jsonms.runParsing();
-						String line = jsonms.getNextMessage();
-						bool searching = true;
-						String player1name = null;
-						String player2name = null;
-						//String enemyId = null;
-						String deckName = null;
-						ResourceType type = ResourceType.NONE;
+				//recordList.Clear();
 
-						while (line != null && searching)
-						{
-							try
-							{
-								Message msg = Message.createMessage(Message.getMessageName(line), line);
-								if (msg is GameInfoMessage)
-								{
-									GameInfoMessage gim = (GameInfoMessage) msg;
-									if (gim.white.Equals(App.Communicator.getUserScreenName()))
-									{
-										player1name = gim.white;
-										player2name = gim.black;
-									}
-									else 
-									{
-										player1name = gim.black;
-										player2name = gim.white;
-									}
-									deckName = (msg as GameInfoMessage).deck;
-								}
-								if (msg is ActiveResourcesMessage)
-								{
-									type = (msg as ActiveResourcesMessage).types[0];
-								}
-								if (player2name != null && type != ResourceType.NONE)
-								{
-									searching = false;
-								}
-							}
-							catch
-							{
-							}
-							jsonms.runParsing();
-							line = jsonms.getNextMessage();
-						}
-
-						recordList.Add(new Record(File.GetCreationTime(file).ToShortDateString() + " - " + File.GetCreationTime(file).ToShortTimeString(),player1name +  " vs " + player2name + " - " + deckName, /*enemyId,*/ file, type));
-					}
-				}
 
 				recordListPopup = new GameObject("Record List").AddComponent<UIListPopup>();
 				recordListPopup.transform.parent = ((ProfileMenu)info.target).transform;
@@ -312,6 +260,70 @@ namespace GameReplay.Mod
 		public void PopupOk(string popupType)
 		{
 			return;
+		}
+
+		public void parseRecords() {
+			foreach (String file in Directory.GetFiles(recordFolder))
+			{
+				if (file.EndsWith("sgr"))
+				{
+					parseRecord (file);
+				}
+			}
+		}
+
+		public void parseRecord(String file) {
+			JsonMessageSplitter jsonms = new JsonMessageSplitter();
+			String log = File.ReadAllText(file);
+			jsonms.feed(log);
+			jsonms.runParsing();
+			String line = jsonms.getNextMessage();
+			bool searching = true;
+			String player1name = null;
+			String player2name = null;
+			//String enemyId = null;
+			String deckName = null;
+			ResourceType type = ResourceType.NONE;
+
+			while (line != null && searching)
+			{
+				try
+				{
+					Message msg = Message.createMessage(Message.getMessageName(line), line);
+					if (msg is GameInfoMessage)
+					{
+						GameInfoMessage gim = (GameInfoMessage) msg;
+						if (gim.white.Equals(App.Communicator.getUserScreenName()))
+						{
+							player1name = gim.white;
+							player2name = gim.black;
+						}
+						else 
+						{
+							player1name = gim.black;
+							player2name = gim.white;
+						}
+						deckName = (msg as GameInfoMessage).deck;
+					}
+					if (msg is ActiveResourcesMessage)
+					{
+						type = (msg as ActiveResourcesMessage).types[0];
+					}
+					if (player2name != null && type != ResourceType.NONE)
+					{
+						searching = false;
+					}
+				}
+				catch
+				{
+				}
+				jsonms.runParsing();
+				line = jsonms.getNextMessage();
+			}
+
+			recordList.Add(new Record(File.GetCreationTime(file).ToShortDateString() + " - " + File.GetCreationTime(file).ToShortTimeString(),player1name +  " vs " + player2name + " - " + deckName, /*enemyId,*/ file, type));
+			if (recordListPopup != null)
+				recordListPopup.SetItemList (recordList);
 		}
 	}
 

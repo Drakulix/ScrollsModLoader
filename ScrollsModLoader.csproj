@@ -102,7 +102,6 @@
     <Compile Include="API\APIHandler.cs" />
     <Compile Include="NativeAPIs\Dialogs.cs" />
     <Compile Include="NativeAPIs\Platform.cs" />
-    <Compile Include="Patches\Mods Menu\PatchHeaderMenu.cs" />
     <Compile Include="Patches\Mods Menu\PatchModsMenu.cs" />
     <Compile Include="Patches\Mods Menu\ICardListCallback.cs" />
     <Compile Include="Patches\Mods Menu\ListItem.cs" />
@@ -121,12 +120,15 @@
     <Compile Include="Core\WebAPI\VersionMessage.cs" />
     <Compile Include="NativeAPIs\WindowsDialog.cs" />
     <Compile Include="Core\WebAPI\ExceptionLogger.cs" />
+    <Compile Include="Patches\PatchPopups.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="NativeAPIs\MonoMac.dll" />
-    <EmbeddedResource Include="Resources\Mods.png" />
     <EmbeddedResource Include="Resources\System.Drawing.dll" />
+    <EmbeddedResource Include="Resources\button_mods_dark.png" />
+    <EmbeddedResource Include="Resources\button_mods_light.png" />
+    <EmbeddedResource Include="Resources\button_mods_normal.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="OX.Copyable\OX.Copyable.csproj">

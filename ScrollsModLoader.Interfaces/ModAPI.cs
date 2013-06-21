@@ -13,5 +13,7 @@ namespace ScrollsModLoader.Interfaces
 		//GUI Stuff
 		bool AddScene (String desc, SceneProvider provider);
 		void LoadScene (String providerDesc);
+
+		void ShowLogin (Popups popups, IOkStringsCancelCallback callback, string username, string problems, string popupType, string header, string description, string okText);
 	}
 }

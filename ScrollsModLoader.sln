@@ -33,6 +33,6 @@ Global
 		{E839D070-EA04-47D2-9F1A-A0379BDDC898}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = ScrollsModLoader.csproj
+		StartupItem = ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj
 	EndGlobalSection
 EndGlobal

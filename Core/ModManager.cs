@@ -64,6 +64,10 @@ namespace ScrollsModLoader
 				if (File.Exists (folder + Path.DirectorySeparatorChar + "config.json")) {
 					JsonReader reader = new JsonReader ();
 					mod = (LocalMod) reader.Read (File.ReadAllText (folder + Path.DirectorySeparatorChar + "config.json"), typeof(LocalMod));
+					if (mod.queueForUninstall) {
+						removeMod (mod);
+						continue;
+					}
 				} else {
 					//new local installed mod
 					Mod localMod = loader.loadModStatic (Directory.GetFiles (folder, "*.mod.dll") [0]);
@@ -116,6 +120,11 @@ namespace ScrollsModLoader
 
 		public void deinstallMod(LocalMod mod) {
 			loader.unloadMod (mod);
+			mod.queueForUninstall = true;
+			updateConfig (mod);
+		}
+
+		public void removeMod(LocalMod mod) {
 			installedMods.Remove (mod);
 			String folder = Path.GetDirectoryName(mod.installPath);
 			if (Directory.Exists (folder))
@@ -213,6 +222,7 @@ namespace ScrollsModLoader
 		public String localId;
 		public Repo source;
 		public bool enabled;
+		public bool queueForUninstall;
 
 		public LocalMod(bool localInstall, String installPath, String localId, String serverId, Repo source, bool enabled, String name, String description, int version, String versionCode) {
 			this.localId = localId;
@@ -226,6 +236,8 @@ namespace ScrollsModLoader
 			this.description = description;
 			this.version = version;
 			this.versionCode = versionCode;
+
+			this.queueForUninstall = false;
 		}
 
 		public override int GetHashCode () {

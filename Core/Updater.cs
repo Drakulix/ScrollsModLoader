@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Reflection;
 using JsonFx.Json;
+using System.Diagnostics;
+using UnityEngine;
 
 namespace ScrollsModLoader
 {
@@ -10,11 +12,6 @@ namespace ScrollsModLoader
 	{
 
 		private static byte[] token = new byte[] { 8, 95, 174, 161, 22, 41, 180, 133 }; //public key
-
-		public static void updateIfNeeded() {
-			if (tryUpdate ())
-				Platform.RestartGame ();
-		}
 
 		public static bool tryUpdate() {
 
@@ -25,20 +22,37 @@ namespace ScrollsModLoader
 			VersionMessage versionMessage = (VersionMessage)reader.Read (versionMessageRaw, typeof(VersionMessage));
 
 			int version = versionMessage.version ();
+			String installPath = Platform.getGlobalScrollsInstallPath () + Path.DirectorySeparatorChar + "ModLoader" + Path.DirectorySeparatorChar;
+
+			try {
+				File.Delete (installPath + "Updater.exe");
+			} catch {}
+
+			if (!System.IO.Directory.Exists(installPath)) {
+				System.IO.Directory.CreateDirectory(installPath);
+			}
 
 			if (version > ModLoader.getVersion()) {
 
+				try {
+					App.Popups.ShowInfo ("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
+					Dialogs.showNotification("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
+				} catch {}
+
 				byte[] asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
-				String installPath = Platform.getGlobalScrollsInstallPath () + Path.DirectorySeparatorChar + "ModLoader" + Path.DirectorySeparatorChar;
-				FileStream updater = File.Create (installPath + "Updater.exe");
-				updater.Write (asm, 0, asm.Length);
-				updater.Close ();
+				File.WriteAllBytes (installPath + "Updater.exe", asm);
 				if (CheckToken (installPath + "Updater.exe", token)) {
-					Assembly.LoadFrom (installPath + "Updater.exe").EntryPoint.Invoke (null, new object[] { new string[] {} });
+					if (Platform.getOS () == Platform.OS.Win) {
+						new Process { StartInfo = { FileName = installPath + "Updater.exe", Arguments = "" } }.Start ();
+					} else if (Platform.getOS () == Platform.OS.Mac) {
+						Assembly.LoadFrom (installPath + "Updater.exe").EntryPoint.Invoke (null, new object[] { new string[] {} });
+					}
 					return true;
-				} else {
-					File.Delete (installPath + "Updater.exe");
 				}
+
+				try {
+					App.Popups.KillCurrentPopup();
+				} catch {}
 			}
 
 			return false;

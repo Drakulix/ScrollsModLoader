@@ -15,6 +15,11 @@ namespace ScrollsModLoader
 			this.loader = loader;
 		}
 
+
+		public void ShowLogin(Popups popups, IOkStringsCancelCallback callback, string username, string problems, string popupType, string header, string description, string okText) {
+			PatchPopups.ShowLogin (popups, callback, username, problems, popupType, header, description, okText);
+		}
+
 		public void setSceneCallback(PatchSettingsMenu patch) {
 			sceneHandler = patch;
 		}
@@ -28,6 +33,9 @@ namespace ScrollsModLoader
 		{
 			sceneHandler.LoadScene (providerDesc);
 		}
+
+
+
 
 		public string FileOpenDialog() {
 			return Dialogs.fileOpenDialog ();

@@ -17,7 +17,9 @@ namespace ScrollsModLoader
 	{
 		private bool first = true;
 		private int defaultTextSize;
-		private Texture2D text;
+		private Texture2D textnormal;
+		private Texture2D texthover;
+		private Texture2D textactive;
 		private ModAPI modAPI;
 
 		private UIListPopup repoListPopup;
@@ -40,7 +42,17 @@ namespace ScrollsModLoader
 
 		public override MethodDefinition[] patchedMethods() {
 			MethodDefinition DrawHeaderButtons = Hooks.getMethDef (Hooks.getTypeDef (assembly, "LobbyMenu"), "drawHeaderButtons");
-			return new MethodDefinition[] {DrawHeaderButtons};
+			MethodDefinition GetButtonPositioner = null;
+			foreach (MethodDefinition def in (Hooks.getTypeDef (assembly, "LobbyMenu")).Methods) {
+				if (def.Name.Equals ("getButtonPositioner") && def.Parameters [0].ParameterType.Name.Equals ("MockupCalc"))
+					GetButtonPositioner = def;
+			}
+			if (GetButtonPositioner == null) {
+				Console.WriteLine ("ERROR: unable to find Method");
+				return new MethodDefinition[] {DrawHeaderButtons};
+			} else {
+				return new MethodDefinition[] {DrawHeaderButtons, GetButtonPositioner};
+			}
 		}
 
 		public override object Intercept (IInvocationInfo info)
@@ -52,34 +64,76 @@ namespace ScrollsModLoader
 			}*/
 
 			try {
+				//FIX 4:3 Monitors
+				if (info.TargetMethod.Name.Equals("getButtonPositioner")) {
+					if (Screen.width * 3 == Screen.height * 4)
+						info.Arguments[2] = 70f;
+					return info.TargetMethod.Invoke(info.Target, info.Arguments);
+				}
+
 				Type lobbyMenu = typeof(LobbyMenu);
 
 				if (first) {
 
 					GUISkin gUISkin7 = ScriptableObject.CreateInstance<GUISkin> ();
 
-					text = new Texture2D(87, 39); //115, 39
-					text.LoadImage(System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.Mods.png").ReadToEnd ());
+					textnormal = new Texture2D(84, 30, TextureFormat.ARGB32, false, true); //115, 39
+					textnormal.LoadImage(System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.button_mods_normal.png").ReadToEnd ());
+					textnormal.filterMode = FilterMode.Bilinear;
+					texthover = new Texture2D(84, 30, TextureFormat.ARGB32, false, true); //115, 39
+					texthover.LoadImage(System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.button_mods_light.png").ReadToEnd ());
+					texthover.filterMode = FilterMode.Bilinear;
+					textactive = new Texture2D(84, 30, TextureFormat.ARGB32, false, true); //115, 39
+					textactive.LoadImage(System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.button_mods_dark.png").ReadToEnd ());
+					textactive.filterMode = FilterMode.Bilinear;
 
-					gUISkin7.button.normal.background = text;
-					gUISkin7.button.hover.background = text;
-					gUISkin7.button.active.background = text;
+					gUISkin7.button.normal.background = textnormal;
+					gUISkin7.button.hover.background = texthover;
+					gUISkin7.button.active.background = textactive;
 
 					defaultTextSize = GUI.skin.label.fontSize;
 
 					//info.Target.GUISkins.Add (gUISkin5);
 					FieldInfo GUISkins = lobbyMenu.GetField("GUISkins", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
+					foreach (GUISkin skin in (List<GUISkin>)(GUISkins.GetValue(info.Target)))
+						Console.WriteLine ("size of last: "+skin.button.normal.background.width+"x"+skin.button.normal.background.height);
 					((List<GUISkin>)(GUISkins.GetValue(info.Target))).Add(gUISkin7);
+
+					((LobbyMenu)info.Target).AdjustForResolution();
+
 					first = false;
 				}
+
+				object index = typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target);
+				object ret = info.TargetMethod.Invoke(info.Target, info.Arguments);
+
+				bool newinside = (bool)typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target);
+				int newindex = (int)typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target);
+
+				typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, index);
+				typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, false);
 
 				MethodInfo drawHeader = lobbyMenu.GetMethod ("drawHeaderButton", BindingFlags.NonPublic | BindingFlags.Instance);
 				drawHeader.Invoke(info.Target, new object[] {6, "_Mods"});
 
+				object headerpositioner = typeof(LobbyMenu).GetField ("_headerPositioner", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target);
+				Console.WriteLine (headerpositioner.GetType().GetMethod("getButtonRect").Invoke(headerpositioner, new object[] {5f, Screen.height * 0.06f}));
+
+				if (!((bool)typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target))) {
+					typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, newindex);
+					typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, newinside);
+				}
+
+				return ret;
+
+				//object headerPositioner = typeof(LobbyMenu).GetField ("_headerPositioner", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target);
+				//typeof(LobbyMenu).GetField ("buttonMaxX", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, ((Rect)headerPositioner.GetType().GetMethod("getButtonRect").Invoke(headerPositioner, new object[] { 6f, 0f })).x);
+
 			} catch (Exception exp) {
 				Console.WriteLine (exp);
+				return info.TargetMethod.Invoke(info.Target, info.Arguments);
 			}	
-			return info.TargetMethod.Invoke(info.Target, info.Arguments);
+
 		}
 
 		public void Initialize(ModAPI api) {
@@ -159,7 +213,7 @@ namespace ScrollsModLoader
 			if (GUI.Button(new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f, (float)Screen.width/35.0f), string.Empty)) {
 				loader.repatch ();
 			}
-			GUI.Label(new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f, (float)Screen.width/35.0f), "Apply (requires Restart)");
+			GUI.Label(new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f, (float)Screen.width/35.0f), "Apply (Restarts Scrolls)");
 
 			GUI.skin.label.normal.textColor = textColor;
 			GUI.skin.label.fontSize = defaultTextSize;
@@ -245,7 +299,8 @@ namespace ScrollsModLoader
 		{
 			if (popupType.Equals ("removeMod")) {
 				modManager.deinstallMod (deinstallCache);
-				downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
+				App.Popups.ShowOk (this, "remNotice", "Deinstallation Info", "Any deinstallation will not take place until you press Apply or manually restart the game", "OK");
+				//downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
 			}
 		}
 

@@ -6,6 +6,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using LinFu.AOP.Cecil.Extensions;
 using LinFu.Reflection.Emit;
+using UnityEngine;
 
 namespace ScrollsModLoader
 {
@@ -183,7 +184,7 @@ namespace ScrollsModLoader
 			}
 			if (Updater.tryUpdate()) { //updater did succeed
 				System.IO.File.CreateText (installPath + System.IO.Path.DirectorySeparatorChar + "check.txt");
-				Platform.RestartGame ();
+				Application.Quit ();
 			}
 		}
 	}

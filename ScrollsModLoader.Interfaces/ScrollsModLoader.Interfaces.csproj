@@ -55,6 +55,7 @@
     <Compile Include="ModAPI.cs" />
     <Compile Include="SceneProvider.cs" />
     <Compile Include="ScrollsExtension.cs" />
+    <Compile Include="IOkStringsCancelCallback.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

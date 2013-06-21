@@ -102,7 +102,6 @@ namespace ScrollsModLoader
 		public static void RestartGame() {
 			//restart the game
 			if (getOS () == OS.Win) {
-				Console.WriteLine (getGlobalScrollsInstallPath () + "..\\..\\Scrolls.exe");
 				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
 				Application.Quit ();
 			} else if (getOS () == OS.Mac) {

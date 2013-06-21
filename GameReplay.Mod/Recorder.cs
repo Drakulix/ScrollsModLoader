@@ -10,12 +10,14 @@ namespace GameReplay.Mod
 		private List<String> messages = new List<String>();
 		private String saveFolder;
 		private string gameID;
+		private Mod uiClass;
 		//private DateTime timestamp;
 
-		public Recorder(String saveFolder)
+		public Recorder(String saveFolder, Mod uiClass)
 		{
 			this.saveFolder = saveFolder;
 			App.Communicator.addListener(this);
+			this.uiClass = uiClass;
 			//timestamp = DateTime.Now;
 		}
 
@@ -37,6 +39,7 @@ namespace GameReplay.Mod
 			{
 				//save
 				File.WriteAllLines(saveFolder + Path.DirectorySeparatorChar + gameID + ".sgr", messages.ToArray());
+				uiClass.parseRecord (saveFolder + Path.DirectorySeparatorChar + gameID + ".sgr");
 			}
 
 			if (msg is HandViewMessage)

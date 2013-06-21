@@ -42,13 +42,13 @@ namespace ScrollsModLoader {
 				BaseMod mod = null;
 				try {
 					mod = loader.modInstances [id];
-				} catch {}
+				} catch { continue; }
 				if (mod != null) {
 					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
 						types,
 						SharedConstants.getGameVersion ()
 					});
-					if (requestedHooks.Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
+					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
 						object returnVal;
 						try {
 							if (mod.BeforeInvoke (new InvocationInfo (info), out returnVal)) {
@@ -75,7 +75,7 @@ namespace ScrollsModLoader {
 			object ret = null;
 			bool patchFound = false;
 			foreach (Patch patch in loader.patches) {
-				if (patch.patchedMethods ().Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
+				if (patch.patchedMethods ().Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))){
 					try {
 						ret = patch.Intercept (info);
 						patchFound = true;
@@ -102,13 +102,13 @@ namespace ScrollsModLoader {
 				BaseMod mod = null;
 				try {
 					mod = loader.modInstances [id];
-				} catch {}
+				} catch { continue; }
 				if (mod != null) {
 					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
 						types,
 						SharedConstants.getGameVersion ()
 					});
-					if (requestedHooks.Any (item => (item.Name.Equals (info.TargetMethod.Name) && item.DeclaringType.FullName.Equals (info.TargetMethod.DeclaringType.FullName)))) {
+					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
 						try {
 							mod.AfterInvoke (new InvocationInfo (info), ref ret);
 							try {
@@ -231,13 +231,18 @@ namespace ScrollsModLoader {
 			//repatch
 			this.repatchIfNeeded ();
 
+			Console.WriteLine ("------------------------------");
+			Console.WriteLine ("ModLoader Hooks:");
 			ScrollsFilter.Log ();
+			Console.WriteLine ("------------------------------");
+
 		}
 
 		public void loadPatches(TypeDefinitionCollection types) {
 
 			//get Patches
 			patches.Add (new PatchUpdater (types));
+			patches.Add (new PatchPopups (types));
 			//patches.Add(new PatchOffline(types));
 
 			PatchSettingsMenu settingsMenuHook = new PatchSettingsMenu (types);
@@ -300,7 +305,7 @@ namespace ScrollsModLoader {
 					types,
 					SharedConstants.getGameVersion ()
 				});
-			} catch {
+			} catch  {
 				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 				return null;
 			}
@@ -380,8 +385,10 @@ namespace ScrollsModLoader {
 			int countlog = logger.Count;
 			try {
 				modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
-				logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
-			} catch {
+				if (!mod.localInstall)
+					logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
+			} catch (Exception exp) {
+				Console.WriteLine (exp);
 				if (modInstances.Count > countmods)
 					modInstances.Remove (mod.localId);
 				if (logger.Count > countlog)
@@ -405,7 +412,6 @@ namespace ScrollsModLoader {
 		public void _unloadMod(LocalMod mod) {
 			modOrder.Remove (mod.localId);
 			modInstances.Remove (mod.localId);
-
 		}
 
 		public void moveModUp(LocalMod mod) {
@@ -480,6 +486,7 @@ namespace ScrollsModLoader {
 			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.Location.Equals("")) { //no location or Managed => mod loader crash
 
 				//log
+				Console.WriteLine (e.ExceptionObject);
 				new ExceptionLogger ().logException ((Exception)e.ExceptionObject);
 
 				//unload ScrollsModLoader
@@ -498,14 +505,20 @@ namespace ScrollsModLoader {
 									instance.unloadMod((LocalMod)instance.modManager.installedMods.Find (delegate(Item lmod) {
 										return ((lmod as LocalMod).id.Equals (id));
 									}));
-								} catch {}
+								} catch  (Exception exp) {
+									Console.WriteLine (exp);
+								}
 							}
 						}
-					} catch {}
+					} catch  (Exception exp) {
+						Console.WriteLine (exp);
+					}
 					instance.repatch ();
 				}
 
 			} else if (instance != null && logger != null && logger.Count > 0) {
+
+				Console.WriteLine (e.ExceptionObject);
 
 				Assembly asm = (e.ExceptionObject as Exception).TargetSite.Module.Assembly;
 				Type modClass = (from _modClass in asm.GetTypes ()
@@ -521,7 +534,9 @@ namespace ScrollsModLoader {
 					BaseMod mod = null;
 					try {
 						mod = instance.modInstances [id];
-					} catch {}
+					} catch  (Exception exp) {
+						Console.WriteLine (exp);
+					}
 					if (mod != null) {
 						if (modClass.Equals(mod.GetType())) {
 							String folder = Path.GetDirectoryName (asm.Location);
@@ -558,11 +573,14 @@ namespace ScrollsModLoader {
 				return;
 			init = true;
 
+			if (Updater.tryUpdate ()) { //update
+				Application.Quit ();
+				return;
+			}
+
 			//Install global mod exception helper
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
-			Updater.updateIfNeeded(); //update
-			
 			instance = new ModLoader();
 			MethodBodyReplacementProviderRegistry.SetProvider (new SimpleMethodReplacementProvider(instance));
 
@@ -576,7 +594,7 @@ namespace ScrollsModLoader {
 		}
 
 		public static int getVersion() {
-			return 1;
+			return 2;
 		}
 	}
 }
