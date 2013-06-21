@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Collections;
@@ -19,7 +20,11 @@ namespace ScrollsModLoader
 		private ModLoader loader;
 		public RepoManager repoManager;
 
+		private WebClient wc;
+
 		public List<Item> installedMods = new List<Item> ();
+		
+		private bool modDownloaded = false;
 
 		public ModManager(ModLoader loader) {
 
@@ -48,8 +53,9 @@ namespace ScrollsModLoader
 					return -1;
 				} else if (loader.modOrder.Contains ((mod2 as LocalMod).localId) && (mod2 as LocalMod).enabled) {
 					return 1;
-				} else
+				} else {
 					return 0;
+				}
 			});
 		}
 
@@ -108,14 +114,18 @@ namespace ScrollsModLoader
 
 			String folder = modsPath + Path.DirectorySeparatorChar + newID + Path.DirectorySeparatorChar;
 			if (Directory.Exists (folder))
+			{
 				Directory.Delete (folder);
+			}
 			Directory.CreateDirectory (folder);
 
-			this.updateMod (lmod);
-			this.installedMods.Add (lmod);
+			if (this.updateMod (lmod))
+			{
+				this.installedMods.Add (lmod);
 
-			//add hooks
-			loader.loadModStatic (lmod.installPath);
+				//add hooks
+				loader.loadModStatic (lmod.installPath);
+			}
 		}
 
 		public void deinstallMod(LocalMod mod) {
@@ -128,23 +138,77 @@ namespace ScrollsModLoader
 			installedMods.Remove (mod);
 			String folder = Path.GetDirectoryName(mod.installPath);
 			if (Directory.Exists (folder))
+			{
 				Extensions.DeleteDirectory(folder);
+			}
 		}
 
-		public void updateMod(LocalMod mod) {
-			this.updateFile (mod);
-			this.updateConfig (mod);
-			loader.queueRepatch ();
+		public bool updateMod(LocalMod mod) {
+			if (this.updateFile(mod))
+			{
+				this.updateConfig (mod);
+				loader.queueRepatch ();
+				return true;
+			}
+			return false;
 		}
 
-		public byte[] downloadMod(LocalMod mod) {
+		public bool downloadMod(LocalMod mod, String location) {
 			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
-			return new WebClient ().DownloadData (mod.source.url + "download/mod/" + mod.id);
+			wc = new WebClient();
+			
+			wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+			wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+
+			wc.DownloadFileAsync (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+
+			return modDownloaded;
 		}
 
-		public void updateFile(LocalMod mod) {
+		
+		
+		void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+		{
+		}
+
+		void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+		{
+			Console.WriteLine("Done downloading :)");
+
+			String[] keys = wc.ResponseHeaders.AllKeys;
+
+			String contentType = "";
+			for (int i = 0; i < keys.Length; i++)
+			{
+				Console.WriteLine(keys[i]);
+				if (keys[i].Equals("Content-Type"))
+				{
+					contentType = wc.ResponseHeaders.Get(i);
+				}
+			}
+
+			Console.WriteLine("Content-Type: " + contentType);
+
+			System.Diagnostics.Debug.WriteLine("Done downloading the replay :)");
+
+			if (contentType.Equals("application/json")) // Error
+			{
+				modDownloaded = false;
+			}
+			else
+			{
+				modDownloaded = true;
+			}
+		}
+		
+		
+		public bool updateFile(LocalMod mod) {
 			String folder = modsPath + Path.DirectorySeparatorChar + mod.localId + Path.DirectorySeparatorChar;
 			String filePath = folder + mod.name + ".mod.dll";
+			
+			return this.downloadMod(mod, filePath);
+			
+			/*
 			byte[] modData = this.downloadMod(mod);
 
 			File.Delete (filePath);
@@ -152,6 +216,7 @@ namespace ScrollsModLoader
 			modFile.Write (modData, 0, modData.Length);
 			modFile.Flush ();
 			modFile.Close ();
+			*/
 		}
 
 		public void updateConfig(LocalMod mod) {
