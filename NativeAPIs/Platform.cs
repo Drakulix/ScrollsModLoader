@@ -105,7 +105,7 @@ namespace ScrollsModLoader
 				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
 				Application.Quit ();
 			} else if (getOS () == OS.Mac) {
-				new Process { StartInfo = { FileName = "bash", Arguments = getGlobalScrollsInstallPath() + "/../../../../../run.sh", UseShellExecute=true } }.Start ();
+				new Process { StartInfo = { FileName = "bash", Arguments = getGlobalScrollsInstallPath() + "/../../../../../run_sleep.sh", UseShellExecute=true } }.Start ();
 				Application.Quit ();
 			} else {
 				Application.Quit ();
@@ -115,38 +115,26 @@ namespace ScrollsModLoader
 
 		public static void PlatformPatches(String path) {
 			if (getOS() == OS.Mac) {
-				String plist = path + "/../../../../../../Info.plist";
-				String[] lines = File.ReadAllLines (plist);
-				File.SetAttributes(plist, FileAttributes.Normal);
-				File.Delete (plist);
-				StreamWriter writer = File.CreateText (plist);
-				for (int i = 0; i < lines.Count(); i++) {
-					String line = lines[i];
-					if (line.Contains ("scrolls.sh")) {
-						writer.WriteLine (line.Replace("scrolls.sh", "installer"));
-					} else {
+				String runsh = path + "/../../../../../run.sh";
+				String runshsleep = path + "/../../../../../run_sleep.sh";
+
+				if (!File.Exists (runshsleep)) {
+					String[] lines = File.ReadAllLines (runsh);
+					StreamWriter writer = File.CreateText (runshsleep);
+					for (int i = 0; i < lines.Count(); i++) {
+						String line = lines [i];
+						if (line.Contains ("/installer") && !lines [i - 1].Contains ("sleep")) {
+							writer.WriteLine ("sleep 2");
+						}
 						writer.WriteLine (line);
 					}
+					writer.Close ();
 				}
-				writer.Close ();
 
-				String runsh = path + "/../../../../../run.sh";
-				lines = File.ReadAllLines (runsh);
-				File.SetAttributes(runsh, FileAttributes.Normal);
-				File.Delete (runsh);
-				writer = File.CreateText (runsh);
-				for (int i = 0; i < lines.Count(); i++) {
-					String line = lines[i];
-					if (line.Contains("/installer") && !lines[i-1].Contains("sleep")) {
-						writer.WriteLine ("sleep 2");
-					}
-					writer.WriteLine (line);
+				if (!File.Exists (path + "/System.Drawing.dll")) {
+					byte[] sysdrawing = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.System.Drawing.dll").ReadToEnd ();
+					System.IO.File.Create (path + "/System.Drawing.dll").Write (sysdrawing, 0, sysdrawing.Length);
 				}
-				writer.Close ();
-				new Process { StartInfo = { FileName = "chmod", Arguments = "+x \""+runsh+"\"", UseShellExecute=true } }.Start ();
-
-				byte[] sysdrawing = System.Reflection.Assembly.GetExecutingAssembly ().GetManifestResourceStream ("ScrollsModLoader.Resources.System.Drawing.dll").ReadToEnd ();
-				System.IO.File.Create (path + "/System.Drawing.dll").Write (sysdrawing, 0, sysdrawing.Length);
 			}
 		}
 	}

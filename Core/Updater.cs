@@ -43,6 +43,7 @@ namespace ScrollsModLoader
 				File.WriteAllBytes (installPath + "Updater.exe", asm);
 				if (CheckToken (installPath + "Updater.exe", token)) {
 					Screen.fullScreen = false; //fullscreen crash fix
+					App.Config.SetResolution (Screen.width, Screen.height, false);
 					if (Platform.getOS () == Platform.OS.Win) {
 						new Process { StartInfo = { FileName = installPath + "Updater.exe", Arguments = "" } }.Start ();
 					} else if (Platform.getOS () == Platform.OS.Mac) {
