@@ -105,7 +105,7 @@ namespace ScrollsModLoader
 				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
 				Application.Quit ();
 			} else if (getOS () == OS.Mac) {
-				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "/../../../../../run.sh", Arguments = "", UseShellExecute=true } }.Start ();
+				new Process { StartInfo = { FileName = "bash", Arguments = getGlobalScrollsInstallPath() + "/../../../../../run.sh", UseShellExecute=true } }.Start ();
 				Application.Quit ();
 			} else {
 				Application.Quit ();
@@ -115,11 +115,26 @@ namespace ScrollsModLoader
 
 		public static void PlatformPatches(String path) {
 			if (getOS() == OS.Mac) {
+				String plist = path + "/../../../../../../Info.plist";
+				String[] lines = File.ReadAllLines (plist);
+				File.SetAttributes(plist, FileAttributes.Normal);
+				File.Delete (plist);
+				StreamWriter writer = File.CreateText (plist);
+				for (int i = 0; i < lines.Count(); i++) {
+					String line = lines[i];
+					if (line.Contains ("scrolls.sh")) {
+						writer.WriteLine (line.Replace("scrolls.sh", "installer"));
+					} else {
+						writer.WriteLine (line);
+					}
+				}
+				writer.Close ();
+
 				String runsh = path + "/../../../../../run.sh";
-				String[] lines = File.ReadAllLines (runsh);
+				lines = File.ReadAllLines (runsh);
 				File.SetAttributes(runsh, FileAttributes.Normal);
 				File.Delete (runsh);
-				StreamWriter writer = File.CreateText (runsh);
+				writer = File.CreateText (runsh);
 				for (int i = 0; i < lines.Count(); i++) {
 					String line = lines[i];
 					if (line.Contains("/installer") && !lines[i-1].Contains("sleep")) {
