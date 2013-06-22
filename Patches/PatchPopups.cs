@@ -20,6 +20,8 @@ namespace ScrollsModLoader
 		public override Mono.Cecil.MethodDefinition[] patchedMethods ()
 		{
 			MethodDefinition PopupOk = Hooks.getMethDef (Hooks.getTypeDef (assembly, "Popups"), "OnGUI");
+			if (PopupOk == null)
+				return new MethodDefinition[] { };
 			return new MethodDefinition[] { PopupOk };
 		}
 

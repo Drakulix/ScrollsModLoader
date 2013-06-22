@@ -47,6 +47,8 @@ namespace ScrollsModLoader
 				if (def.Name.Equals ("getButtonPositioner") && def.Parameters [0].ParameterType.Name.Equals ("MockupCalc"))
 					GetButtonPositioner = def;
 			}
+			if (GetButtonPositioner == null && DrawHeaderButtons == null)
+				return new MethodDefinition[] { };
 			if (GetButtonPositioner == null) {
 				Console.WriteLine ("ERROR: unable to find Method");
 				return new MethodDefinition[] {DrawHeaderButtons};
@@ -95,8 +97,6 @@ namespace ScrollsModLoader
 
 					//info.Target.GUISkins.Add (gUISkin5);
 					FieldInfo GUISkins = lobbyMenu.GetField("GUISkins", BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance);
-					foreach (GUISkin skin in (List<GUISkin>)(GUISkins.GetValue(info.Target)))
-						Console.WriteLine ("size of last: "+skin.button.normal.background.width+"x"+skin.button.normal.background.height);
 					((List<GUISkin>)(GUISkins.GetValue(info.Target))).Add(gUISkin7);
 
 					((LobbyMenu)info.Target).AdjustForResolution();
@@ -115,9 +115,6 @@ namespace ScrollsModLoader
 
 				MethodInfo drawHeader = lobbyMenu.GetMethod ("drawHeaderButton", BindingFlags.NonPublic | BindingFlags.Instance);
 				drawHeader.Invoke(info.Target, new object[] {6, "_Mods"});
-
-				object headerpositioner = typeof(LobbyMenu).GetField ("_headerPositioner", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(info.Target);
-				Console.WriteLine (headerpositioner.GetType().GetMethod("getButtonRect").Invoke(headerpositioner, new object[] {5f, Screen.height * 0.06f}));
 
 				if (!((bool)typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target))) {
 					typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, newindex);
@@ -208,7 +205,7 @@ namespace ScrollsModLoader
 				App.Popups.ShowInfo ("Downloading", "Please wait while the requested mods are being downloaded");
 				new Thread(downloadMods).Start();
 			}
-			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/4.1f, (float)Screen.width/35.0f), "Apply Changes");
+			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/4.1f, (float)Screen.width/35.0f), "Download");
 
 			if (GUI.Button(new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f, (float)Screen.width/35.0f), string.Empty)) {
 				loader.repatch ();
@@ -251,6 +248,7 @@ namespace ScrollsModLoader
 				modManager.installMod((Repo)repoListPopup.selectedItem(), (Mod)mod);
 			}
 			downloadableListPopup.SetItemList(repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
+			downloadableListPopup.setSelectedItems (new List<Item> ());
 			modListPopup.SetItemList (modManager.installedMods);
 			App.Popups.KillCurrentPopup ();
 		}
@@ -261,9 +259,11 @@ namespace ScrollsModLoader
 		public void ButtonClicked (UIListPopup popup, ECardListButton button, Item card) {
 			if (popup == modListPopup) {
 				if (button == ECardListButton.BUTTON_LEFT)
-					loader.moveModUp ((LocalMod)card);
+					if ((card as LocalMod).enabled)
+						loader.moveModUp ((LocalMod)card);
 				else if (button == ECardListButton.BUTTON_RIGHT)
-					loader.moveModDown((LocalMod)card);
+					if ((card as LocalMod).enabled)
+						loader.moveModDown((LocalMod)card);
 			}
 		}
 		public void ItemButtonClicked (UIListPopup popup, Item card) {}

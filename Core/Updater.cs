@@ -42,6 +42,7 @@ namespace ScrollsModLoader
 				byte[] asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
 				File.WriteAllBytes (installPath + "Updater.exe", asm);
 				if (CheckToken (installPath + "Updater.exe", token)) {
+					Screen.fullScreen = false; //fullscreen crash fix
 					if (Platform.getOS () == Platform.OS.Win) {
 						new Process { StartInfo = { FileName = installPath + "Updater.exe", Arguments = "" } }.Start ();
 					} else if (Platform.getOS () == Platform.OS.Mac) {

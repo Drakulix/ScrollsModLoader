@@ -98,6 +98,10 @@ namespace ScrollsModLoader
 			//make new repatch backup
 			File.Copy (Platform.getGlobalScrollsInstallPath () + "Assembly-CSharp.dll", Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll");
 
+			//make sure mods get hooks set with new version
+			File.Delete (Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "mods.ini");
+			ScrollsFilter.clearHooks ();
+
 			//repatch
 			Patcher patcher = new Patcher ();
 			if (!patcher.patchAssembly (Platform.getGlobalScrollsInstallPath ())) {

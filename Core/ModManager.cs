@@ -115,12 +115,13 @@ namespace ScrollsModLoader
 			}
 			Directory.CreateDirectory (folder);
 
-			if (this.updateMod (lmod))
-			{
+			if (this.updateMod (lmod)) {
 				this.installedMods.Add (lmod);
 
 				//add hooks
 				loader.loadModStatic (lmod.installPath);
+			} else {
+				Extensions.DeleteDirectory (folder);
 			}
 		}
 
@@ -173,7 +174,6 @@ namespace ScrollsModLoader
 			}
 			else // for example "application/json" or none at all, error
 			{
-				removeMod(mod);
 				return false;
 			}
 		}

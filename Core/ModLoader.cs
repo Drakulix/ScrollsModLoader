@@ -255,8 +255,10 @@ namespace ScrollsModLoader {
 
 			//add Hooks
 			foreach (Patch patch in patches) {
-				foreach (MethodDefinition definition in patch.patchedMethods())
-					ScrollsFilter.AddHook (definition);
+				try {
+					foreach (MethodDefinition definition in patch.patchedMethods())
+						ScrollsFilter.AddHook (definition);
+				} catch {}
 			}
 		}
 
@@ -285,9 +287,14 @@ namespace ScrollsModLoader {
 		private Mod _loadModStatic(TypeDefinitionCollection types, String filepath) {
 			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
 			AppDomain.CurrentDomain.AssemblyResolve += resolver;
-			
 
-			Assembly modAsm = Assembly.LoadFile(filepath);
+			Assembly modAsm = null;
+			try {
+				modAsm = Assembly.LoadFile(filepath);
+			} catch (BadImageFormatException) {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return null;
+			}
 			Type modClass = (from _modClass in modAsm.GetTypes ()
 			                 where _modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
 			                 select _modClass).First();
@@ -367,7 +374,13 @@ namespace ScrollsModLoader {
 			ResolveEventHandler resolver = new ResolveEventHandler(CurrentDomainOnAssemblyResolve);
 			AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
-			Assembly modAsm = Assembly.LoadFile(mod.installPath);
+			Assembly modAsm = null;
+			try {
+				modAsm = Assembly.LoadFile(mod.installPath);
+			} catch (BadImageFormatException) {
+				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+				return;
+			}
 			Type modClass = (from _modClass in modAsm.GetTypes ()
 			                 where _modClass.InheritsFrom (typeof(BaseMod))
 			                 select _modClass).First();
