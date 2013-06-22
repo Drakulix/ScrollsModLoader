@@ -586,6 +586,8 @@ namespace ScrollsModLoader {
 				return;
 			init = true;
 
+			Console.WriteLine ("ModLoader version: " + ModLoader.getVersion ());
+
 			if (Updater.tryUpdate ()) { //update
 				Application.Quit ();
 				return;

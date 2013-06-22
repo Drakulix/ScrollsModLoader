@@ -67,7 +67,7 @@ namespace ScrollsModLoader
 				return;
 			}
 
-			Dialogs.showNotification ("Patching complete", "Summoner successfully patched your Scrolls installation. Visit scrollsguide.com/summoner for more information. You can now start Scrolls and enjoy the benefits of Summoner");
+			Dialogs.showNotification ("Patching complete", "Summoner successfully patched your Scrolls installation. Visit scrollsguide.com/summoner for more information. You can now start Scrolls and enjoy the benefits of Summoner. Warning: fullscreen users may have to manually restart the game");
 			Console.WriteLine ("Done");
 			return;
 		}

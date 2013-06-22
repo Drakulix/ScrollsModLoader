@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 
 namespace ScrollsModLoader
 {
@@ -29,7 +30,12 @@ namespace ScrollsModLoader
 		public static String fileOpenDialog() {
 			switch (Platform.getOS()) {
 			case Platform.OS.Win:
-				String ret = WindowsDialog.ShowWindowsDialog ();
+				String ret = "";
+				if (Screen.fullScreen) {
+					App.Popups.ShowOk (null, "warningFullscreen", "Error", "File Dialogs do not work in fullscreen mode, please switch to proceed", "Cancel");
+				} else {
+					ret = WindowsDialog.ShowWindowsDialog ();
+				}
 				if (ret.Equals (""))
 					return null;
 				else

@@ -4,6 +4,7 @@ using System.Net;
 using System.Reflection;
 using JsonFx.Json;
 using System.Diagnostics;
+using System.Threading;
 using UnityEngine;
 
 namespace ScrollsModLoader
@@ -34,16 +35,15 @@ namespace ScrollsModLoader
 
 			if (version > ModLoader.getVersion()) {
 
-				try {
-					App.Popups.ShowInfo ("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
-					Dialogs.showNotification("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
-				} catch {}
-
 				byte[] asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
 				File.WriteAllBytes (installPath + "Updater.exe", asm);
 				if (CheckToken (installPath + "Updater.exe", token)) {
-					Screen.fullScreen = false; //fullscreen crash fix
-					App.Config.SetResolution (Screen.width, Screen.height, false);
+
+					try {
+						App.Popups.ShowInfo ("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
+						Dialogs.showNotification("Scrolls Summoner is updating", "Please wait while the update is being downloaded");
+					} catch { }
+
 					if (Platform.getOS () == Platform.OS.Win) {
 						new Process { StartInfo = { FileName = installPath + "Updater.exe", Arguments = "" } }.Start ();
 					} else if (Platform.getOS () == Platform.OS.Mac) {

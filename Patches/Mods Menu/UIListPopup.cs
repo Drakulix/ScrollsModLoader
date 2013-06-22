@@ -217,10 +217,12 @@ public class UIListPopup : MonoBehaviour
 						callback.ButtonClicked (this, ECardListButton.BUTTON_RIGHT, card2);
 						App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
 					}
+					if (!(card2 as ScrollsModLoader.LocalMod).queueForUninstall) {
 						if (GUI.Button (rect11, string.Empty, ((GUISkin)Resources.Load("_GUISkins/CloseButton")).button)) {
-						callback.ItemCanceled (this, card2);	
-						GUI.DrawTexture(rect11, ResourceManager.LoadTexture("Arena/scroll_browser_button_cb_checked"));
-						App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
+							callback.ItemCanceled (this, card2);	
+							GUI.DrawTexture(rect11, ResourceManager.LoadTexture("Arena/scroll_browser_button_cb_checked"));
+							App.AudioScript.PlaySFX("Sounds/hyperduck/UI/ui_button_click");
+						}
 					}
 				}
                 if ((this.itemButtonTexture == null) && !this.selectable)

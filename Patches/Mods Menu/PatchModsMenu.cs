@@ -216,8 +216,8 @@ namespace ScrollsModLoader
 			GUI.skin.label.alignment = TextAnchor.MiddleRight;
 			GUI.skin.label.normal.textColor = Color.Lerp(Color.white, Color.yellow, 0.4f);
 
-			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.91f, Screen.width * 0.3f, Screen.height * 0.03f),  "   The Summoner ModLoader is not an official Scrolls feature");
-			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.935f, Screen.width * 0.3f, Screen.height * 0.03f), "Read and submit bugs on http://www.scrollsguide.com/summoner");
+			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.90f, Screen.width * 0.3f, Screen.height * 0.04f),  "The Summoner ModLoader v"+ModLoader.getVersion()+" is not an official Scrolls feature");
+			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.94f, Screen.width * 0.3f, Screen.height * 0.04f), "Read and submit bugs on http://www.scrollsguide.com/summoner");
 
 			GUI.skin.label.normal.textColor = textColor;
 			GUI.skin.label.fontSize = defaultTextSize;
