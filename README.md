@@ -1,7 +1,7 @@
-##Scrolls ModLoader
+##Summoner : A ModLoader for Scrolls
 
 ####What is it?
-Scrolls ModLoader is a project to provide a modding API for the game "Scrolls" by Mojang.
+Summoner is a project to provide a modding API for the game "Scrolls" by Mojang.
 
 ####Who is working on it?
 Drakulix - Main Developer
@@ -66,16 +66,17 @@ To ensure safety for the user we try to provide a trusted-platform for the Scrol
 
 ####3. Release
 
-...ScrollsGuide.com
+At ScrollsGuide.com/Summoner !
 
-Any releases (none at the moment) will be provided through ScrollsGuide.com.
-It will also act as trusted Plugin-Library, all Plugins submitted will be tested and need to be open-source, so everybody can check the functionality before running any mods themselves (theoretically).
+Any releases will be provided through ScrollsGuide.com.
+It also acts as trusted Plugin-Library, all Plugins submitted will be tested and need to be open-source, so everybody can check the functionality before running any mods themselves (theoretically).
 
-More informations will follow as we get close to an actual release.
-No ETA given at this moment…
+##What was changed from the Concept:
+- The High-Level-API was not build into something fully-functional. You can use it, but it just contains some helper functions, nothing to build an entire mod out of it.
+- ILRepack is not needed anymore for injecting code. Having the Mod-Assembly separately has proven to be as reliable and easier.
 
 
 
 ####4. Developer API
 
-To-be-done/implemented
+First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t=1873
