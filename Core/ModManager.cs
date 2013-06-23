@@ -152,9 +152,13 @@ namespace ScrollsModLoader
 
 		public bool downloadMod(LocalMod mod, String location) {
 			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
-			WebClient wc = new WebClient();
+			WebClientTimeOut wc = new WebClientTimeOut();
 
-			wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+			try {
+				wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+			} catch (WebException) {
+				return false;
+			}
 
 			// now check whether the downloaded file is actually a mod, and not an error
 			String[] keys = wc.ResponseHeaders.AllKeys;

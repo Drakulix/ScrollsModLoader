@@ -16,8 +16,13 @@ namespace ScrollsModLoader
 
 		public static bool tryUpdate() {
 
-			WebClient client = new WebClient ();
-			String versionMessageRaw = client.DownloadString (new Uri("http://mods.scrollsguide.com/version"));
+			WebClientTimeOut client = new WebClientTimeOut ();
+			String versionMessageRaw;
+			try {
+				versionMessageRaw = client.DownloadString (new Uri("http://mods.scrollsguide.com/version"));
+			} catch (WebException) {
+				return false;
+			}
 
 			JsonReader reader = new JsonReader ();
 			VersionMessage versionMessage = (VersionMessage)reader.Read (versionMessageRaw, typeof(VersionMessage));
@@ -35,7 +40,12 @@ namespace ScrollsModLoader
 
 			if (version > ModLoader.getVersion()) {
 
-				byte[] asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
+				byte[] asm;
+				try {
+					asm = client.DownloadData(new Uri("http://mods.scrollsguide.com/download/update"));
+				} catch (WebException) {
+					return false;
+				}
 				File.WriteAllBytes (installPath + "Updater.exe", asm);
 				if (CheckToken (installPath + "Updater.exe", token)) {
 

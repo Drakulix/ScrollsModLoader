@@ -55,9 +55,10 @@ namespace ScrollsModLoader
 
 			String repoinfo = null;
 			try {
-				WebClient client = new WebClient ();
+				WebClientTimeOut client = new WebClientTimeOut ();
 				repoinfo = client.DownloadString (new Uri("http://"+url+"/repoinfo"));
-			} catch {
+			} catch (WebException ex) {
+				Console.WriteLine (ex);
 				return false;
 			}
 
@@ -93,9 +94,10 @@ namespace ScrollsModLoader
 
 			String modlist = null;
 			try {
-				WebClient client = new WebClient ();
+				WebClientTimeOut client = new WebClientTimeOut ();
 				modlist = client.DownloadString (new Uri(repo.url+"modlist"));
-			} catch {
+			} catch (WebException ex) {
+				Console.WriteLine (ex);
 				repositories.Remove (repo);
 				return false;
 			}

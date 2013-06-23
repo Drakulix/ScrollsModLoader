@@ -155,7 +155,11 @@ namespace ScrollsModLoader
 
 			downloadableListPopup = new GameObject ("Downloadable List").AddComponent<UIListPopup> ();
 			downloadableListPopup.transform.parent = parentScene.transform;
-			downloadableListPopup.Init (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f+40.0f, (float)Screen.width/4.1f, (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f), false, true, repoManager.getModListForRepo((Repo)repoListPopup.selectedItem()), this, null, null, true, true, true, true, null, true, false);
+			if (repoManager.repositories.Count > 0)
+				downloadableListPopup.Init (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f+40.0f, (float)Screen.width/4.1f, (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f), false, true, repoManager.getModListForRepo((Repo)repoListPopup.selectedItem()), this, null, null, true, true, true, true, null, true, false);
+			else 
+				downloadableListPopup.Init (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f, (float)Screen.height/5.0f+(float)Screen.height/30.0f+40.0f, (float)Screen.width/4.1f, (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f), false, true, new List<Item>(), this, null, null, true, true, true, true, null, true, false);
+
 			downloadableListPopup.enabled = true;
 			downloadableListPopup.SetOpacity(1f);
 
@@ -174,30 +178,31 @@ namespace ScrollsModLoader
 			new ScrollsFrame (new Rect((float)Screen.width/15.0f, (float)Screen.height/5.0f, (float)Screen.width/15.0f*8.0f, (float)Screen.height/6.0f*4.0f)).AddNinePatch (ScrollsFrame.Border.LIGHT_CURVED, NinePatch.Patches.CENTER).Draw();
 			new ScrollsFrame (new Rect((float)Screen.width/15.0f*9.5f, (float)Screen.height/5.0f, (float)Screen.width/15.0f*4.5f, (float)Screen.height/6.0f*4.0f)).AddNinePatch (ScrollsFrame.Border.LIGHT_CURVED, NinePatch.Patches.CENTER).Draw();
 
-			GUI.skin.label.fontSize = defaultTextSize;
 			Color textColor = GUI.skin.label.normal.textColor;
 			GUI.skin.label.normal.textColor = Color.white;
 
-			GUI.skin.label.fontSize = defaultTextSize;
+			GUI.skin.label.fontSize = (int) (((float) (0x1c * Screen.height)) / 1080f);
 			GUI.Label (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/4.5f/2.0f - (float)Screen.width/8.0f/2.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f, (float)Screen.width/8.0f, 35.0f), "Repositories");
 			GUI.Label (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f*1.5f+(float)Screen.width/4.5f + (float)Screen.width/4.1f/2.0f - (float)Screen.width/8.0f/2.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f, (float)Screen.width/8.0f, 35.0f), "Downloadable Mods");
 			GUI.Label (new Rect((float)Screen.width/15.0f*9.5f+(float)Screen.width/35.0f+((float)Screen.width/15.0f*4.5f-(float)Screen.width/35.0f*2.0f)/2.0f - (float)Screen.width/8.0f/2.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f, (float)Screen.width/8.0f, 35.0f), "Installed Mods");
 
-			GUI.skin.label.fontSize = 20;
+			GUI.skin.label.fontSize = 18;
 			if (GUI.Button (new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), string.Empty)) {
 				App.Popups.ShowTextInput (this, "http://", "WARNING: Other repositories are NOT trusted by Scrollsguide.", "addRepo", "Add Repository", "Please enter the URL of the repository you want to add", "Add");
 			}
 			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), "Add Repository");
 
 			if (GUI.Button(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/9.0f + 1.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), string.Empty)) {
-				if (repoListPopup.selectedItem ().Equals (repoManager.repositories[0])) {
-					App.Popups.ShowOk (this, "remWarning", "Invalid Operation", "You cannot remove Scrollsguide from your repository list", "OK");
-				} else {
-					repoManager.removeRepository ((Repo)repoListPopup.selectedItem ());
-					repoListPopup.SetItemList (repoManager.repositories);
-					repoListPopup.setSelectedItem (repoManager.repositories[0]);
-					downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
-				}
+				try {	
+					if (repoListPopup.selectedItem ().Equals (repoManager.repositories[0])) {
+						App.Popups.ShowOk (this, "remWarning", "Invalid Operation", "You cannot remove Scrollsguide from your repository list", "OK");
+					} else {
+						repoManager.removeRepository ((Repo)repoListPopup.selectedItem ());
+						repoListPopup.SetItemList (repoManager.repositories);
+						repoListPopup.setSelectedItem (repoManager.repositories[0]);
+						downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
+					}
+				} catch {}
 			}
 			GUI.Label(new Rect((float)Screen.width/15.0f+(float)Screen.width/35.0f + (float)Screen.width/9.0f + 1.0f, (float)Screen.height/5.0f+(float)Screen.height/30.0f + (float)Screen.height/6.0f*4.0f-(float)Screen.height/15.0f-80.0f, (float)Screen.width/9.0f-1.0f, (float)Screen.width/35.0f), "Remove Repository");
 
@@ -216,8 +221,8 @@ namespace ScrollsModLoader
 			GUI.skin.label.alignment = TextAnchor.MiddleRight;
 			GUI.skin.label.normal.textColor = Color.Lerp(Color.white, Color.yellow, 0.4f);
 
-			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.90f, Screen.width * 0.3f, Screen.height * 0.04f),  "The Summoner ModLoader v"+ModLoader.getVersion()+" is not an official Scrolls feature");
-			GUI.Label(new Rect(Screen.width * 0.69f, Screen.height * 0.94f, Screen.width * 0.3f, Screen.height * 0.04f), "Read and submit bugs on http://www.scrollsguide.com/summoner");
+			GUI.Label(new Rect(Screen.width * 0.5f, Screen.height * 0.90f, Screen.width * 0.2f, Screen.height * 0.04f),  "The Summoner ModLoader v"+ModLoader.getVersion()+" is not an official Scrolls feature");
+			GUI.Label(new Rect(Screen.width * 0.5f, Screen.height * 0.94f, Screen.width * 0.2f, Screen.height * 0.04f), "Read and submit bugs on http://www.scrollsguide.com/summoner");
 
 			GUI.skin.label.normal.textColor = textColor;
 			GUI.skin.label.fontSize = defaultTextSize;

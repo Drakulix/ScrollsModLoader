@@ -55,10 +55,14 @@ namespace ScrollsModLoader {
 
 		private void makeRequest(NameValueCollection lp)
 		{
-			using (WebClient wb = new WebClient())
+			using (WebClient wb = new WebClient()) //without Timeout to get Exceptions more likely!
 			{
-				byte[] response = wb.UploadValues(getCrashDumpUrl(), "POST", lp);
-				System.Diagnostics.Debug.WriteLine(Encoding.ASCII.GetString(response));
+				try {
+					byte[] response = wb.UploadValues(getCrashDumpUrl(), "POST", lp);
+					System.Diagnostics.Debug.WriteLine(Encoding.ASCII.GetString(response));
+				} catch (WebException) {
+					return;
+				}
 			}
 		}
 

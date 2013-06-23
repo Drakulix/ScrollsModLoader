@@ -55,10 +55,16 @@ namespace ScrollsModLoader
 			String gameFolder = Path.GetFullPath(Directory.GetParent(Platform.getGlobalScrollsInstallPath()).Parent.Parent.Parent.FullName)+ Path.DirectorySeparatorChar;
 
 			//wait
-			WebClient webClient = new WebClient();
+			WebClientTimeOut webClient = new WebClientTimeOut();
 			if (File.Exists (gameFolder + "game.zip"))
 				File.Delete (gameFolder + "game.zip");
-			webClient.DownloadFile(URL, gameFolder + "game.zip");
+			try {
+				webClient.DownloadFile(URL, gameFolder + "game.zip");
+			} catch (WebException) {
+				App.Popups.KillCurrentPopup();
+				App.Popups.ShowOk (null, "info", "Error", "And error occured, while downloading the Update.", "OK");
+				return;
+			}
 
 			//backup assembly
 			String backupPath = gameFolder +"ScrollsModLoader.dll";

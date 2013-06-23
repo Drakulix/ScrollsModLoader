@@ -26,7 +26,14 @@ namespace ScrollsModLoader
 
 		public static void Main (string[] args)
 		{
+			try {
+				Patcher.standalonePatch();
+			} catch {
+				Dialogs.showNotification ("Patching failed", "Scrolls Summoner was unable to prepare your client, make sure Scrolls is not running while installing. More info at scrollsguide.com/summoner");
+			}
+		}
 
+		public static void standalonePatch () {
 			Console.WriteLine ("Preparing...");
 
 			//get Path of Scrolls Data Folder
