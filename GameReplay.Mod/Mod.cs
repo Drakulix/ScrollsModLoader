@@ -202,7 +202,7 @@ namespace GameReplay.Mod
 
 				// try a few regexes until a match is found
 				List<RegexPattern> patterns = new List<RegexPattern>();
-				patterns.Add(new RegexPattern("^http://(www\\.)?scrollsguide\\.com/replays/r/([0-9]+)$", 2)); // full replay url in browser
+				patterns.Add(new RegexPattern("^(http://)?(www\\.)?scrollsguide\\.com/replays/r/([0-9]+)$", 3)); // full replay url in browser
 				patterns.Add(new RegexPattern("^([0-9]+)$", 1)); // just the replay number
 				patterns.Add(new RegexPattern("^http://a\\.scrollsguide\\.com/replay/download/([0-9]+)(\\?true)?$", 1)); // full replay url with or without ?true
 				bool hasMatch = false;
@@ -428,8 +428,10 @@ namespace GameReplay.Mod
 			{
 				NameValueCollection postParams = getPostParams();
 
+				App.Popups.ShowInfo("Sharing", "Sharing your replay...");
 				ResultMessage result = Extensions.HttpUploadFile("http://a.scrollsguide.com/replay/upload",
 					toUpload.fileName(), "replay", "scr/replay", postParams);
+				App.Popups.KillCurrentPopup();
 
 				if (result.msg.Equals("success"))
 				{
