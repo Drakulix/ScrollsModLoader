@@ -34,7 +34,10 @@ namespace GameReplay.Mod
 				Directory.CreateDirectory(recordFolder + Path.DirectorySeparatorChar);
 			}
 			player = new Player(recordFolder);
-			App.Communicator.addListener(this);
+
+			try {
+				App.Communicator.addListener(this);
+			} catch {}
 
 			new Thread (new ThreadStart (parseRecords)).Start ();
 		}
@@ -51,11 +54,13 @@ namespace GameReplay.Mod
 
 		public void handleMessage(Message msg)
 		{
-			if (msg is BattleRedirectMessage)
-			{
-				recorder = new Recorder(recordFolder, this);
-				Console.WriteLine("Recorder started: " + recorder);
-			}
+			try {
+				if (msg is BattleRedirectMessage)
+				{
+					recorder = new Recorder(recordFolder, this);
+					Console.WriteLine("Recorder started: " + recorder);
+				}
+			} catch {}
 		}
 
 		public void onReconnect()
@@ -75,16 +80,20 @@ namespace GameReplay.Mod
 		
 		public static MethodDefinition[] GetHooks(TypeDefinitionCollection scrollsTypes, int version)
 		{
-			MethodDefinition[] defs = new MethodDefinition[] {
-				scrollsTypes["ProfileMenu"].Methods.GetMethod("Start")[0],
-				scrollsTypes["ProfileMenu"].Methods.GetMethod("getButtonRect")[0],
-				scrollsTypes["ProfileMenu"].Methods.GetMethod("drawEditButton")[0]
-			};
+			try {
+				MethodDefinition[] defs = new MethodDefinition[] {
+					scrollsTypes["ProfileMenu"].Methods.GetMethod("Start")[0],
+					scrollsTypes["ProfileMenu"].Methods.GetMethod("getButtonRect")[0],
+					scrollsTypes["ProfileMenu"].Methods.GetMethod("drawEditButton")[0]
+				};
 
-			List<MethodDefinition> list = new List<MethodDefinition>(defs);
-			list.AddRange(Player.GetPlayerHooks(scrollsTypes, version));
+				List<MethodDefinition> list = new List<MethodDefinition>(defs);
+				list.AddRange(Player.GetPlayerHooks(scrollsTypes, version));
 
-			return list.ToArray();
+				return list.ToArray();
+			} catch {
+				return new MethodDefinition[] {};
+			}
 		}
 
 		public override bool BeforeInvoke(InvocationInfo info, out object returnValue)
@@ -458,7 +467,12 @@ namespace GameReplay.Mod
 
 		private bool canShare()
 		{
-			String html = new WebClient().DownloadString("http://a.scrollsguide.com/replay/canshare/" + toUpload.getId());
+			String html;
+			try {
+				html = new WebClient().DownloadString("http://a.scrollsguide.com/replay/canshare/" + toUpload.getId());
+			} catch (WebException) {
+				return false;
+			}
 
 			JsonReader r = new JsonReader();
 			ResultMessage rm = r.Read(html, System.Type.GetType("ResultMessage")) as ResultMessage;
@@ -499,10 +513,14 @@ namespace GameReplay.Mod
 			else
 			{
 				Console.WriteLine("Downloading replay from internet");
-				wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-				wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+				try {
+					wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+					wc.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
 
-				wc.DownloadFileAsync(new Uri("http://a.scrollsguide.com/replay/download/" + gameId + "?true"), saveLocation);
+					wc.DownloadFileAsync(new Uri("http://a.scrollsguide.com/replay/download/" + gameId + "?true"), saveLocation);
+				} catch (WebException) {
+					return;
+				}
 			}
 		}
 
