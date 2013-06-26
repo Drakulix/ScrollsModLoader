@@ -43,90 +43,78 @@ namespace ScrollsModLoader
 			return null;
 		}
 
-		public void PatchScrolls() {
+		public void PatchScrollsWindows() {
+            String URL;
+            if (Platform.getOS() == Platform.OS.Win)
+            {
+                URL = "http://download.scrolls.com/client/windows.zip";
+            }
+            else
+            {
+                URL = "http://download.scrolls.com/client/mac.zip";
+            }
 
-			String URL;
-			if (Platform.getOS () == Platform.OS.Win) {
-				URL = "http://download.scrolls.com/client/windows.zip";
-			} else {
-				URL = "http://download.scrolls.com/client/mac.zip";
-			}
+            String gameFolder = Path.GetFullPath(Directory.GetParent(Platform.getGlobalScrollsInstallPath()).Parent.Parent.Parent.FullName) + Path.DirectorySeparatorChar;
 
-			String gameFolder = Path.GetFullPath(Directory.GetParent(Platform.getGlobalScrollsInstallPath()).Parent.Parent.Parent.FullName)+ Path.DirectorySeparatorChar;
-
-			//wait
-			WebClientTimeOut webClient = new WebClientTimeOut();
-			if (File.Exists (gameFolder + "game.zip"))
+            //wait
+            WebClientTimeOut webClient = new WebClientTimeOut();
+            if (File.Exists(gameFolder + "game.zip"))
+                File.Delete(gameFolder + "game.zip");
+            try
+            {
+                webClient.DownloadFile(URL, gameFolder + "game.zip");
+            }
+            catch (WebException)
 			{
-				File.Delete (gameFolder + "game.zip");
-			}
-			try {
-				webClient.DownloadFile(URL, gameFolder + "game.zip");
-			} catch (WebException) {
 				App.Popups.KillCurrentPopup();
 				App.Popups.ShowOk (null, "info", "Error", "And error occured while downloading the update.", "OK");
-				return;
-			}
+                return;
+            }
 
-			//backup assembly
-			String backupPath = gameFolder + "ScrollsModLoader.dll";
-			if (File.Exists(backupPath)){
-				File.Delete (backupPath);
-			}
-			File.Copy (Platform.getGlobalScrollsInstallPath() + "ScrollsModLoader.dll", backupPath);
-			Console.WriteLine("Copied ScrollsModLoader.dll to " + backupPath);
+            //backup assembly
+            String backupPath = gameFolder + "ScrollsModLoader.dll";
+            if (File.Exists(backupPath))
+            {
+                File.Delete(backupPath);
+            }
+            File.Copy(Platform.getGlobalScrollsInstallPath() + "ScrollsModLoader.dll", backupPath);
 
-			//backup modloader folder
-			String modBackupPath = gameFolder + "ModLoader" + Path.DirectorySeparatorChar;
-			if (Directory.Exists (modBackupPath)){
-				Extensions.DeleteDirectory (modBackupPath);
-			}
-			Directory.Move (Platform.getGlobalScrollsInstallPath() + "ModLoader", modBackupPath);
-			File.Delete (modBackupPath + "mods.ini");
-			File.Delete (modBackupPath + "Assembly-CSharp.dll");
-			
-			Console.WriteLine("Deleted mods.ini and Assembly-CSharp.dll");
+            //backup modloader folder
+            String modBackupPath = gameFolder + "ModLoader" + Path.DirectorySeparatorChar;
+            if (Directory.Exists(modBackupPath))
+            {
+                Extensions.DeleteDirectory(modBackupPath);
+            }
+            Directory.Move(Platform.getGlobalScrollsInstallPath() + "ModLoader", modBackupPath);
+            File.Delete(modBackupPath + "mods.ini");
+            File.Delete(modBackupPath + "Assembly-CSharp.dll");
 
-			if (Platform.getOS () == Platform.OS.Win) {
-				Extensions.DeleteDirectory (gameFolder + "game" + Path.DirectorySeparatorChar + "Scrolls_Data");
-				File.Delete (gameFolder + "game" + Path.DirectorySeparatorChar + "Scrolls.exe");
-				
-				Console.WriteLine("Deleted Scrolls_Data and Scrolls.exe");
-			} else {
-				Extensions.DeleteDirectory (gameFolder + "MacScrolls.app");
-			}
+            if (Platform.getOS() == Platform.OS.Win)
+            {
+                Extensions.DeleteDirectory(gameFolder + "game");
+            }
+            else
+            {
+                Extensions.DeleteDirectory(gameFolder + "MacScrolls.app");
+            }
 
-			//extract
-			String zipLocation = gameFolder + "game.zip";
-			/*
-			if (Platform.getOS() == Platform.OS.Win){
-				String newZipLocation = gameFolder + "game" + Path.DirectorySeparatorChar + "game.zip";
-				File.Move(zipLocation, newZipLocation);
-				zipLocation = newZipLocation;
-			}
-			*/
-			Console.WriteLine("Now extracting from " + zipLocation);
-			
-			ZipFile zip = ZipFile.Read(zipLocation);
-			foreach (ZipEntry e in zip)
-			{
-				e.Extract();
-			}
-			Console.WriteLine("Extracted zip")
+            //extract
+            ZipFile zip = ZipFile.Read(gameFolder + "game.zip");
+            foreach (ZipEntry e in zip)
+            {
+                e.Extract(gameFolder + "game");
+            }
 
-			//move assembly
-			File.Copy (backupPath, Platform.getGlobalScrollsInstallPath () + "ScrollsModLoader.dll");
-			File.Delete (backupPath);
-			
-			Console.WriteLine("Deleted " + backupPath);
+            //move assembly
+            File.Copy(backupPath, Platform.getGlobalScrollsInstallPath() + "ScrollsModLoader.dll");
+            // File.Delete(backupPath);
 
-			//move modloader folder back
-			Directory.Move (modBackupPath, Platform.getGlobalScrollsInstallPath () + "ModLoader");
+            //move modloader folder back
+            Directory.Move(modBackupPath, Platform.getGlobalScrollsInstallPath() + "ModLoader");
 
-			//make new repatch backup
-			File.Copy (Platform.getGlobalScrollsInstallPath () + "Assembly-CSharp.dll", Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll");
-			Console.WriteLine("Copied Assembly-CSharp.dll");
-			
+            //make new repatch backup
+            File.Copy(Platform.getGlobalScrollsInstallPath() + "Assembly-CSharp.dll", Platform.getGlobalScrollsInstallPath() + "ModLoader" + Path.DirectorySeparatorChar + "Assembly-CSharp.dll");
+
 			//make sure mods get hooks set with new version
 			File.Delete (Platform.getGlobalScrollsInstallPath () + "ModLoader" + Path.DirectorySeparatorChar + "mods.ini");
 			ScrollsFilter.clearHooks ();
@@ -146,7 +134,6 @@ namespace ScrollsModLoader
 			
 			//restart the game
 			Platform.RestartGame ();
-
 		}
 	}
 }
