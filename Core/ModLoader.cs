@@ -32,13 +32,56 @@ namespace ScrollsModLoader {
 			types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
 		}
 
+		public void Unload(List<String> modsToUnload) {
+			//unload
+			foreach (String id in modsToUnload) {
+				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
+					return ((lmod as LocalMod).id.Equals (id));
+				}));
+			}
+			modsToUnload.Clear ();
+		}
+
 		public object Intercept (IInvocationInfo info)
 		{
 			//list for unloading
 			List<String> modsToUnload = new List<String> ();
+			String replacement = "";
+
+			//determine replacement
+			foreach (String id in loader.modOrder) {
+				BaseMod mod = null;
+				try {
+					mod = loader.modInstances [id];
+				} catch {
+					continue;
+				}
+				if (mod != null) {
+					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
+						types,
+						SharedConstants.getGameVersion ()
+					});
+					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
+						try {
+							if (mod.WantsToReplace (info))
+								replacement = id;
+						} catch (Exception ex) {
+							Console.WriteLine (ex);
+							modsToUnload.Add (id);
+						}
+					}
+				}
+			}
+
+			//unload
+			Unload (modsToUnload);
 
 			//load beforeinvoke
 			foreach (String id in loader.modOrder) {
+				if (id.Equals (replacement)) {
+					continue;
+				}
+
 				BaseMod mod = null;
 				try {
 					mod = loader.modInstances [id];
@@ -63,12 +106,7 @@ namespace ScrollsModLoader {
 			}
 
 			//unload
-			foreach (String id in modsToUnload) {
-				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
-					return ((lmod as LocalMod).id.Equals (id));
-				}));
-			}
-			modsToUnload.Clear ();
+			Unload (modsToUnload);
 
 
 			//check for patch call
@@ -84,16 +122,15 @@ namespace ScrollsModLoader {
 					}
 				}
 			}
-			if (!patchFound)
-				ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
-
-
-			//backup return value
-			object retBack = null;
-			try {
-				retBack = ret.Copy ();
-			} catch {
-				retBack = ret;
+			if (!patchFound) {
+				if (replacement.Equals(""))
+					ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
+				else {
+					try {
+						BaseMod mod = loader.modInstances [replacement];
+						mod.ReplaceMethod(info, out ret);
+					}
+				}
 			}
 
 
@@ -111,13 +148,7 @@ namespace ScrollsModLoader {
 					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
 						try {
 							mod.AfterInvoke (new InvocationInfo (info), ref ret);
-							try {
-								retBack = ret.Copy ();
-							} catch {
-								retBack = ret;
-							}
 						} catch (Exception exp) {
-							ret = retBack;
 							Console.WriteLine (exp);
 							modsToUnload.Add (id);
 						}
@@ -126,12 +157,7 @@ namespace ScrollsModLoader {
 			}
 
 			//unload
-			foreach (String id in modsToUnload) {
-				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
-					return ((lmod as LocalMod).id.Equals (id));
-				}));
-			}
-			modsToUnload.Clear ();
+			Unload (modsToUnload);
 
 			return ret;
 		}
@@ -493,7 +519,8 @@ namespace ScrollsModLoader {
 		}
 
 		public static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e) {
-			if ((e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("Assembly-CSharp")
+			if ((e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("UnityEngine")
+			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("Assembly-CSharp")
 			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.GetName().Name.Equals("ScrollsModLoader")
 			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.Location.ToLower().Equals(Platform.getGlobalScrollsInstallPath().ToLower())
 			    || (e.ExceptionObject as Exception).TargetSite.Module.Assembly.Location.Equals("")) { //no location or Managed => mod loader crash

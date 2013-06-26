@@ -10,8 +10,15 @@ namespace ScrollsModLoader.Interfaces
 	{
 		protected static ModAPI modAPI;
 
-		public abstract bool BeforeInvoke (InvocationInfo info, out object returnValue);
+		public abstract void BeforeInvoke (InvocationInfo info);
 		public abstract void AfterInvoke (InvocationInfo info, ref object returnValue);
+
+		public virtual void ReplaceMethod (InvocationInfo info, out object returnValue) {
+			return;
+		}
+		public virtual bool WantsToReplace (InvocationInfo info) {
+			return false;
+		}
 
 		public static void Initialize(ModAPI api) {
 			BaseMod.modAPI = api;
