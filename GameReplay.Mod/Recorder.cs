@@ -23,6 +23,7 @@ namespace GameReplay.Mod
 
 		public void handleMessage(Message msg)
 		{
+			try {
 			if (msg is BattleRedirectMessage || msg is BattleRejoinMessage || msg is FailMessage || msg is OkMessage)
 			{
 				return;
@@ -40,6 +41,7 @@ namespace GameReplay.Mod
 				//save
 				File.WriteAllLines(saveFolder + Path.DirectorySeparatorChar + gameID + ".sgr", messages.ToArray());
 				uiClass.parseRecord (saveFolder + Path.DirectorySeparatorChar + gameID + ".sgr");
+				App.Communicator.removeListener (this);
 			}
 
 			if (msg is HandViewMessage)
@@ -49,6 +51,7 @@ namespace GameReplay.Mod
 
 			//TO-DO:
 			//steaming
+			} catch {}
 		}
 		public void onReconnect()
 		{

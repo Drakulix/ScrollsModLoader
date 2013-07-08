@@ -27,7 +27,7 @@
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
-        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/OX.Copyable/bin/${ProjectConfigName}/OX.Copyable.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${ProjectConfigName}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/Debug/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" />
         <Command type="AfterBuild" command="rm Assembly-CSharp.dll" workingdir="${TargetDir}" />
         <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" />
         <Command type="AfterExecute" command="/Applications/Scrolls.app/Contents/MacOS/installer" />
@@ -82,9 +82,6 @@
       <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Ionic.Zip.Big">
       <HintPath>Ionic.Zip.Big.dll</HintPath>
     </Reference>
@@ -93,6 +90,12 @@
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\Template.mod\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="ScrollsModLoader.Interfaces">
+      <HintPath>..\..\Downloads\template.mod\Template.mod\ScrollsModLoader.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +124,7 @@
     <Compile Include="NativeAPIs\WindowsDialog.cs" />
     <Compile Include="Core\WebAPI\ExceptionLogger.cs" />
     <Compile Include="Patches\PatchPopups.cs" />
+    <Compile Include="Core\WebAPI\WebClientTimeout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -129,16 +133,6 @@
     <EmbeddedResource Include="Resources\button_mods_dark.png" />
     <EmbeddedResource Include="Resources\button_mods_light.png" />
     <EmbeddedResource Include="Resources\button_mods_normal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="OX.Copyable\OX.Copyable.csproj">
-      <Project>{44974FCD-7B84-425D-B8F1-8FF029335B89}</Project>
-      <Name>OX.Copyable</Name>
-    </ProjectReference>
-    <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
-      <Project>{E839D070-EA04-47D2-9F1A-A0379BDDC898}</Project>
-      <Name>ScrollsModLoader.Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Patches\" />

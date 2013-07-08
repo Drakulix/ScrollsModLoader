@@ -42,11 +42,11 @@
     <Reference Include="LinFu.AOP.Interfaces">
       <HintPath>..\LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\Template.mod\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

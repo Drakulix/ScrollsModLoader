@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP.Interfaces/obj/Release/LinFu.AOP.Interfaces.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP.Interfaces/obj/Release/LinFu.AOP.Interfaces.dll.mdb

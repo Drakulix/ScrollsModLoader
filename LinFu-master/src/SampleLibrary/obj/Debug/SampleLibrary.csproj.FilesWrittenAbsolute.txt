@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/SampleLibrary/bin/Debug/SampleLibrary.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/SampleLibrary/bin/Debug/SampleLibrary.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/SampleLibrary/obj/Debug/SampleLibrary.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/SampleLibrary/obj/Debug/SampleLibrary.dll.mdb

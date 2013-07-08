@@ -31,7 +31,14 @@ namespace ScrollsModLoader
 			switch (Platform.getOS()) {
 			case Platform.OS.Win:
 				String ret = "";
-				if (Screen.fullScreen) {
+				bool fullscreen = false;
+
+				//in case we are patching
+				try {
+					fullscreen = Screen.fullScreen;
+				} catch {}
+
+				if (fullscreen) {
 					App.Popups.ShowOk (null, "warningFullscreen", "Error", "File Dialogs do not work in fullscreen mode, please switch to proceed", "Cancel");
 				} else {
 					ret = WindowsDialog.ShowWindowsDialog ();

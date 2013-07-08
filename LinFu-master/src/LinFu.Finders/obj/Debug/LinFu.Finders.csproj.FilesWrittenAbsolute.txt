@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.Finders.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.Finders.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Finders/obj/Debug/LinFu.Finders.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Finders/obj/Debug/LinFu.Finders.dll.mdb

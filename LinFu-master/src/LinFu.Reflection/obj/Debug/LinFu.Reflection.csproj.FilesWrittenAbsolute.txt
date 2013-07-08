@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.Reflection.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.Reflection.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Reflection/obj/Debug/LinFu.Reflection.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Reflection/obj/Debug/LinFu.Reflection.dll.mdb

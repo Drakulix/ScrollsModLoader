@@ -40,11 +40,14 @@ namespace ScrollsModLoader
 			String installPath = Platform.getGlobalScrollsInstallPath();
 			if (installPath == null) return;
 
+			Console.WriteLine ("Creating ModLoader folder...");
+
 			//create modloader folder
 			if (!System.IO.Directory.Exists(installPath+"ModLoader")) {
 				System.IO.Directory.CreateDirectory(installPath+"ModLoader");
 			}
 
+			Console.WriteLine ("Backup/Reset assembly...");
 			//backup original assembly
 			if (!System.IO.File.Exists(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll"))
 				System.IO.File.Copy (installPath+"Assembly-CSharp.dll", installPath + "ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll");
@@ -54,6 +57,7 @@ namespace ScrollsModLoader
 				System.IO.File.Copy(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
 			}
 
+			Console.WriteLine ("Copying ModLoader.dll...");
 			//copy modloader for patching
 			if (System.IO.File.Exists(installPath+"ScrollsModLoader.dll"))
 				System.IO.File.Delete(installPath+"ScrollsModLoader.dll");
@@ -115,8 +119,10 @@ namespace ScrollsModLoader
 			try {
 
 				//save assembly
+				Console.WriteLine ("Write back patched bytecode...");
 				Hooks.savePatchedAssembly();
 
+				Console.WriteLine ("Platform specific patches...");
 				Platform.PlatformPatches(installPath);
 				
 			} catch (Exception exp) {

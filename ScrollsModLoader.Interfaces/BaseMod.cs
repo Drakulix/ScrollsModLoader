@@ -14,6 +14,7 @@ namespace ScrollsModLoader.Interfaces
 		public abstract void AfterInvoke (InvocationInfo info, ref object returnValue);
 
 		public virtual void ReplaceMethod (InvocationInfo info, out object returnValue) {
+			returnValue = null;
 			return;
 		}
 		public virtual bool WantsToReplace (InvocationInfo info) {

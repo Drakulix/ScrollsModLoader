@@ -38,7 +38,7 @@ namespace GameReplay.Mod
 
 		public static MethodDefinition[] GetPlayerHooks(TypeDefinitionCollection scrollsTypes, int version)
 		{
-			return new MethodDefinition[] { scrollsTypes["Communicator"].Methods.GetMethod("readNextMessage")[0],
+			return new MethodDefinition[] { scrollsTypes["Communicator"].Methods.GetMethod("handleNextMessage")[0],
 											scrollsTypes["GUIBattleModeMenu"].Methods.GetMethod("toggleMenu")[0],
 											scrollsTypes["BattleMode"].Methods.GetMethod("OnGUI")[0],
 											scrollsTypes["BattleMode"].Methods.GetMethod("runEffect")[0],
@@ -76,7 +76,7 @@ namespace GameReplay.Mod
 						return false;
 
 					}
-				case "readNextMessage":
+				case "handleNextMessage":
 					{
 						if (playing)
 						{
@@ -163,7 +163,7 @@ namespace GameReplay.Mod
 			String idBlack = null;
 			String realID = null;
 
-			while (line != null && searching) {
+			while (line != null) {
 				try {
 					Message msg = Message.createMessage (Message.getMessageName (line), line);
 					if (msg is GameInfoMessage) {
@@ -173,12 +173,13 @@ namespace GameReplay.Mod
 					if (msg is NewEffectsMessage) {
 						if (msg.getRawText ().Contains (idWhite)) {
 							realID = idWhite;
-							searching = false;
 						}
 						if (msg.getRawText ().Contains (idBlack)) {
 							realID = idBlack;
-							searching = false;
 						}
+					}
+					if (msg is PingMessage) {
+						log.Replace(msg.getRawText(), "");
 					}
 				} catch {
 				}
@@ -198,7 +199,7 @@ namespace GameReplay.Mod
 				if (readNextMsg == false)
 				{
 					//delay messages otherwise the game rushes through in about a minute.
-					Thread.Sleep(1200);
+					Thread.Sleep(2000);
 					while (paused)
 					{
 						Thread.Sleep(1000);
@@ -263,6 +264,8 @@ namespace GameReplay.Mod
 
 		public void endturnPressed()
 		{
+			if (!playing) return;
+
 			paused = !paused;
 			if (paused)
 			{

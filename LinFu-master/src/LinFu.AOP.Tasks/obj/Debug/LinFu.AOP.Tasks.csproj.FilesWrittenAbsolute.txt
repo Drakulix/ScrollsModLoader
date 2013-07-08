@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.AOP.Tasks.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.AOP.Tasks.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP.Tasks/obj/Debug/LinFu.AOP.Tasks.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP.Tasks/obj/Debug/LinFu.AOP.Tasks.dll.mdb

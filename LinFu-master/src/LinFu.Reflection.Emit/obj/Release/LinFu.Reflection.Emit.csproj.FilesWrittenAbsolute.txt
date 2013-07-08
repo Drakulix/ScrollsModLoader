@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.Reflection.Emit.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Release/LinFu.Reflection.Emit.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Reflection.Emit/obj/Release/LinFu.Reflection.Emit.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.Reflection.Emit/obj/Release/LinFu.Reflection.Emit.dll.mdb

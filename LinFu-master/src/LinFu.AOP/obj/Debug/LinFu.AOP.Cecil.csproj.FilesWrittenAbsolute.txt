@@ -1,4 +1,0 @@
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.AOP.Cecil.dll.mdb
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/build/Debug/LinFu.AOP.Cecil.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP/obj/Debug/LinFu.AOP.Cecil.dll
-/Users/Drakulix/Projects/ScrollsModLoader/LinFu-master/src/LinFu.AOP/obj/Debug/LinFu.AOP.Cecil.dll.mdb

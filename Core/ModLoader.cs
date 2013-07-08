@@ -8,7 +8,6 @@ using System.Diagnostics;
 using LinFu.AOP.Interfaces;
 using LinFu.Reflection;
 using Mono.Cecil;
-using OX.Copyable;
 using ScrollsModLoader.Interfaces;
 using UnityEngine;
 using System.Threading;
@@ -48,7 +47,7 @@ namespace ScrollsModLoader {
 			List<String> modsToUnload = new List<String> ();
 			String replacement = "";
 
-			//determine replacement
+			/*//determine replacement
 			foreach (String id in loader.modOrder) {
 				BaseMod mod = null;
 				try {
@@ -59,11 +58,11 @@ namespace ScrollsModLoader {
 				if (mod != null) {
 					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
 						types,
-						SharedConstants.getGameVersion ()
+						SharedConstants.getExeVersionInt ()
 					});
 					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
 						try {
-							if (mod.WantsToReplace (info))
+							if (mod.WantsToReplace (new InvocationInfo(info)))
 								replacement = id;
 						} catch (Exception ex) {
 							Console.WriteLine (ex);
@@ -74,7 +73,7 @@ namespace ScrollsModLoader {
 			}
 
 			//unload
-			Unload (modsToUnload);
+			Unload (modsToUnload);*/
 
 			//load beforeinvoke
 			foreach (String id in loader.modOrder) {
@@ -89,13 +88,13 @@ namespace ScrollsModLoader {
 				if (mod != null) {
 					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
 						types,
-						SharedConstants.getGameVersion ()
+						SharedConstants.getExeVersionInt ()
 					});
 					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
-						object returnVal;
+						object retValue = null;
 						try {
-							if (mod.BeforeInvoke (new InvocationInfo (info), out returnVal)) {
-								return returnVal;
+							if (mod.BeforeInvoke (new InvocationInfo (info), out retValue)) {
+								return retValue;
 							}
 						} catch (Exception exp) {
 							Console.WriteLine (exp);
@@ -123,14 +122,17 @@ namespace ScrollsModLoader {
 				}
 			}
 			if (!patchFound) {
-				if (replacement.Equals(""))
+				//if (replacement.Equals(""))
 					ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
-				else {
+				/*else {
 					try {
 						BaseMod mod = loader.modInstances [replacement];
-						mod.ReplaceMethod(info, out ret);
+						mod.ReplaceMethod(new InvocationInfo(info), out ret);
+					} catch (Exception exp) {
+						Console.WriteLine (exp);
+						modsToUnload.Add (replacement);
 					}
-				}
+				}*/
 			}
 
 
@@ -143,7 +145,7 @@ namespace ScrollsModLoader {
 				if (mod != null) {
 					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
 						types,
-						SharedConstants.getGameVersion ()
+						SharedConstants.getExeVersionInt ()
 					});
 					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
 						try {
@@ -336,7 +338,7 @@ namespace ScrollsModLoader {
 			try {
 				hooks =(MethodDefinition[]) modClass.GetMethod ("GetHooks").Invoke (null, new object[] {
 					types,
-					SharedConstants.getGameVersion ()
+					SharedConstants.getExeVersionInt ()
 				});
 			} catch  {
 				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
@@ -636,7 +638,7 @@ namespace ScrollsModLoader {
 		}
 
 		public static int getVersion() {
-			return 1;
+			return 3;
 		}
 	}
 }
