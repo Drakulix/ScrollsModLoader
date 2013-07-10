@@ -33,16 +33,13 @@
       <HintPath>..\LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="JsonFx">
-      <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\JsonFx.dll</HintPath>
+      <HintPath>..\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\Applications\Scrolls.app\Contents\MacOS\game\MacScrolls.app\Contents\Data\Managed\ModLoader\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\Template.mod\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="ScrollsModLoader.Interfaces">
-      <HintPath>..\..\..\Downloads\template.mod\Template.mod\ScrollsModLoader.Interfaces.dll</HintPath>
+      <HintPath>..\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -62,5 +59,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Pause.png" />
     <EmbeddedResource Include="Play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">
+      <Project>{E839D070-EA04-47D2-9F1A-A0379BDDC898}</Project>
+      <Name>ScrollsModLoader.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
