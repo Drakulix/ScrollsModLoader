@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SignAssembly>false</SignAssembly>
     <AssemblyOriginatorKeyFile>Summoner.key.snk</AssemblyOriginatorKeyFile>
-    <ApplicationIcon>..\..\Downloads\summoner_icon_256.ico</ApplicationIcon>
+    <ApplicationIcon>..\Downloads\summoner_icon_256.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -28,7 +28,7 @@
       <CustomCommands>
         <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
         <Command type="AfterBuild" command="rm ${TargetDir}/Assembly-CSharp.dll" workingdir="${ProjectDir}" externalConsole="True" />
-        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/Debug/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/${ProjectConfig}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" />
         <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
         <Command type="AfterExecute" command="/Applications/Scrolls.app/Contents/MacOS/installer" />
       </CustomCommands>
@@ -40,13 +40,12 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <Externalconsole>true</Externalconsole>
     <CustomCommands>
       <CustomCommands>
         <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src" externalConsole="True" />
-        <Command type="AfterBuild" command="rm ${TargetDir}/Assembly-CSharp.dll" workingdir="${ProjectDir}" externalConsole="True" />
-        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Tasks.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/ScrollsModLoader.Interfaces/bin/${Configuration}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" />
+        <Command type="AfterBuild" command="rm ${TargetDir}/Assembly-CSharp.dll" workingdir="${ProjectDir}" externalConsole="True" pauseExternalConsole="True" />
+        <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/${ProjectConfig}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" pauseExternalConsole="True" />
         <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
       </CustomCommands>
     </CustomCommands>
