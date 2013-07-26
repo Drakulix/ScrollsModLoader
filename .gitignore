@@ -1,0 +1,13 @@
+*.userPrefs
+
+# build files
+bin/
+
+# files copied from Scrolls
+Assembly-CSharp.dll
+JsonFx.dll
+UnityEngine.dll
+
+# linfu build files
+LinFu-master/build
+LinFu-master/src/*/obj

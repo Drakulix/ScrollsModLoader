@@ -80,3 +80,16 @@ It also acts as trusted Plugin-Library, all Plugins submitted will be tested and
 ####4. Developer API
 
 First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t=1873
+
+####5. Build instructions for Windows
+
+You will need:
+- something that can open the project files (Xamarin Studio is free and recommended)
+- the latest version of Mono (2.10.9)
+- xbuild and mono need to be in your path (C:\Program Files (x86)\Mono-2.10.9\bin on my computer).
+
+How to build:
+1. Copy Assembly-CSharp.dll, UnityEngine.dll and JsonFx.dll from an UNMODIFIED Scrolls install (if Summoner has been installed it won't work) to the main project folder
+2. Open the solution file. Run "build all". This will build LinFu, but references won't work
+3. Restart Xamarin. The references to LinFu should now resolve correctly
+4. Build the project
