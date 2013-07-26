@@ -47,7 +47,7 @@ namespace ScrollsModLoader {
 			List<String> modsToUnload = new List<String> ();
 			String replacement = "";
 
-			/*//determine replacement
+			//determine replacement
 			foreach (String id in loader.modOrder) {
 				BaseMod mod = null;
 				try {
@@ -73,7 +73,7 @@ namespace ScrollsModLoader {
 			}
 
 			//unload
-			Unload (modsToUnload);*/
+			Unload (modsToUnload);
 
 			//load beforeinvoke
 			foreach (String id in loader.modOrder) {
@@ -91,11 +91,8 @@ namespace ScrollsModLoader {
 						SharedConstants.getExeVersionInt ()
 					});
 					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
-						object retValue = null;
 						try {
-							if (mod.BeforeInvoke (new InvocationInfo (info), out retValue)) {
-								return retValue;
-							}
+							mod.BeforeInvoke (new InvocationInfo (info));
 						} catch (Exception exp) {
 							Console.WriteLine (exp);
 							modsToUnload.Add (id);
@@ -122,9 +119,9 @@ namespace ScrollsModLoader {
 				}
 			}
 			if (!patchFound) {
-				//if (replacement.Equals(""))
+				if (replacement.Equals(""))
 					ret = info.TargetMethod.Invoke (info.Target, info.Arguments);
-				/*else {
+				else {
 					try {
 						BaseMod mod = loader.modInstances [replacement];
 						mod.ReplaceMethod(new InvocationInfo(info), out ret);
@@ -132,7 +129,7 @@ namespace ScrollsModLoader {
 						Console.WriteLine (exp);
 						modsToUnload.Add (replacement);
 					}
-				}*/
+				}
 			}
 
 
@@ -282,6 +279,10 @@ namespace ScrollsModLoader {
 			patches.Add (modMenuHook);
 
 			//add Hooks
+			addPatchHooks ();
+		}
+
+		public void addPatchHooks () {
 			foreach (Patch patch in patches) {
 				try {
 					foreach (MethodDefinition definition in patch.patchedMethods())
@@ -494,6 +495,10 @@ namespace ScrollsModLoader {
 				modOrderWriter.Flush ();
 				modOrderWriter.Close ();
 
+				String installPath = Platform.getGlobalScrollsInstallPath ();
+				File.Delete(installPath+"Assembly-CSharp.dll");
+				File.Copy(installPath+"ModLoader"+ System.IO.Path.DirectorySeparatorChar +"Assembly-CSharp.dll", installPath+"Assembly-CSharp.dll");
+
 				Patcher patcher = new Patcher ();
 				if (!patcher.patchAssembly (Platform.getGlobalScrollsInstallPath ())) {
 					//normal patching should never fail at this point
@@ -638,7 +643,7 @@ namespace ScrollsModLoader {
 		}
 
 		public static int getVersion() {
-			return 3;
+			return 4;
 		}
 	}
 }

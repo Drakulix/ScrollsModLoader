@@ -96,30 +96,35 @@ namespace GameReplay.Mod
 			}
 		}
 
-		public override bool BeforeInvoke(InvocationInfo info, out object returnValue)
+		public override bool WantsToReplace (InvocationInfo info)
 		{
-			if (info.targetMethod.Equals("getButtonRect"))
-			{
-				foreach (StackFrame frame in info.stackTrace.GetFrames())
-				{
-					if (frame.GetMethod().Name.Contains("BeforeInvoke"))
-					{
+			if (info.targetMethod.Equals ("getButtonRect")) {
+				foreach (StackFrame frame in info.stackTrace.GetFrames()) {
+					if (frame.GetMethod ().Name.Contains ("BeforeInvoke")) {
 						break;
 					}
-					if (frame.GetMethod().Name.Contains("drawEditButton"))
-					{
-						returnValue = typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.target, new object[] { 2 });
+					if (frame.GetMethod ().Name.Contains ("drawEditButton")) {
 						return true;
 					}
 				}
-				returnValue = null;
-				return false;
 			}
+			return player.WantsToReplace(info);
+		}
+
+		public override void ReplaceMethod (InvocationInfo info, out object returnValue) {
+			if (info.targetMethod.Equals("getButtonRect"))
+			{
+				returnValue = typeof(ProfileMenu).GetMethod("getButtonRect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(info.target, new object[] { 2 });
+			}
+			player.ReplaceMethod (info, out returnValue);
+		}
+
+		public override void BeforeInvoke(InvocationInfo info)
+		{
 			if (info.target is ProfileMenu && info.targetMethod.Equals("Start") && App.SceneValues.profilePage.isMe())
 			{
 				//list them
 				//recordList.Clear();
-
 
 				recordListPopup = new GameObject("Record List").AddComponent<UIListPopup>();
 				recordListPopup.transform.parent = ((ProfileMenu)info.target).transform;
@@ -127,9 +132,6 @@ namespace GameReplay.Mod
 				recordListPopup.Init(new Rect(frame.center.x - frame.width / 2.0f, frame.center.y - frame.height / 2.0f + 32.0f, frame.width, frame.height - (float)Screen.height * 0.055f * 3.0f), false, true, recordList, this, null, null, false, true, false, true, null, true, false);
 				recordListPopup.enabled = true;
 				recordListPopup.SetOpacity(1f);
-
-				returnValue = null;
-				return false;
 			}
 			if (info.targetMethod.Equals("drawEditButton"))
 			{
@@ -154,15 +156,9 @@ namespace GameReplay.Mod
 						LoadReplay();
 					}
 				}
-
-				returnValue = null;
-				return false;
 			}
 			if (!(info.target is ProfileMenu))
-				return player.BeforeInvoke(info, out returnValue);
-			
-			returnValue = null;
-			return false;
+				player.BeforeInvoke(info);
 		}
 
 

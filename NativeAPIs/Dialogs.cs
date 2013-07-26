@@ -36,7 +36,9 @@ namespace ScrollsModLoader
 				//in case we are patching
 				try {
 					fullscreen = Screen.fullScreen;
-				} catch {}
+				} catch {
+					fullscreen = false;
+				}
 
 				if (fullscreen) {
 					App.Popups.ShowOk (null, "warningFullscreen", "Error", "File Dialogs do not work in fullscreen mode, please switch to proceed", "Cancel");

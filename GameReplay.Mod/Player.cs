@@ -49,51 +49,58 @@ namespace GameReplay.Mod
 										   };
 		}
 
-		public bool BeforeInvoke(InvocationInfo info, out object returnValue)
+		public bool WantsToReplace (InvocationInfo info)
 		{
+			if (!playing)
+				return false;
 
 			switch ((String)info.targetMethod)
 			{
 				case "runEffect":
-					{
-						returnValue = null;
-						if (paused)
-						{
-							return true;
-						}
-						else
-						{
-							return false;
-						}
-					}
+				{
+					return paused;
+				}
+				case "handleNextMessage":
+				{
+					return paused | !readNextMsg;
+				}
+				case "ShowEndTurn":
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void ReplaceMethod (InvocationInfo info, out object returnValue) {
+			switch ((String)info.targetMethod) {
+				case "ShowEndTurn":
+				case "runEffect":
+					returnValue = null;
+					return;
+				case "handleNextMessage":
+					returnValue = true;
+					return;
+			}
+		}
+
+		public void BeforeInvoke(InvocationInfo info)
+		{
+
+			switch ((String)info.targetMethod)
+			{
 				case "OnGUI":
 					{
-						if (playing)
-						{
-							typeof(BattleMode).GetMethod("deselectAllTiles", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(info.target, null);
+						if (playing) {
+							typeof(BattleMode).GetMethod ("deselectAllTiles", BindingFlags.Instance | BindingFlags.NonPublic).Invoke (info.target, null);
 						}
-						returnValue = null;
-						return false;
-
 					}
+					break;
 				case "handleNextMessage":
 					{
-						if (playing)
+						if (playing && readNextMsg != false)
 						{
-							if (paused)
-							{
-								returnValue = true;
-								return true;
-							}
-							if (readNextMsg == false)
-							{
-								returnValue = true;
-								return true;
-							}
-							else
-							{
-								readNextMsg = false;
-							}
+							readNextMsg = false;
 						}
 					}
 					break;
@@ -104,24 +111,10 @@ namespace GameReplay.Mod
 							playing = false;
 							App.Communicator.setData("");
 							SceneLoader.loadScene("_Lobby");
-							returnValue = null;
-							return true;
-						}
-					}
-					break;
-				case "ShowEndTurn":
-					{
-						if (playing)
-						{
-							returnValue = null;
-							return true;
 						}
 					}
 					break;
 			}
-
-			returnValue = null;
-			return false;
 		}
 
 		public void handleMessage(Message msg)
@@ -158,7 +151,6 @@ namespace GameReplay.Mod
 			jsonms.feed(log);
 			jsonms.runParsing();
 			String line = jsonms.getNextMessage();
-			bool searching = true;
 			String idWhite = null;
 			String idBlack = null;
 			String realID = null;

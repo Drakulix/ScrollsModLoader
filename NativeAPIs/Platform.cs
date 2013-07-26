@@ -55,15 +55,14 @@ namespace ScrollsModLoader
 			if ((from file in Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).GetFiles()
 			     where file.Name.Contains ("Assembly-CSharp.dll")
 			     select file).Count() > 0)
-				 return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString()+"/";
+				 return Directory.GetParent (System.Reflection.Assembly.GetExecutingAssembly().Location).ToString()+Path.DirectorySeparatorChar;
 
 			switch (Platform.getOS()) 
     		{
     			case Platform.OS.Win:
-        			//Windows Users have a fixed path
-					path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Mojang\\Scrolls\\game\\Scrolls_Data\\Managed\\";
+        			path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Mojang\\Scrolls\\game\\Scrolls_Data\\Managed\\";
 					if (!System.IO.File.Exists(path+"Assembly-CSharp.dll")) {
-						// User needs to tell us the path of their Scrolls.app
+						Console.WriteLine ("Expected Path: " + path);
 						Dialogs.showNotification("Scrolls was not found", "Please select your local install of Scrolls");
 
 						path = Dialogs.fileOpenDialog();
@@ -71,9 +70,13 @@ namespace ScrollsModLoader
 							Dialogs.showNotification("No Selection was made", "Scrolls Summoner was not able to find your local install of Scrolls. Scrolls Summoner will close now");
 							return null;
 						}
+						if (!System.IO.File.Exists(path+"\\Assembly-CSharp.dll")) {
+							Dialogs.showNotification("Wrong Selection", "The selected file is not a valid Scrolls game folder. Scrolls Summoner will close now");
+							return null;
+						}
 					}	
 					return path;
-			case Platform.OS.Mac:
+				case Platform.OS.Mac:
 
 					//Apps are bundles (== folders) on MacOS
 					if (System.IO.Directory.Exists("/Applications/Scrolls.app")) {

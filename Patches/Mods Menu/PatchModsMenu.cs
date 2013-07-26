@@ -66,10 +66,11 @@ namespace ScrollsModLoader
 			}*/
 
 			try {
-				//FIX 4:3 Monitors
+				//FIX
 				if (info.TargetMethod.Name.Equals("getButtonPositioner")) {
+					info.Arguments[2] = 75.0f;
 					if (Screen.width * 3 == Screen.height * 4)
-						info.Arguments[2] = 70f;
+						info.Arguments[2] = 45.0f;
 					return info.TargetMethod.Invoke(info.Target, info.Arguments);
 				}
 
@@ -114,7 +115,7 @@ namespace ScrollsModLoader
 				typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, false);
 
 				MethodInfo drawHeader = lobbyMenu.GetMethod ("drawHeaderButton", BindingFlags.NonPublic | BindingFlags.Instance);
-				drawHeader.Invoke(info.Target, new object[] {6, "_Mods"});
+				drawHeader.Invoke(info.Target, new object[] {7, "_Mods"});
 
 				if (!((bool)typeof(LobbyMenu).GetField ("_hoverButtonInside", BindingFlags.Instance | BindingFlags.NonPublic).GetValue (info.Target))) {
 					typeof(LobbyMenu).GetField ("_hoverButtonIndex", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(info.Target, newindex);

@@ -221,6 +221,7 @@ namespace ScrollsModLoader
 			String modLoaderPath = Platform.getGlobalScrollsInstallPath() + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
 			TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
 			loader.loadModsStatic (types);
+			loader.addPatchHooks ();
 			loader.loadMod (mod);
 		}
 		public void disableMod(LocalMod mod) {
@@ -235,6 +236,7 @@ namespace ScrollsModLoader
 				String modLoaderPath = Platform.getGlobalScrollsInstallPath() + "ModLoader" + System.IO.Path.DirectorySeparatorChar;
 				TypeDefinitionCollection types = AssemblyFactory.GetAssembly (modLoaderPath+"Assembly-CSharp.dll").MainModule.Types;
 				loader.loadModsStatic (types);
+				loader.addPatchHooks ();
 			}
 		}
 
