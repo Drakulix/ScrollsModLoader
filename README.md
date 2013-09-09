@@ -89,7 +89,8 @@ You will need:
 - xbuild and mono need to be in your path (C:\Program Files (x86)\Mono-2.10.9\bin on my computer).
 
 How to build:
-1. Copy Assembly-CSharp.dll, UnityEngine.dll and JsonFx.dll from an UNMODIFIED Scrolls install (if Summoner has been installed it won't work) to the main project folder
-2. Open the solution file. Run "build all". This will build LinFu, but references won't work
-3. Restart Xamarin. The references to LinFu should now resolve correctly
+
+1. Copy `Assembly-CSharp.dll`, `UnityEngine.dll` and `JsonFx.dll` from an UNMODIFIED Scrolls install (if Summoner has been installed it won't work) to the main project folder
+2. Run `go.bat compile-release` in `LinFu-master`.
+3. Start Xamarin. The references to LinFu should now resolve correctly
 4. Build the project
