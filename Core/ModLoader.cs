@@ -23,17 +23,59 @@ namespace ScrollsModLoader {
 
 	public class ModInterceptor : IInterceptor
 	{
+		private struct BaseModWithId {
+			public BaseModWithId(BaseMod mod, string id) {
+				this.mod = mod;
+				this.id = id;
+			}
+			public BaseMod mod;
+			public string id;
+		}
 		private ModLoader loader;
 		private TypeDefinitionCollection types;
+
+		private Dictionary<string, MethodDefinition[]> modHooks = new Dictionary<string, MethodDefinition[]>();
+		private Dictionary<string, Dictionary<string, List<BaseModWithId>>> hooks = new Dictionary<string, Dictionary<string, List<BaseModWithId>>>();
 
 		public ModInterceptor(ModLoader loader) {
 			this.loader = loader;
 			types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
+			foreach(String modId in loader.modOrder) {
+				BaseMod mod = null;
+				try {
+					mod = loader.modInstances [modId];
+				} catch {
+					continue;
+				}
+				if (mod != null) {
+					Dictionary<string, List<BaseModWithId>> methodHooks;
+					List<BaseModWithId> hookedMods;
+					//TODO try-catch!
+					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {types,
+						SharedConstants.getExeVersionInt () });
+					modHooks.Add (modId, requestedHooks);
+					foreach(MethodDefinition hookedMethod in requestedHooks) {
+						if (!hooks.TryGetValue(hookedMethod.DeclaringType.Name, out methodHooks)) {
+							methodHooks = new Dictionary<string, List<BaseModWithId>> ();
+							hooks.Add (hookedMethod.DeclaringType.Name, methodHooks);
+						}
+						if (!methodHooks.TryGetValue(hookedMethod.Name, out hookedMods)) {
+							hookedMods = new List<BaseModWithId> ();
+							methodHooks.Add (hookedMethod.Name, hookedMods);
+						}
+						hookedMods.Add (new BaseModWithId(mod, modId));
+					}
+				}
+			}
 		}
 
 		public void Unload(List<String> modsToUnload) {
 			//unload
 			foreach (String id in modsToUnload) {
+				//Removing the Mod from all Hooks it subscribed to.
+				foreach (MethodDefinition m in modHooks[id]) {
+					hooks [m.DeclaringType.Name] [m.Name].RemoveAll ((BaseModWithId modWithId) => (modWithId.id.Equals (id)));
+				}
 				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
 					return ((lmod as LocalMod).id.Equals (id));
 				}));
@@ -47,55 +89,39 @@ namespace ScrollsModLoader {
 			List<String> modsToUnload = new List<String> ();
 			String replacement = "";
 
-			//determine replacement
-			foreach (String id in loader.modOrder) {
-				BaseMod mod = null;
-				try {
-					mod = loader.modInstances [id];
-				} catch {
-					continue;
-				}
-				if (mod != null) {
-					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
-						types,
-						SharedConstants.getExeVersionInt ()
-					});
-					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
+			//Find Mods that hooked into Method
+			Dictionary<string, List<BaseModWithId>> methodHooks;
+			List<BaseModWithId> hookedMods;
+
+			string declaringTypeName = info.TargetMethod.DeclaringType.Name;
+			string targetMethodName = info.TargetMethod.Name;
+
+			if(hooks.TryGetValue(declaringTypeName, out methodHooks)) {
+				if(methodHooks.TryGetValue(targetMethodName, out hookedMods)) {
+					//determine replacement
+					foreach(BaseModWithId mod in hookedMods) {
 						try {
-							if (mod.WantsToReplace (new InvocationInfo(info)))
-								replacement = id;
+							if (mod.mod.WantsToReplace (new InvocationInfo(info)))
+								replacement = mod.id;
 						} catch (Exception ex) {
 							Console.WriteLine (ex);
-							modsToUnload.Add (id);
+							modsToUnload.Add (mod.id);
 						}
 					}
-				}
-			}
 
-			//unload
-			Unload (modsToUnload);
+					//unload
+					Unload (modsToUnload);
 
-			//load beforeinvoke
-			foreach (String id in loader.modOrder) {
-				if (id.Equals (replacement)) {
-					continue;
-				}
-
-				BaseMod mod = null;
-				try {
-					mod = loader.modInstances [id];
-				} catch { continue; }
-				if (mod != null) {
-					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
-						types,
-						SharedConstants.getExeVersionInt ()
-					});
-					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
+					//load beforeinvoke
+					foreach(BaseModWithId mod in hookedMods) {
+						if (mod.id.Equals (replacement)) {
+							continue;
+						}
 						try {
-							mod.BeforeInvoke (new InvocationInfo (info));
-						} catch (Exception exp) {
-							Console.WriteLine (exp);
-							modsToUnload.Add (id);
+							mod.mod.BeforeInvoke (new InvocationInfo (info));
+						} catch (Exception ex) {
+							Console.WriteLine (ex);
+							modsToUnload.Add (mod.id);
 						}
 					}
 				}
@@ -132,24 +158,18 @@ namespace ScrollsModLoader {
 				}
 			}
 
+			//Additional unload?
+			Unload (modsToUnload);
 
 			//load afterinvoke
-			foreach (String id in loader.modOrder) {
-				BaseMod mod = null;
-				try {
-					mod = loader.modInstances [id];
-				} catch { continue; }
-				if (mod != null) {
-					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {
-						types,
-						SharedConstants.getExeVersionInt ()
-					});
-					if (requestedHooks.Any (item => ((item.Name.Equals (info.TargetMethod.Name)) && (item.DeclaringType.Name.Equals (info.TargetMethod.DeclaringType.Name))))) {
+			if (hooks.TryGetValue (declaringTypeName, out methodHooks)) {
+				if (methodHooks.TryGetValue (targetMethodName, out hookedMods)) {
+					foreach (BaseModWithId mod in hookedMods) {
 						try {
-							mod.AfterInvoke (new InvocationInfo (info), ref ret);
+							mod.mod.AfterInvoke (new InvocationInfo (info), ref ret);
 						} catch (Exception exp) {
 							Console.WriteLine (exp);
-							modsToUnload.Add (id);
+							modsToUnload.Add (mod.id);
 						}
 					}
 				}
