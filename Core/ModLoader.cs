@@ -326,7 +326,7 @@ namespace ScrollsModLoader {
 			}
 
 			try {
-				if (File.GetLastWriteTime(modLoaderPath+"Assembly-CSharp.dll") < File.GetLastWriteTime(filepath)) {
+				if (File.GetLastWriteTime(Platform.getGlobalScrollsInstallPath ()+"Assembly-CSharp.dll") < File.GetLastWriteTime(filepath)) {
 					Console.WriteLine ("New Mod Version - Repatching!!!");
 					queueRepatch ();
 				}
