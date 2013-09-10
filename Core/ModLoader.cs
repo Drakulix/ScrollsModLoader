@@ -62,7 +62,7 @@ namespace ScrollsModLoader {
 							SharedConstants.getExeVersionInt () });
 					} catch (Exception ex) {
 						Console.WriteLine (ex);
-						modsToUnload.Add (id);
+						modsToUnload.Add (modId);
 						continue;
 					}
 					modHooks.Add (modId, requestedHooks);
