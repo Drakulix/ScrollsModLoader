@@ -67,6 +67,7 @@ namespace ScrollsModLoader {
 					}
 					modHooks.Add (modId, requestedHooks);
 					foreach(MethodDefinition hookedMethod in requestedHooks) {
+						//TODO: FIx for overloaded methods!
 						if (!hooks.TryGetValue(hookedMethod.DeclaringType.Name, out methodHooks)) {
 							methodHooks = new Dictionary<string, List<BaseModWithId>> ();
 							hooks.Add (hookedMethod.DeclaringType.Name, methodHooks);
