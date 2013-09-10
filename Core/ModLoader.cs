@@ -43,6 +43,7 @@ namespace ScrollsModLoader {
 		}
 
 		private void GenerateHookDict() {
+			List<String> modsToUnload = new List<String> ();
 			modHooks = new Dictionary<string, MethodDefinition[]> ();
 			hooks = new Dictionary<string, Dictionary<string, List<BaseModWithId>>> ();
 			foreach(String modId in loader.modOrder) {
@@ -55,9 +56,15 @@ namespace ScrollsModLoader {
 				if (mod != null) {
 					Dictionary<string, List<BaseModWithId>> methodHooks;
 					List<BaseModWithId> hookedMods;
-					//TODO try-catch!
-					MethodDefinition[] requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {types,
-						SharedConstants.getExeVersionInt () });
+					MethodDefinition[] requestedHooks;
+					try {
+						requestedHooks = (MethodDefinition[])mod.GetType ().GetMethod ("GetHooks").Invoke (null, new object[] {types,
+							SharedConstants.getExeVersionInt () });
+					} catch (Exception ex) {
+						Console.WriteLine (ex);
+						modsToUnload.Add (id);
+						continue;
+					}
 					modHooks.Add (modId, requestedHooks);
 					foreach(MethodDefinition hookedMethod in requestedHooks) {
 						if (!hooks.TryGetValue(hookedMethod.DeclaringType.Name, out methodHooks)) {
@@ -72,6 +79,7 @@ namespace ScrollsModLoader {
 					}
 				}
 			}
+			Unload (modsToUnload);
 			Console.WriteLine ("Hooks:");
 			foreach (string hookedTypeName in hooks.Keys) {
 				Console.WriteLine (hookedTypeName);
@@ -82,14 +90,21 @@ namespace ScrollsModLoader {
 					}
 				}
 			}
+
 		}
 
 		public void Unload(List<String> modsToUnload) {
+			Dictionary<string, List<BaseModWithId>> methodHooks;
+			List<BaseModWithId> hookedMods;
 			//unload
 			foreach (String id in modsToUnload) {
 				//Removing the Mod from all Hooks it subscribed to.
 				foreach (MethodDefinition m in modHooks[id]) {
-					hooks [m.DeclaringType.Name] [m.Name].RemoveAll ((BaseModWithId modWithId) => (modWithId.id.Equals (id)));
+					if (hooks.TryGetValue (m.DeclaringType.Name, out methodHooks)) {
+						if (methodHooks.TryGetValue (m.Name, out hookedMods)) {
+							hookedMods.RemoveAll ((BaseModWithId modWithId) => (modWithId.id.Equals (id)));
+						}
+					}
 				}
 				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
 					return ((lmod as LocalMod).id.Equals (id));
@@ -153,6 +168,7 @@ namespace ScrollsModLoader {
 			Unload (modsToUnload);
 
 
+			//TODO: Simplify the Patch-Finding Process - Implement as Mod?
 			//check for patch call
 			object ret = null;
 			bool patchFound = false;
