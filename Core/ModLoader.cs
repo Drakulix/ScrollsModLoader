@@ -99,13 +99,15 @@ namespace ScrollsModLoader {
 			if(hooks.TryGetValue(declaringTypeName, out methodHooks)) {
 				if(methodHooks.TryGetValue(targetMethodName, out hookedMods)) {
 					//determine replacement
-					foreach(BaseModWithId mod in hookedMods) {
+					foreach(BaseModWithId modWithId in hookedMods) {
+						BaseMod mod = modWithId.mod;
+						string id = modWithId.id;
 						try {
-							if (mod.mod.WantsToReplace (new InvocationInfo(info)))
-								replacement = mod.id;
+							if (mod.WantsToReplace (new InvocationInfo(info)))
+								replacement = id;
 						} catch (Exception ex) {
 							Console.WriteLine (ex);
-							modsToUnload.Add (mod.id);
+							modsToUnload.Add (id);
 						}
 					}
 
@@ -113,15 +115,17 @@ namespace ScrollsModLoader {
 					Unload (modsToUnload);
 
 					//load beforeinvoke
-					foreach(BaseModWithId mod in hookedMods) {
-						if (mod.id.Equals (replacement)) {
+					foreach(BaseModWithId modWithId in hookedMods) {
+						BaseMod mod = modWithId.mod;
+						string id = modWithId.id;
+						if (id.Equals (replacement)) {
 							continue;
 						}
 						try {
-							mod.mod.BeforeInvoke (new InvocationInfo (info));
+							mod.BeforeInvoke (new InvocationInfo (info));
 						} catch (Exception ex) {
 							Console.WriteLine (ex);
-							modsToUnload.Add (mod.id);
+							modsToUnload.Add (id);
 						}
 					}
 				}
@@ -164,12 +168,14 @@ namespace ScrollsModLoader {
 			//load afterinvoke
 			if (hooks.TryGetValue (declaringTypeName, out methodHooks)) {
 				if (methodHooks.TryGetValue (targetMethodName, out hookedMods)) {
-					foreach (BaseModWithId mod in hookedMods) {
+					foreach(BaseModWithId modWithId in hookedMods) {
+						BaseMod mod = modWithId.mod;
+						string id = modWithId.id;
 						try {
-							mod.mod.AfterInvoke (new InvocationInfo (info), ref ret);
+							mod.AfterInvoke (new InvocationInfo (info), ref ret);
 						} catch (Exception exp) {
 							Console.WriteLine (exp);
-							modsToUnload.Add (mod.id);
+							modsToUnload.Add (id);
 						}
 					}
 				}
