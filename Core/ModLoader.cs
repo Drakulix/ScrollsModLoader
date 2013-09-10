@@ -34,12 +34,17 @@ namespace ScrollsModLoader {
 		private ModLoader loader;
 		private TypeDefinitionCollection types;
 
-		private Dictionary<string, MethodDefinition[]> modHooks = new Dictionary<string, MethodDefinition[]>();
-		private Dictionary<string, Dictionary<string, List<BaseModWithId>>> hooks = new Dictionary<string, Dictionary<string, List<BaseModWithId>>>();
+		private Dictionary<string, MethodDefinition[]> modHooks;
+		private Dictionary<string, Dictionary<string, List<BaseModWithId>>> hooks;
 
 		public ModInterceptor(ModLoader loader) {
 			this.loader = loader;
 			types = AssemblyFactory.GetAssembly (Platform.getGlobalScrollsInstallPath()+"ModLoader/Assembly-CSharp.dll").MainModule.Types;
+		}
+
+		private void GenerateHookDict() {
+			modHooks = new Dictionary<string, MethodDefinition[]> ();
+			hooks = new Dictionary<string, Dictionary<string, List<BaseModWithId>>> ();
 			foreach(String modId in loader.modOrder) {
 				BaseMod mod = null;
 				try {
@@ -67,6 +72,16 @@ namespace ScrollsModLoader {
 					}
 				}
 			}
+			Console.WriteLine ("Hooks:");
+			foreach (string hookedTypeName in hooks.Keys) {
+				Console.WriteLine (hookedTypeName);
+				foreach (string hookedMethodName in hooks[hookedTypeName].Keys) {
+					Console.WriteLine ("\t" + hookedMethodName);
+					foreach (BaseModWithId modWithId in hooks[hookedTypeName][hookedMethodName]) {
+						Console.WriteLine ("\t\t" + modWithId.id);
+					}
+				}
+			}
 		}
 
 		public void Unload(List<String> modsToUnload) {
@@ -85,6 +100,9 @@ namespace ScrollsModLoader {
 
 		public object Intercept (IInvocationInfo info)
 		{
+			if (hooks == null) {
+				GenerateHookDict ();
+			}
 			//list for unloading
 			List<String> modsToUnload = new List<String> ();
 			String replacement = "";
