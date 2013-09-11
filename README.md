@@ -72,6 +72,7 @@ Any releases will be provided through ScrollsGuide.com.
 It also acts as trusted Plugin-Library, all Plugins submitted will be tested and need to be open-source, so everybody can check the functionality before running any mods themselves (theoretically).
 
 ##What was changed from the Concept:
+
 - The High-Level-API was not build into something fully-functional. You can use it, but it just contains some helper functions, nothing to build an entire mod out of it.
 - ILRepack is not needed anymore for injecting code. Having the Mod-Assembly separately has proven to be as reliable and easier.
 
@@ -86,11 +87,11 @@ First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t
 You will need:
 - something that can open the project files (Xamarin Studio is free and recommended)
 - the latest version of Mono (2.10.9)
-- xbuild and mono need to be in your path (C:\Program Files (x86)\Mono-2.10.9\bin on my computer).
+- xbuild and mono need to be in your path (`C:\Program Files (x86)\Mono-2.10.9\bin` on my computer).
 
 How to build:
 
-1. Copy `Assembly-CSharp.dll`, `UnityEngine.dll` and `JsonFx.dll` from an UNMODIFIED Scrolls install (if Summoner has been installed it won't work) to the main project folder
+1. Copy `Assembly-CSharp.dll` (from the ModLoader-Folder or an unmodified Scrolls), `UnityEngine.dll` and `JsonFx.dll` to the main project folder
 2. Run `go.bat compile-release` in `LinFu-master`.
 3. Start Xamarin. The references to LinFu should now resolve correctly
 4. Build the project
