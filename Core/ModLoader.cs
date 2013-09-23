@@ -108,7 +108,7 @@ namespace ScrollsModLoader {
 					}
 				}
 				loader.unloadMod ((LocalMod)loader.modManager.installedMods.Find (delegate(Item lmod) {
-					return ((lmod as LocalMod).id.Equals (id));
+					return (id.Equals ((lmod as LocalMod).id));
 				}));
 			}
 			modsToUnload.Clear ();
