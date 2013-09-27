@@ -114,8 +114,13 @@ namespace ScrollsModLoader {
 			modsToUnload.Clear ();
 		}
 
+		private int lastModInstancesCount = -1;
 		public object Intercept (IInvocationInfo info)
 		{
+			if (lastModInstancesCount != loader.modInstances.Count) {
+				lastModInstancesCount = loader.modInstances.Count;
+				hooks = null;
+			}
 			if (hooks == null) {
 				GenerateHookDict ();
 			}
