@@ -85,13 +85,14 @@ First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t
 ####5. Build instructions for Windows
 
 You will need:
+
 - something that can open the project files (Xamarin Studio is free and recommended)
 - the latest version of Mono (2.10.9)
 - xbuild and mono need to be in your `PATH`-environment variable (`C:\Program Files (x86)\Mono-2.10.9\bin` on my computer).
 
-How to build:
+How to setup the build-environment:
 
 1. Copy `Assembly-CSharp.dll` (from the ModLoader-Folder or an unmodified Scrolls), `UnityEngine.dll` and `JsonFx.dll` to the main project folder
-2. Run `go.bat compile-release` in `LinFu-master`.
+2. Run `go.bat compile-release` on the `cmd` in the `LinFu-master`-Folder.
 3. Start Xamarin. The references to LinFu should now resolve correctly
-4. Build the project
+4. You are now ready to build/execute the project in Xamarin.
