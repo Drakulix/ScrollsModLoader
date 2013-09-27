@@ -87,7 +87,7 @@ First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t
 You will need:
 - something that can open the project files (Xamarin Studio is free and recommended)
 - the latest version of Mono (2.10.9)
-- xbuild and mono need to be in your path (`C:\Program Files (x86)\Mono-2.10.9\bin` on my computer).
+- xbuild and mono need to be in your `PATH`-environment variable (`C:\Program Files (x86)\Mono-2.10.9\bin` on my computer).
 
 How to build:
 
