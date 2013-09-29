@@ -93,3 +93,19 @@ How to build:
 2. Open the solution file. Run "build all". This will build LinFu, but references won't work
 3. Restart Xamarin. The references to LinFu should now resolve correctly
 4. Build the project
+
+
+####6. Future Plans
+
+1. There are some bugs and improvements that need to be implemented soon.
+2. The next big milestone will be splitting the Project into an game-independend Unity-ModLoader and little Plugins like for Scrolls or other Unity-based-Games
+3. Developing Plugins for other games on my own. Distance (survivethedistance.com) might be very interesting, once it is out of Alpha (and no huge code changes are to be expected, like right now)
+
+####You like my Project?
+###Why not donate a small amount?
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="9L4PEYUQB8SZJ">
+<input type="image" src="https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="Now easy, quickly and secure donating - via PayPal.">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form>
