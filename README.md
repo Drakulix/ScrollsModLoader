@@ -102,7 +102,8 @@ How to build:
 3. Developing Plugins for other games on my own. Distance (survivethedistance.com) might be very interesting, once it is out of Alpha (and no huge code changes are to be expected, like right now)
 
 ####You like my Project?
-###Why not donate a small amount?
+####Why not donate a small amount?
+
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="9L4PEYUQB8SZJ">
