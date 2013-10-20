@@ -497,7 +497,23 @@ namespace ScrollsModLoader {
 			int countmods = modInstances.Count;
 			int countlog = logger.Count;
 			try {
-				modInstances.Add(mod.localId, (BaseMod)(modClass.GetConstructor (Type.EmptyTypes).Invoke (new object[0])));
+				ConstructorInfo modConstructor = modClass.GetConstructor (Type.EmptyTypes);
+				if (modConstructor == null) {
+					//GetConstructor did not find a public Constructor
+					Console.WriteLine("Could not find public 0-Argument Constructor for mod: "+mod.getName());
+					ConstructorInfo[] allConstructors = modClass.GetConstructors(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+					foreach(ConstructorInfo c in allConstructors) {
+						if (c.GetParameters().Length == 0) {
+							Console.WriteLine("Found alternative Constructor! Please use a public Constructor for your Mod");
+							modConstructor = c;
+							break;
+						}
+					}
+					if (modConstructor == null) {
+						throw new Exception("Could not find any 0-Argument-Constructors");
+					}
+				}
+				modInstances.Add(mod.localId, (BaseMod)(modConstructor.Invoke (new object[0])));
 				if (!mod.localInstall)
 					logger.Add (mod.localId, new ExceptionLogger (mod, mod.source));
 			} catch (Exception exp) {

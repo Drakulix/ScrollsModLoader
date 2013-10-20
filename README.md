@@ -82,17 +82,33 @@ It also acts as trusted Plugin-Library, all Plugins submitted will be tested and
 
 First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t=1873
 
-####5. Build instructions for Windows
+####5. Build instructions:
 
 You will need:
 
 - something that can open the project files (Xamarin Studio is free and recommended)
 - the latest version of Mono (2.10.9)
-- xbuild and mono need to be in your `PATH`-environment variable (`C:\Program Files (x86)\Mono-2.10.9\bin` on my computer).
+- xbuild and mono need to be in your path (should be `C:\Program Files (x86)\Mono-2.10.9\bin` on windows).
 
-How to setup the build-environment:
+How to setup the build environment:
 
-1. Copy `Assembly-CSharp.dll` (from the ModLoader-Folder or an unmodified Scrolls), `UnityEngine.dll` and `JsonFx.dll` to the main project folder
-2. Run `go.bat compile-release` on the `cmd` in the `LinFu-master`-Folder.
-3. Start Xamarin. The references to LinFu should now resolve correctly
+1. Copy Assembly-CSharp.dll (from the ModLoader-Folder or an unmodified Scrolls), UnityEngine.dll and JsonFx.dll to the main project folder
+The next step differs on MacOS and Windows:
+MacOS:
+  2. Open the LinFu Solution file with Xamarin Studio. Run "build all". This will build LinFu, but references won't still not work.
+  Alternatively: open the terminal, `cd` into your Linfu-master folder and run `xbuild LinFu.sln`
+Windows:
+  2. Run `go.bat compile-release` on the `cmd` in the `LinFu-master`-Folder.
+3. Restart Xamarin. The references to LinFu should now resolve correctly
 4. You are now ready to build/execute the project in Xamarin.
+
+
+####6. Future Plans
+
+1. There are some bugs and improvements that need to be implemented soon.
+2. The next big milestone will be splitting the Project into an game-independend Unity-ModLoader and little Plugins like for Scrolls or other Unity-based-Games
+3. Developing Plugins for other games on my own. Distance (survivethedistance.com) might be very interesting, once it is out of Alpha (and no huge code changes are to be expected, like right now)
+
+####You like my Project?
+####Why not donate a small amount?
+[![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9L4PEYUQB8SZJ)
