@@ -407,7 +407,9 @@ namespace ScrollsModLoader {
 					types,
 					SharedConstants.getExeVersionInt ()
 				});
-			} catch  {
+			} catch (Exception e) {
+				Console.WriteLine ("Error executing GetHooks for mod: " + filepath);
+				Console.WriteLine (e);
 				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 				return null;
 			}
@@ -423,6 +425,7 @@ namespace ScrollsModLoader {
 				     where type.Equals(hook.DeclaringType)
 				     select type).Count() == 0) {
 					//disable mod
+					Console.WriteLine ("ERROR: Mod hooks unexistant method! " + filepath);
 					AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 					return null;
 				}
@@ -441,7 +444,9 @@ namespace ScrollsModLoader {
 				mod.version = (int)modClass.GetMethod("GetVersion").Invoke(null, null);
 				mod.versionCode = ""+mod.version;
 				mod.description = "";
-			} catch {
+			} catch (Exception e){
+				Console.WriteLine ("Error getting Name or Version: ");
+				Console.WriteLine (e);
 				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 				return null;
 			}
