@@ -140,7 +140,7 @@ namespace ScrollsModLoader
 			{
 				App.AudioScript.PlayMusic ("Music/Theme");
 			}
-			if (providerDesc == "_DeckBuilderView")
+			if (providerDesc == "_DeckBuilderView"  && App.SceneValues.deckBuilder == null)
 			{
 				App.SceneValues.deckBuilder = new SceneValues.SV_DeckBuilder ();
 			}
