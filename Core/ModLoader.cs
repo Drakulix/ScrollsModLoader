@@ -421,8 +421,14 @@ namespace ScrollsModLoader {
 			//check hooks
 			foreach (MethodDefinition hook in hooks) {
 				//type/method does not exists
+				if (hook == null) {
+					Console.WriteLine ("ERROR: GetHooks contains 'null'! ");
+					Console.WriteLine ("=> Disabling " + filepath);
+					AppDomain.CurrentDomain.AssemblyResolve -= resolver;
+					return null;
+				}
 				if ((from type in typeDefs
-				     where type.Equals(hook.DeclaringType)
+				     where type.Equals(hook.DeclaringType) //Code above avoids NullReferenceException when hook is null.
 				     select type).Count() == 0) {
 					//disable mod
 					Console.WriteLine ("ERROR: Mod hooks unexistant method! " + filepath);
