@@ -1,0 +1,5 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/UnitTests/LinFu.UnitTests.dll.config
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/UnitTests/LinFu.UnitTests.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/UnitTests/LinFu.UnitTests.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/UnitTests/obj/AutomatedDebug/LinFu.UnitTests.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/UnitTests/obj/AutomatedDebug/LinFu.UnitTests.dll.mdb

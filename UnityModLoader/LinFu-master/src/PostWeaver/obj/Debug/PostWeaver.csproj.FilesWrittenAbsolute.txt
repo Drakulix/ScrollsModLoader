@@ -1,0 +1,15 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/PostWeaver.exe.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/PostWeaver.exe
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/obj/Debug/PostWeaver.exe
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/obj/Debug/PostWeaver.exe.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/Mono.Cecil.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.AOP.Interfaces.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.AOP.Interfaces.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.AOP.Cecil.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.AOP.Cecil.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.Reflection.Emit.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.Reflection.Emit.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.Reflection.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.Reflection.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.IoC.Common.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/PostWeaver/bin/Debug/LinFu.IoC.Common.dll.mdb

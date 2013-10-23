@@ -1,0 +1,24 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MainAssembly>$(MSBuildProjectDirectory)\..\build\LinFu.AOP.dll</MainAssembly>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetDirectory>$(MSBuildProjectDirectory)\..\build\$(Configuration)</TargetDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu.AOP.Cecil.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu.AOP.Interfaces.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu.AOP.Tasks.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu.Reflection*.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.dll"/>
+    <ILMergeAssemblies Include="$(MSBuildProjectDirectory)\..\lib\Mono.Cecil.Pdb.dll"/>
+  </ItemGroup>
+
+  <Target Name="aopmerge">
+    <!--Exclude the LinFu.IOC binaries-->
+    <Delete Files="$(MSBuildProjectDirectory)\..\build\$(Configuration)\LinFu.IOC*.dll" />
+
+    <Message Text="-- Begin LinFu.AOP ILMerge --" />
+    <Exec Command="&quot;$(ProgramFiles)\Microsoft\Ilmerge\Ilmerge.exe&quot; /xmldocs /v2 /log /out:&quot;$(MainAssembly)&quot; @(ILMergeAssemblies->'&quot;%(FullPath)&quot;', ' ')" />
+    <Message Text="-- End LinFu.AOP ILMerge --" />
+  </Target>
+</Project>

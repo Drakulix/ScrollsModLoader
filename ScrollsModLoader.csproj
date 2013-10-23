@@ -25,10 +25,8 @@
     <Externalconsole>true</Externalconsole>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
         <Command type="AfterBuild" command="rm ${TargetDir}/Assembly-CSharp.dll" workingdir="${ProjectDir}" externalConsole="True" />
         <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/Debug/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" />
-        <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
         <Command type="AfterExecute" command="/Applications/Scrolls.app/Contents/MacOS/installer" />
       </CustomCommands>
     </CustomCommands>
@@ -42,51 +40,19 @@
     <Externalconsole>true</Externalconsole>
     <CustomCommands>
       <CustomCommands>
-        <Command type="BeforeBuild" command="xbuild /tv:3.5 /property:Configuration=Release LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src" externalConsole="True" />
         <Command type="AfterBuild" command="rm ${TargetDir}/Assembly-CSharp.dll" workingdir="${ProjectDir}" externalConsole="True" pauseExternalConsole="True" />
         <Command type="AfterBuild" command="mono ${ProjectDir}/ILRepack.exe /out:${TargetFile} ${TargetFile} ${ProjectDir}/Ionic.Zip.Big.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Cecil.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.AOP.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Finders.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.Common.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.IoC.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Proxy.Interfaces.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.dll ${ProjectDir}/LinFu-master/build/Release/LinFu.Reflection.Emit.dll  ${ProjectDir}/LinFu-master/build/Release/Mono.Cecil.dll ${ProjectDir}/bin/${ProjectConfig}/ScrollsModLoader.Interfaces.dll" workingdir="${TargetDir}" externalConsole="True" pauseExternalConsole="True" />
-        <Command type="BeforeClean" command="xbuild /tv:3.5 /t:Clean LinFu.sln" workingdir="${ProjectDir}/LinFu-master/src/" externalConsole="True" />
       </CustomCommands>
     </CustomCommands>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="LinFu.AOP.Cecil">
-      <HintPath>LinFu-master\build\Release\LinFu.AOP.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.AOP.Interfaces">
-      <HintPath>LinFu-master\build\Release\LinFu.AOP.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.Finders">
-      <HintPath>LinFu-master\build\Release\LinFu.Finders.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.IoC.Common">
-      <HintPath>LinFu-master\build\Release\LinFu.IoC.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.IoC">
-      <HintPath>LinFu-master\build\Release\LinFu.IoC.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.Proxy.Interfaces">
-      <HintPath>LinFu-master\build\Release\LinFu.Proxy.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.Proxy">
-      <HintPath>LinFu-master\build\Release\LinFu.Proxy.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.Reflection.Emit">
-      <HintPath>LinFu-master\build\Release\LinFu.Reflection.Emit.dll</HintPath>
-    </Reference>
-    <Reference Include="LinFu.Reflection">
-      <HintPath>LinFu-master\build\Release\LinFu.Reflection.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>LinFu-master\build\Release\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Ionic.Zip.Big">
       <HintPath>Ionic.Zip.Big.dll</HintPath>
-    </Reference>
-    <Reference Include="JsonFx">
-      <HintPath>JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>UnityEngine.dll</HintPath>
@@ -106,22 +72,9 @@
     <Compile Include="Patches\Mods Menu\ICardListCallback.cs" />
     <Compile Include="Patches\Mods Menu\ListItem.cs" />
     <Compile Include="Patches\Mods Menu\UIListPopup.cs" />
-    <Compile Include="Core\Patcher.cs" />
-    <Compile Include="Core\ScrollsFilter.cs" />
-    <Compile Include="Core\ModLoader.cs" />
-    <Compile Include="Core\Hooks.cs" />
     <Compile Include="Resources\AssemblyInfo.cs" />
-    <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="Core\ModManager.cs" />
-    <Compile Include="Core\RepoManager.cs" />
-    <Compile Include="Core\WebAPI\RepoInfoMessage.cs" />
-    <Compile Include="Core\WebAPI\ModListMessage.cs" />
-    <Compile Include="Core\Updater.cs" />
-    <Compile Include="Core\WebAPI\VersionMessage.cs" />
     <Compile Include="NativeAPIs\WindowsDialog.cs" />
-    <Compile Include="Core\WebAPI\ExceptionLogger.cs" />
     <Compile Include="Patches\PatchPopups.cs" />
-    <Compile Include="Core\WebAPI\WebClientTimeout.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -136,9 +89,7 @@
     <Folder Include="API\" />
     <Folder Include="NativeAPIs\" />
     <Folder Include="Patches\Mods Menu\" />
-    <Folder Include="Core\" />
     <Folder Include="Resources\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj">

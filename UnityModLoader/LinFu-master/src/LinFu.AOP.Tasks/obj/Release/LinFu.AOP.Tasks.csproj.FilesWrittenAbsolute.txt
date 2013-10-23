@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Release/LinFu.AOP.Tasks.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Release/LinFu.AOP.Tasks.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.AOP.Tasks/obj/Release/LinFu.AOP.Tasks.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.AOP.Tasks/obj/Release/LinFu.AOP.Tasks.dll.mdb

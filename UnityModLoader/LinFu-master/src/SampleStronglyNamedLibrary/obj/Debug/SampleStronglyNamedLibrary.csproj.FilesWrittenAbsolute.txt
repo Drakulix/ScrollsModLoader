@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleStronglyNamedLibrary/bin/Debug/SampleStronglyNamedLibrary.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleStronglyNamedLibrary/bin/Debug/SampleStronglyNamedLibrary.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleStronglyNamedLibrary/obj/Debug/SampleStronglyNamedLibrary.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleStronglyNamedLibrary/obj/Debug/SampleStronglyNamedLibrary.dll.mdb

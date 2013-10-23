@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/LinFu.AOP.Interfaces.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/LinFu.AOP.Interfaces.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.AOP.Interfaces/obj/Debug/LinFu.AOP.Interfaces.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.AOP.Interfaces/obj/Debug/LinFu.AOP.Interfaces.dll.mdb

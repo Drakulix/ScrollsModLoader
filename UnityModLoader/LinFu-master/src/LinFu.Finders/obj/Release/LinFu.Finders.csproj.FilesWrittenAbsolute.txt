@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.Finders/bin/Release/LinFu.Finders.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.Finders/bin/Release/LinFu.Finders.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.Finders/obj/Release/LinFu.Finders.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.Finders/obj/Release/LinFu.Finders.dll.mdb

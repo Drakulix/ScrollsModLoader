@@ -1,0 +1,4 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/UnitTests/SampleFileWatcherLibrary.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/build/Debug/UnitTests/SampleFileWatcherLibrary.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleFileWatcherLibrary/obj/Debug/SampleFileWatcherLibrary.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/SampleFileWatcherLibrary/obj/Debug/SampleFileWatcherLibrary.dll.mdb

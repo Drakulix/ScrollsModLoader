@@ -1,0 +1,6 @@
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/bin/Release/LinFu.IoC.Common.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/bin/Release/LinFu.IoC.Common.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/obj/Release/LinFu.IoC.Common.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/obj/Release/LinFu.IoC.Common.dll.mdb
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/bin/Release/LinFu.Reflection.dll
+/Users/Drakulix/Projects/ScrollsModLoader-M1/UnityModLoader/LinFu-master/src/LinFu.IoC.Common/bin/Release/LinFu.Reflection.dll.mdb
