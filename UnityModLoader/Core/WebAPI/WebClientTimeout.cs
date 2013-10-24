@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace ScrollsModLoader
+namespace UnityModLoader
 {
 	public class WebClientTimeOut : WebClient
 	{
