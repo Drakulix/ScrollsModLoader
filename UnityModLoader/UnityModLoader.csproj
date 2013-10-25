@@ -78,10 +78,6 @@
     <Compile Include="Core\Mod.cs" />
     <Compile Include="Core\ModLoader.cs" />
     <Compile Include="Core\ModManager.cs" />
-    <Compile Include="Core\Patcher.cs" />
-    <Compile Include="Core\RepoManager.cs" />
-    <Compile Include="Core\ScrollsFilter.cs" />
-    <Compile Include="Core\Updater.cs" />
     <Compile Include="Core\WebAPI\ExceptionLogger.cs" />
     <Compile Include="Core\WebAPI\ModListMessage.cs" />
     <Compile Include="Core\WebAPI\RepoInfoMessage.cs" />
