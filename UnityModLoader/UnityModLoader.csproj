@@ -84,6 +84,8 @@
     <Compile Include="Core\WebAPI\VersionMessage.cs" />
     <Compile Include="Core\WebAPI\WebClientTimeout.cs" />
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Core\ModInceptor.cs" />
+    <Compile Include="Core\InvocationInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
