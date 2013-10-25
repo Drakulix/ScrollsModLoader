@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrollsModLoader", "Scrolls
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrollsModLoader.Interfaces", "ScrollsModLoader.Interfaces\ScrollsModLoader.Interfaces.csproj", "{E839D070-EA04-47D2-9F1A-A0379BDDC898}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityModLoader", "UnityModLoader\UnityModLoader.csproj", "{AD3F5D45-E2DF-4368-A05D-8E2920998F6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{0AF76730-1847-4A0E-A76D-3AC3FA331F98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AF76730-1847-4A0E-A76D-3AC3FA331F98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AF76730-1847-4A0E-A76D-3AC3FA331F98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD3F5D45-E2DF-4368-A05D-8E2920998F6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD3F5D45-E2DF-4368-A05D-8E2920998F6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD3F5D45-E2DF-4368-A05D-8E2920998F6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD3F5D45-E2DF-4368-A05D-8E2920998F6F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E839D070-EA04-47D2-9F1A-A0379BDDC898}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E839D070-EA04-47D2-9F1A-A0379BDDC898}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E839D070-EA04-47D2-9F1A-A0379BDDC898}.Release|Any CPU.ActiveCfg = Release|Any CPU
