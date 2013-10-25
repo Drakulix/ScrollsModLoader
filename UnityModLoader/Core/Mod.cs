@@ -5,6 +5,7 @@ using JsonFx.Json;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using LinFu.AOP.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace UnityModLoader
 {
@@ -69,12 +70,12 @@ namespace UnityModLoader
 
 	public class LimitedInvocationInfo : BaseInvocationInfo
 	{
-		public readonly Type[] typeArguments;
-		public readonly object[] arguments;
+		public ReadOnlyCollection<Type> typeArguments;
+		public ReadOnlyCollection<object> arguments;
 
 		public LimitedInvocationInfo (IInvocationInfo info) : base (info) {
-			this.typeArguments = info.TypeArguments;
-			this.arguments = info.Arguments;
+			this.typeArguments = Array.AsReadOnly(info.TypeArguments);
+			this.arguments = Array.AsReadOnly(info.Arguments);
 		}
 	}
 
