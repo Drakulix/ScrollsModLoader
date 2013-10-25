@@ -104,7 +104,7 @@ namespace UnityModLoader
 
 		public Mod(Uri path) {
 			if (path.IsFile)
-				return new Mod (File.ReadAllText (path.AbsolutePath), true);
+				return new Mod (File.ReadAllText (path.AbsolutePath));
 			else {
 				WebClientTimeOut wc = new WebClientTimeOut ();
 				string config = null;
@@ -121,7 +121,7 @@ namespace UnityModLoader
 			JsonReader reader = new JsonReader ();
 			Mod mod = null;
 			try {
-				 (Mod) reader.Read (JSON, typeof(Mod));
+				 mod = (Mod) reader.Read (JSON, typeof(Mod));
 			} catch (JsonFx.Serialization.SerializationException) {}
 			return mod;
 		}
