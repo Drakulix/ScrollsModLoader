@@ -174,11 +174,11 @@ namespace ScrollsModLoader
 		}
 
 		public bool downloadMod(LocalMod mod, String location) {
-			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
+			Console.WriteLine (mod.source.urlUri + "download/mod/" + mod.id);
 			WebClientTimeOut wc = new WebClientTimeOut();
 
 			try {
-				wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+				wc.DownloadFile (new Uri(mod.source.urlUri + "download/mod/" + mod.id), location);
 			} catch (WebException) {
 				return false;
 			}

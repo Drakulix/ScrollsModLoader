@@ -36,7 +36,7 @@ namespace ScrollsModLoader
 		public void tryAddRepository(string url) {
 			Uri uri = new Uri (url);
 			foreach (Item repo in repositories) {
-				if ((repo as Repo).url.Equals (uri))
+				if ((repo as Repo).urlUri.Equals (uri))
 					return;
 			}
 
@@ -57,7 +57,7 @@ namespace ScrollsModLoader
 				WebClientTimeOut client = new WebClientTimeOut ();
 				repoinfo = client.DownloadString (new Uri(urlNorm,"repoinfo"));
 			} catch (WebException ex) {
-				Console.WriteLine ("Failed to read repoinfo from URL: " + url);
+				Console.WriteLine ("Failed to read repoinfo from URL: " + new Uri(urlNorm,"repoinfo"));
 				Console.WriteLine (ex);
 				return false;
 			}
@@ -96,9 +96,9 @@ namespace ScrollsModLoader
 			String modlist = null;
 			try {
 				WebClientTimeOut client = new WebClientTimeOut ();
-				modlist = client.DownloadString (new Uri(repo.url,"modlist"));
+				modlist = client.DownloadString (new Uri(repo.urlUri,"modlist"));
 			} catch (WebException ex) {
-				Console.WriteLine ("Failed to read modlist from URL: " + repo.url);
+				Console.WriteLine ("Failed to read modlist from URL: " + repo.urlUri);
 				Console.WriteLine (ex);
 				repositories.Remove (repo);
 				return false;
@@ -159,7 +159,7 @@ namespace ScrollsModLoader
 			StreamWriter repoWriter = File.CreateText (modLoaderPath+"repo.ini");
 			foreach (Repo repo in repositories) {
 				if (repo.Equals(repositories[0])) continue;
-				repoWriter.WriteLine (repo.url);
+				repoWriter.WriteLine (repo.urlUri);
 			}
 			repoWriter.Flush ();
 			repoWriter.Close ();
@@ -170,11 +170,11 @@ namespace ScrollsModLoader
 			return;
 		}
 	}
-
 	public class Repo : Item {
 
 		public String name;
-		public Uri url;
+		public Uri urlUri { get {return new Uri (url);}}
+		public String url;
 		public int version;
 		public int mods;
 		private WWW tex;
@@ -183,7 +183,7 @@ namespace ScrollsModLoader
 
 		public void tryToGetFavicon() {
 			try {
-				this.tex = new WWW (url + "favicon.png");
+				this.tex = new WWW (urlUri + "favicon.png");
 			} catch {
 				this.tex = null;
 			}
@@ -197,7 +197,7 @@ namespace ScrollsModLoader
 		{
 			if (tex == null) {
 				try {
-					this.tex = new WWW (url+"favicon.png");
+					this.tex = new WWW (urlUri+"favicon.png");
 				} catch {
 					this.tex = null;
 					return null;
@@ -211,18 +211,18 @@ namespace ScrollsModLoader
 		}
 		public string getDesc ()
 		{
-			return url.ToString();
+			return urlUri.ToString();
 		}
 
 		public override bool Equals(object repo) {
 			if (repo is Repo)
-				return (this.name.Equals ((repo as Repo).name) && this.url.Equals ((repo as Repo).url));
+				return (this.name.Equals ((repo as Repo).name) && this.urlUri.Equals ((repo as Repo).urlUri));
 			else
 				return false;
 		}
 
 		public override int GetHashCode () {
-			return url.GetHashCode();
+			return urlUri.GetHashCode();
 		}
 	}
 }

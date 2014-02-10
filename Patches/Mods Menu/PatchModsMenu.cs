@@ -279,7 +279,7 @@ namespace ScrollsModLoader
 				downloadableListPopup.SetItemList (repoManager.getModListForRepo ((Repo)repoListPopup.selectedItem ()));
 			}
 			if (popup == downloadableListPopup) {
-				System.Diagnostics.Process.Start((repoListPopup.selectedItem() as Repo).url+"mod/"+(downloadableListPopup.selectedItem() as Mod).id);
+				System.Diagnostics.Process.Start((repoListPopup.selectedItem() as Repo).urlUri+"mod/"+(downloadableListPopup.selectedItem() as Mod).id);
 			}
 			if (popup == modListPopup) {
 				if (modListPopup.selectedItems ().Contains (card))
