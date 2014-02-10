@@ -57,6 +57,7 @@ namespace ScrollsModLoader
 				WebClientTimeOut client = new WebClientTimeOut ();
 				repoinfo = client.DownloadString (new Uri(urlNorm,"repoinfo"));
 			} catch (WebException ex) {
+				Console.WriteLine ("Failed to read repoinfo from URL: " + url);
 				Console.WriteLine (ex);
 				return false;
 			}
@@ -66,6 +67,7 @@ namespace ScrollsModLoader
 				JsonReader reader = new JsonReader();
 				message = reader.Read(repoinfo, typeof(RepoInfoMessage)) as RepoInfoMessage;
 			} catch {
+				Console.WriteLine("Failed to parse RepoInfo-JSON");
 				return false;
 			}
 
@@ -96,6 +98,7 @@ namespace ScrollsModLoader
 				WebClientTimeOut client = new WebClientTimeOut ();
 				modlist = client.DownloadString (new Uri(repo.url,"modlist"));
 			} catch (WebException ex) {
+				Console.WriteLine ("Failed to read modlist from URL: " + repo.url);
 				Console.WriteLine (ex);
 				repositories.Remove (repo);
 				return false;
@@ -106,6 +109,7 @@ namespace ScrollsModLoader
 				JsonReader reader = new JsonReader();
 				message = reader.Read(modlist, typeof(ModListMessage)) as ModListMessage;
 			} catch {
+				Console.WriteLine ("Failed to parse ModList-JSON");
 				repositories.Remove (repo);
 				return false;
 			}
