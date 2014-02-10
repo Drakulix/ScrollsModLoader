@@ -34,9 +34,9 @@ namespace ScrollsModLoader
 		}
 
 		public void tryAddRepository(string url) {
-
+			Uri uri = new Uri (url);
 			foreach (Item repo in repositories) {
-				if (new Uri ((repo as Repo).url).Host.Equals (new Uri (url).Host))
+				if ((repo as Repo).url.Equals (uri))
 					return;
 			}
 
@@ -51,12 +51,11 @@ namespace ScrollsModLoader
 
 			//normalize it
 			Uri urlNorm = new Uri (url);
-			url = urlNorm.Host;
 
 			String repoinfo = null;
 			try {
 				WebClientTimeOut client = new WebClientTimeOut ();
-				repoinfo = client.DownloadString (new Uri("http://"+url+"/repoinfo"));
+				repoinfo = client.DownloadString (new Uri(urlNorm,"repoinfo"));
 			} catch (WebException ex) {
 				Console.WriteLine (ex);
 				return false;
@@ -95,7 +94,7 @@ namespace ScrollsModLoader
 			String modlist = null;
 			try {
 				WebClientTimeOut client = new WebClientTimeOut ();
-				modlist = client.DownloadString (new Uri(repo.url+"modlist"));
+				modlist = client.DownloadString (new Uri(repo.url,"modlist"));
 			} catch (WebException ex) {
 				Console.WriteLine (ex);
 				repositories.Remove (repo);
@@ -171,7 +170,7 @@ namespace ScrollsModLoader
 	public class Repo : Item {
 
 		public String name;
-		public String url;
+		public Uri url;
 		public int version;
 		public int mods;
 		private WWW tex;
@@ -180,7 +179,7 @@ namespace ScrollsModLoader
 
 		public void tryToGetFavicon() {
 			try {
-				this.tex = new WWW (url + "/favicon.png");
+				this.tex = new WWW (url + "favicon.png");
 			} catch {
 				this.tex = null;
 			}
@@ -194,7 +193,7 @@ namespace ScrollsModLoader
 		{
 			if (tex == null) {
 				try {
-					this.tex = new WWW (url+"/favicon.png");
+					this.tex = new WWW (url+"favicon.png");
 				} catch {
 					this.tex = null;
 					return null;
@@ -208,7 +207,7 @@ namespace ScrollsModLoader
 		}
 		public string getDesc ()
 		{
-			return url;
+			return url.ToString();
 		}
 
 		public override bool Equals(object repo) {
