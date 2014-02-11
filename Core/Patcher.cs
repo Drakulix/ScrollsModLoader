@@ -41,9 +41,9 @@ namespace ScrollsModLoader
 						Console.WriteLine("Found game-Folder");
 						dir = dirs[0];
 					}
-					dirs = dir.GetDirectories("Scrolls_Data");
+					dirs = dir.GetDirectories("*_Data");
 					if (dirs.Length == 1) {
-						Console.WriteLine("Found Scrolls_Data-Folder");
+						Console.WriteLine("Found _Data-Folder");
 						dir = dirs[0];
 					}
 					dirs = dir.GetDirectories("Managed");
