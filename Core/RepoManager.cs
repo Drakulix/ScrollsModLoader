@@ -178,6 +178,7 @@ namespace ScrollsModLoader
 		public int version;
 		public int mods;
 		private WWW tex;
+		private Texture texture;
 
 		public Repo () {}
 
@@ -185,6 +186,7 @@ namespace ScrollsModLoader
 			try {
 				this.tex = new WWW (urlUri + "favicon.png");
 			} catch {
+				texture = new Texture ();
 				this.tex = null;
 			}
 		}
@@ -195,15 +197,23 @@ namespace ScrollsModLoader
 		}
 		public Texture getImage ()
 		{
+			if (texture != null)
+				return texture;
 			if (tex == null) {
 				try {
 					this.tex = new WWW (urlUri+"favicon.png");
 				} catch {
 					this.tex = null;
-					return null;
+					texture = new Texture ();
+					return texture;
+				}
+			} else {
+				if (tex.isDone) {
+					texture = tex.texture;
+					tex = null;
 				}
 			}
-			return tex.texture;
+			return texture;
 		}
 		public string getName ()
 		{
