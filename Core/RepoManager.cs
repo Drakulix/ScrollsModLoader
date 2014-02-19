@@ -30,6 +30,11 @@ namespace ScrollsModLoader
 			String[] repos = File.ReadAllLines (modLoaderPath+"repo.ini");
 			foreach (String repo in repos)
 				this.readRepository(repo);
+			//This hurts, but we need to do it to have Github repos/ssl repos.
+			//Trust Everyone:
+			System.Net.ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+
+
 
 		}
 
