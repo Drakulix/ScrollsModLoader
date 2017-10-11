@@ -1,16 +1,16 @@
-##Summoner : A ModLoader for Scrolls
+## Summoner : A ModLoader for Scrolls
 
-####What is it?
+#### What is it?
 Summoner is a project to provide a modding API for the game "Scrolls" by Mojang.
 
-####Who is working on it?
+#### Who is working on it?
 Drakulix - Main Developer
 
 Kbasten - Developer
 
 
 
-####Table of Contents
+#### Table of Contents
 
 1. Motivation
 2. Concept
@@ -20,7 +20,7 @@ Kbasten - Developer
 
 
 
-####1. Motivation
+#### 1. Motivation
 
 Why doing a ModLoader for Scrolls?
 
@@ -35,7 +35,7 @@ Mojang should know about that from making Minecraft quite well.
 
 
 
-####2. Concept
+#### 2. Concept
 
 The Scrolls ModLoader loads itself into the assembly through a little patcher utilizing Mono.Cecil, ILRepack and the execellent LinFu Framework (both also based on Mono.Cecil).
 Mono.Cecil provides a way to manipulated compiled assemblies very easily, LinFu takes that to the next level and ILRepack makes injecting code even easier.
@@ -64,7 +64,7 @@ To ensure safety for the user we try to provide a trusted-platform for the Scrol
 
 
 
-####3. Release
+#### 3. Release
 
 At ScrollsGuide.com/Summoner !
 
@@ -78,11 +78,11 @@ It also acts as trusted Plugin-Library, all Plugins submitted will be tested and
 
 
 
-####4. Developer API
+#### 4. Developer API
 
 First tutorial over here: http://www.scrollsguide.com/forum/viewtopic.php?f=61&t=1873
 
-####5. Build instructions:
+#### 5. Build instructions:
 
 You will need:
 
@@ -103,12 +103,12 @@ Windows:
 4. You are now ready to build/execute the project in Xamarin.
 
 
-####6. Future Plans
+#### 6. Future Plans
 
 1. There are some bugs and improvements that need to be implemented soon.
 2. The next big milestone will be splitting the Project into an game-independend Unity-ModLoader and little Plugins like for Scrolls or other Unity-based-Games
 3. Developing Plugins for other games on my own. Distance (survivethedistance.com) might be very interesting, once it is out of Alpha (and no huge code changes are to be expected, like right now)
 
-####You like my Project?
-####Why not donate a small amount?
+#### You like my Project?
+#### Why not donate a small amount?
 [![Donate](https://www.paypalobjects.com/de_DE/DE/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9L4PEYUQB8SZJ)
