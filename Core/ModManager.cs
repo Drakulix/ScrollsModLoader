@@ -150,34 +150,47 @@ namespace ScrollsModLoader
 			return false;
 		}
 
+		//Read file header, to check if its a dll. thanks to http://stackoverflow.com/a/6309893/2256700
+		public static bool IsDll(Stream stream)
+		{
+			using (BinaryReader reader = new BinaryReader(stream))
+			{
+				byte[] header = reader.ReadBytes(2); //Read MZ
+				if (header[0] != (byte)'M' && header[1] != (byte)'Z')
+					throw new Exception("Invalid PE file");
+
+				stream.Seek(64 - 4, SeekOrigin.Begin);//read elf_new this is the offset where the IMAGE_NT_HEADER begins
+				int offset = reader.ReadInt32();
+				stream.Seek(offset, SeekOrigin.Begin);
+				header = reader.ReadBytes(2);
+				if (header[0] != (byte)'P' && header[1] != (byte)'E')
+					throw new Exception("Invalid PE file");
+
+				stream.Seek(20, SeekOrigin.Current); //point to last word of IMAGE_FILE_HEADER
+				short readInt16 = reader.ReadInt16();
+				return (readInt16 & 0x2000) == 0x2000;
+
+			}
+		}
+
 		public bool downloadMod(LocalMod mod, String location) {
-			Console.WriteLine (mod.source.url + "download/mod/" + mod.id);
+			Console.WriteLine (mod.source.urlUri + "download/mod/" + mod.id);
 			WebClientTimeOut wc = new WebClientTimeOut();
 
 			try {
-				wc.DownloadFile (new Uri(mod.source.url + "download/mod/" + mod.id), location);
+				wc.DownloadFile (new Uri(mod.source.urlUri + "download/mod/" + mod.id), location);
 			} catch (WebException) {
 				return false;
 			}
 
 			// now check whether the downloaded file is actually a mod, and not an error
-			String[] keys = wc.ResponseHeaders.AllKeys;
-
-			String contentType = "";
-			for (int i = 0; i < keys.Length; i++)
-			{
-				if (keys[i].Equals("Content-Type"))
-				{
-					contentType = wc.ResponseHeaders.Get(i);
-				}
-			}
-
-			if (contentType.Equals("application/x-msdos-program")) // success
-			{
-				return true;
-			}
-			else // for example "application/json" or none at all, error
-			{
+			bool isDll = false;
+			try {
+				FileStream fs = new FileStream(location, FileMode.Open);
+				isDll = ModManager.IsDll(fs);
+				fs.Close();
+				return isDll;
+			} catch {
 				return false;
 			}
 		}

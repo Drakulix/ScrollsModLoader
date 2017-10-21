@@ -21,7 +21,7 @@ namespace ScrollsModLoader {
 		public ExceptionLogger(Mod m, Repo r)
 		{
 			this.version = m.version;
-			this.url = r.url;
+			this.url = r.urlUri.ToString();
 			this.id = m.id;
 
 			this.type = ExceptionType.MOD;

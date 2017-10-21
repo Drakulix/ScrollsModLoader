@@ -30,13 +30,18 @@ namespace ScrollsModLoader
 			String[] repos = File.ReadAllLines (modLoaderPath+"repo.ini");
 			foreach (String repo in repos)
 				this.readRepository(repo);
+			//This hurts, but we need to do it to have Github repos/ssl repos.
+			//Trust Everyone:
+			System.Net.ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+
+
 
 		}
 
 		public void tryAddRepository(string url) {
-
+			Uri uri = new Uri (url);
 			foreach (Item repo in repositories) {
-				if (new Uri ((repo as Repo).url).Host.Equals (new Uri (url).Host))
+				if ((repo as Repo).urlUri.Equals (uri))
 					return;
 			}
 
@@ -51,13 +56,13 @@ namespace ScrollsModLoader
 
 			//normalize it
 			Uri urlNorm = new Uri (url);
-			url = urlNorm.Host;
 
 			String repoinfo = null;
 			try {
 				WebClientTimeOut client = new WebClientTimeOut ();
-				repoinfo = client.DownloadString (new Uri("http://"+url+"/repoinfo"));
+				repoinfo = client.DownloadString (new Uri(urlNorm,"repoinfo"));
 			} catch (WebException ex) {
+				Console.WriteLine ("Failed to read repoinfo from URL: " + new Uri(urlNorm,"repoinfo"));
 				Console.WriteLine (ex);
 				return false;
 			}
@@ -67,6 +72,7 @@ namespace ScrollsModLoader
 				JsonReader reader = new JsonReader();
 				message = reader.Read(repoinfo, typeof(RepoInfoMessage)) as RepoInfoMessage;
 			} catch {
+				Console.WriteLine("Failed to parse RepoInfo-JSON");
 				return false;
 			}
 
@@ -95,8 +101,9 @@ namespace ScrollsModLoader
 			String modlist = null;
 			try {
 				WebClientTimeOut client = new WebClientTimeOut ();
-				modlist = client.DownloadString (new Uri(repo.url+"modlist"));
+				modlist = client.DownloadString (new Uri(repo.urlUri,"modlist"));
 			} catch (WebException ex) {
+				Console.WriteLine ("Failed to read modlist from URL: " + repo.urlUri);
 				Console.WriteLine (ex);
 				repositories.Remove (repo);
 				return false;
@@ -107,6 +114,7 @@ namespace ScrollsModLoader
 				JsonReader reader = new JsonReader();
 				message = reader.Read(modlist, typeof(ModListMessage)) as ModListMessage;
 			} catch {
+				Console.WriteLine ("Failed to parse ModList-JSON");
 				repositories.Remove (repo);
 				return false;
 			}
@@ -156,7 +164,7 @@ namespace ScrollsModLoader
 			StreamWriter repoWriter = File.CreateText (modLoaderPath+"repo.ini");
 			foreach (Repo repo in repositories) {
 				if (repo.Equals(repositories[0])) continue;
-				repoWriter.WriteLine (repo.url);
+				repoWriter.WriteLine (repo.urlUri);
 			}
 			repoWriter.Flush ();
 			repoWriter.Close ();
@@ -167,21 +175,23 @@ namespace ScrollsModLoader
 			return;
 		}
 	}
-
 	public class Repo : Item {
 
 		public String name;
+		public Uri urlUri { get {return new Uri (url);}}
 		public String url;
 		public int version;
 		public int mods;
 		private WWW tex;
+		private Texture texture;
 
 		public Repo () {}
 
 		public void tryToGetFavicon() {
 			try {
-				this.tex = new WWW (url + "/favicon.png");
+				this.tex = new WWW (urlUri + "favicon.png");
 			} catch {
+				texture = new Texture ();
 				this.tex = null;
 			}
 		}
@@ -192,15 +202,23 @@ namespace ScrollsModLoader
 		}
 		public Texture getImage ()
 		{
+			if (texture != null)
+				return texture;
 			if (tex == null) {
 				try {
-					this.tex = new WWW (url+"/favicon.png");
+					this.tex = new WWW (urlUri+"favicon.png");
 				} catch {
 					this.tex = null;
-					return null;
+					texture = new Texture ();
+					return texture;
+				}
+			} else {
+				if (tex.isDone) {
+					texture = tex.texture;
+					tex = null;
 				}
 			}
-			return tex.texture;
+			return texture;
 		}
 		public string getName ()
 		{
@@ -208,18 +226,18 @@ namespace ScrollsModLoader
 		}
 		public string getDesc ()
 		{
-			return url;
+			return urlUri.ToString();
 		}
 
 		public override bool Equals(object repo) {
 			if (repo is Repo)
-				return (this.name.Equals ((repo as Repo).name) && this.url.Equals ((repo as Repo).url));
+				return (this.name.Equals ((repo as Repo).name) && this.urlUri.Equals ((repo as Repo).urlUri));
 			else
 				return false;
 		}
 
 		public override int GetHashCode () {
-			return url.GetHashCode();
+			return urlUri.GetHashCode();
 		}
 	}
 }
