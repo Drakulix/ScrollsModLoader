@@ -27,18 +27,56 @@ namespace ScrollsModLoader
 		public static void Main (string[] args)
 		{
 			try {
-				Patcher.standalonePatch();
+				//get Path of Scrolls Data Folder
+				String installPath = null;
+				if (args.Length == 1) {
+					installPath = args[0];
+
+					System.IO.DirectoryInfo dir = new System.IO.DirectoryInfo(installPath);
+					if (!dir.Exists) {
+						Console.WriteLine(installPath + "-Directory does not exist");
+					}
+					System.IO.DirectoryInfo[] dirs = dir.GetDirectories("game");
+					if (dirs.Length == 1) {
+						Console.WriteLine("Found game-Folder");
+						dir = dirs[0];
+					}
+					dirs = dir.GetDirectories("*_Data");
+					if (dirs.Length == 1) {
+						Console.WriteLine("Found _Data-Folder");
+						dir = dirs[0];
+					}
+					dirs = dir.GetDirectories("Managed");
+					if (dirs.Length == 1) {
+						Console.WriteLine("Found Managed-Folder");
+						dir = dirs[0];
+					}
+					System.IO.FileInfo[] files = dir.GetFiles("Assembly-CSharp.dll");
+					if (files.Length == 1) {
+						Console.WriteLine("Found Assembly-CSharp.dll");
+						installPath = dir.FullName + System.IO.Path.DirectorySeparatorChar;
+						Console.WriteLine("Installpath: "+ installPath);
+					} else {
+						Console.WriteLine("Could not find Assembly-CSharp.dll");
+						return;
+					}
+				} else if (args.Length == 0) {
+					installPath = Platform.getGlobalScrollsInstallPath();
+				} else {
+					Console.WriteLine("Only 1 Argument allowed: the path to the Managed folder");
+					return;
+				}
+				if (installPath == null) return;
+				Patcher.standalonePatch(installPath);
 			} catch {
 				Dialogs.showNotification ("Patching failed", "Scrolls Summoner was unable to prepare your client, make sure Scrolls is not running while installing. More info at scrollsguide.com/summoner");
 			}
 		}
 
-		public static void standalonePatch () {
+		public static void standalonePatch (String installPath) {
 			Console.WriteLine ("Preparing...");
 
-			//get Path of Scrolls Data Folder
-			String installPath = Platform.getGlobalScrollsInstallPath();
-			if (installPath == null) return;
+
 
 			Console.WriteLine ("Creating ModLoader folder...");
 

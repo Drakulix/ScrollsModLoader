@@ -112,7 +112,24 @@ namespace ScrollsModLoader
 		public static void RestartGame() {
 			//restart the game
 			if (getOS () == OS.Win) {
-				new Process { StartInfo = { FileName = getGlobalScrollsInstallPath() + "..\\..\\Scrolls.exe", Arguments = "" } }.Start ();
+				string filename = getGlobalScrollsInstallPath () + "..\\..\\Scrolls.exe";
+				if (!System.IO.File.Exists (filename)) {
+					//If the Scrolls.exe does not exist we search for a .exe, that has the same name as the _Data folder (Scrolls.exe -> Scrolls_Data, ScrollsTest.exe -> ScrollsTest_Data)
+					DirectoryInfo dir = new DirectoryInfo (getGlobalScrollsInstallPath ());
+					dir = dir.Parent.Parent; //Go from Scrolls/game/Scrolls_data/Managed to Scrolls/game
+					DirectoryInfo[] dirs = dir.GetDirectories ("*_Data");
+					if (dirs.Length == 1) {
+						string name = dirs [0].Name;
+						name = name.Replace ("_Data", ".exe");
+						FileInfo[] files = dir.GetFiles(name);
+						if (files.Length == 1) {
+							filename = files [0].FullName;
+						} else {
+							//... We just accept, that the Process will fail...
+						}
+					} 
+				}
+				new Process { StartInfo = { FileName = filename, Arguments = "" } }.Start ();
 				Application.Quit ();
 			} else if (getOS () == OS.Mac) {
 				new Process { StartInfo = { FileName = "bash", Arguments = getGlobalScrollsInstallPath() + "/../../../../../run_sleep.sh", UseShellExecute=true } }.Start ();
