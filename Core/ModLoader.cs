@@ -390,6 +390,15 @@ namespace ScrollsModLoader {
 				AppDomain.CurrentDomain.AssemblyResolve -= resolver;
 				return null;
 			}
+
+			try {
+				if (File.GetLastWriteTime(Platform.getGlobalScrollsInstallPath ()+"Assembly-CSharp.dll") < File.GetLastWriteTime(filepath)) {
+					Console.WriteLine ("New Mod Version - Repatching!!!");
+					queueRepatch ();
+				}
+			} catch {
+				Console.WriteLine ("Couldn't read WriteTimes");
+			}
 			Type modClass = (from _modClass in modAsm.GetTypes ()
 			                 where _modClass.InheritsFrom (typeof(ScrollsModLoader.Interfaces.BaseMod))
 			                 select _modClass).First();
